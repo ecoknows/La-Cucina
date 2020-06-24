@@ -83,7 +83,7 @@ function Ingridients({navigation, route}){
 
 
     React.useEffect(() => {
-      SelectNote(setStateData1);
+      //SelectNote(setStateData1);
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 
@@ -93,10 +93,10 @@ function Ingridients({navigation, route}){
                 const setData = isFirstRow ? setStateData1 : setStateData2;
 
                 if(data.length == stateData.length){
-                    data.push(post);
-                    setData(items=>[...items,post])
+                    data.unshift(post);
+                    setData(items=>[post,...items])
                 }else{
-                    data.push(post);
+                    data.unshift(post);
                 }
 
                 isFirstRow = isFirstRow ? false : true; 

@@ -105,7 +105,7 @@ function NoteEditor({navigation, route}){
                 type,
             });
             //console.log('asd ff ', stateCheckedData.length);
-            AddNote(current);
+            //AddNote(current);
 
         }
     }
