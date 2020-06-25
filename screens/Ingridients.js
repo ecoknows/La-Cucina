@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, SelectNote, DeleteAll, DropTable } from '../database/database'
+import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData } from '../database/database'
 
 const data1 = [
     {
@@ -69,21 +69,21 @@ const data2 = [
     },
 ]
 
-let isFirstRow = true;
 
 function Ingridients({navigation, route}){
 
     const [stateData1, setStateData1] = useState(data1.slice(0,5));
     const [stateData2, setStateData2] = useState(data2.slice(0,5));
+    const [isFirstRow,setIsFirstRow] = useState(true);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     
   //DeleteAll();
   //DropTable();
-
-
+  //RemovePos();
+  //SeeData();
     React.useEffect(() => {
-      //SelectNote(setStateData1);
+        InitialData({setStateData1, setStateData2, setIsFirstRow, data1, data2  });
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 
@@ -99,7 +99,9 @@ function Ingridients({navigation, route}){
                     data.unshift(post);
                 }
 
-                isFirstRow = isFirstRow ? false : true; 
+                setIsFirstRow(isFirstRow ? false : true); 
+                DataPos(isFirstRow);
+                AddNote(post,isFirstRow);
             }else{
                 let updateData = null;
                 switch(type){
@@ -118,6 +120,7 @@ function Ingridients({navigation, route}){
             }      
         }
     }, [route.params?.post]);
+
 
     const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
         const paddingToBottom = 0;
