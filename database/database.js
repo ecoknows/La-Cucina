@@ -398,5 +398,7 @@ export {
     InitialData,
     RemovePos,
     SeeData,
-    PagingSelect
+    PagingSelect,
+    _1_NextPage,
+    _2_NextPage,
 }

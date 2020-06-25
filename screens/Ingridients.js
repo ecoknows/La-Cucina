@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, PagingSelect } from '../database/database'
+import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, PagingSelect, _1_NextPage, _2_NextPage } from '../database/database'
 
 const data1 = [
    /* {
@@ -78,7 +78,7 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     
-  DeleteAll();
+  //DeleteAll();
   //DropTable();
   //RemovePos();
   //SeeData();
@@ -174,32 +174,8 @@ function Ingridients({navigation, route}){
                 <ScrollView
                   onScroll={({nativeEvent}) => {
                     if (isCloseToBottom(nativeEvent)) {
-                        let stateDataSize = stateData1.length;
-                        let dataSize = data1.length;
-
-                        if(dataSize > stateDataSize){
-                            /*
-                            let offset = (dataSize- stateDataSize) >= 5 ? stateDataSize + 5 : stateDataSize + dataSize- stateDataSize; 
-                          
-                            setStateData1(
-                                item => [...item,...data1.slice(stateDataSize,offset)]
-                            )*/
-                        }
-                        
                         _1_NextPage({setStateData1, data1});
                         _2_NextPage({setStateData2, data2});
-                        stateDataSize = stateData2.length;
-                        dataSize = data2.length;
-                        
-                        if(dataSize > stateDataSize){
-                            /*let offset = (dataSize- stateDataSize) >= 5 ? stateDataSize + 5 : stateDataSize + dataSize- stateDataSize; 
-    
-                            setStateData2(
-                                item => [...item,...data2.slice(stateDataSize,offset)]
-                            )*/
-                           
-                        }
-
                     }
                   }}
                   scrollEventThrottle={400}
