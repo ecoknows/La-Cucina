@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData } from '../database/database'
+import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, PagingSelect } from '../database/database'
 
 const data1 = [
     {
@@ -78,12 +78,13 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     
-  //DeleteAll();
+  DeleteAll();
   //DropTable();
   //RemovePos();
   //SeeData();
+ // PagingSelect();
     React.useEffect(() => {
-        InitialData({setStateData1, setStateData2, setIsFirstRow, data1, data2  });
+       InitialData({setStateData1, setStateData2, setIsFirstRow, data1, data2  });
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 

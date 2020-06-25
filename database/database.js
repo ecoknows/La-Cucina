@@ -33,9 +33,6 @@ const DataPos = async pos => {
     console.log(TAG, error);
   }
 }
-
-
-
 const RemovePos = async () => {
   try{
     await AsyncStorage.removeItem(userId)
@@ -44,7 +41,6 @@ const RemovePos = async () => {
     console.log(TAG, error);
   }
 }
-
 
 const GetDataPos = async (setDataPos) => {
   try{
@@ -178,7 +174,7 @@ const DropTable =()=>{
 }
 
 const _1_SelecData = (setStateData1,data1) =>{
-  let query = "SELECT * from " + _1_data;
+  let query = "SELECT * from " + _1_data + " ORDER BY id DESC";
   let params = [];
 
   db.transaction(
@@ -186,7 +182,7 @@ const _1_SelecData = (setStateData1,data1) =>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           //console.log(results.rows._array);
-          for(let i = 0; i < results.rows._array.length; i++){
+          for(let i = results.rows._array.length - 1; i != -1; i--){
             _1_SelectCheckList(results.rows._array[i],setStateData1,data1);
           }
          //console.log(...results.rows._array);
@@ -202,7 +198,7 @@ const _1_SelecData = (setStateData1,data1) =>{
 }
 
 const _2_SelecData = (setStateData2,data2) =>{
-  let query = "SELECT * from " + _2_data;
+  let query = "SELECT * from " + _2_data + " ORDER BY id DESC";
   let params = [];
 
 
@@ -211,7 +207,7 @@ const _2_SelecData = (setStateData2,data2) =>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           //console.log(results.rows._array);
-          for(let i = 0; i < results.rows._array.length; i++){
+          for(let i = results.rows._array.length - 1; i != -1; i--){
             _2_SelectCheckList(results.rows._array[i],setStateData2,data2);
           }
          //console.log(...results.rows._array);
@@ -227,8 +223,8 @@ const _2_SelecData = (setStateData2,data2) =>{
 }
 
 const _1_SelectCheckList =(array,setStateData1,data1)=>{
-  query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
-  params = [];
+  let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
+  let params = [];
 
   db.transaction(
     (tx)=> {
@@ -291,8 +287,32 @@ const _2_SelectCheckList =(array,setStateData2,data2)=>{
 }
 
 
+const PagingSelect =()=>{
+  let query = "SELECT * from " + _1_data + " ORDER BY id DESC";
+  let params = [];
+
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          console.log();
+         
+         //console.log(...results.rows._array);
+        }
+      }, function(tx,err) {
+        Alert.alert(err.message);
+        return;
+      })
+    }
+  );
+}
+
+
+
+
 const SeeData =()=>{
-  let query = "SELECT * from " + _2_data;
+  let query = "SELECT * from " + _2_check_tbl;
   let params = [];
 
   db.transaction(
@@ -318,5 +338,6 @@ export {
     GetDataPos,
     InitialData,
     RemovePos,
-    SeeData
+    SeeData,
+    PagingSelect
 }
