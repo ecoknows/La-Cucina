@@ -6,7 +6,7 @@ import { CheckBox } from 'react-native-elements';
 import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, PagingSelect } from '../database/database'
 
 const data1 = [
-    {
+   /* {
         title:'Today\'s Ingrideints', 
         date: '14 April',
         color: '#5682FF',
@@ -25,10 +25,10 @@ const data1 = [
         isNote: true,
         isCheckList: false,
         checkList: [{_text: '', status: 0 }],
-    },
+    },*/
 ]
 const data2 = [
-    {
+  /*  {
         title:'Shopping Items', 
         date: '20 Dec',
         color: '#FF84DF',
@@ -66,7 +66,7 @@ const data2 = [
         isNote: true,
         isCheckList: false,
         checkList: [{_text: '', status: 0 }],
-    },
+    },*/
 ]
 
 
@@ -178,22 +178,26 @@ function Ingridients({navigation, route}){
                         let dataSize = data1.length;
 
                         if(dataSize > stateDataSize){
+                            /*
                             let offset = (dataSize- stateDataSize) >= 5 ? stateDataSize + 5 : stateDataSize + dataSize- stateDataSize; 
                           
                             setStateData1(
                                 item => [...item,...data1.slice(stateDataSize,offset)]
-                            )
+                            )*/
                         }
                         
+                        _1_NextPage({setStateData1, data1});
+                        _2_NextPage({setStateData2, data2});
                         stateDataSize = stateData2.length;
                         dataSize = data2.length;
                         
                         if(dataSize > stateDataSize){
-                            let offset = (dataSize- stateDataSize) >= 5 ? stateDataSize + 5 : stateDataSize + dataSize- stateDataSize; 
+                            /*let offset = (dataSize- stateDataSize) >= 5 ? stateDataSize + 5 : stateDataSize + dataSize- stateDataSize; 
     
                             setStateData2(
                                 item => [...item,...data2.slice(stateDataSize,offset)]
-                            )
+                            )*/
+                           
                         }
 
                     }

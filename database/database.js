@@ -13,6 +13,11 @@ const _2_check_tbl = 'check_table_2';
 const userId = 'Amber';
 const TAG = 'DATABASE ';
 
+let _1_currentOffset = -1;
+let _2_currentOffset = -1;
+
+const PAGING_LIMIT = "4";
+
 let isInitial = true;
 
 const InitialData =(dataState)=> {
@@ -329,6 +334,60 @@ const SeeData =()=>{
   );
 
 }
+
+const _2_NextPage =(data)=>{
+  const { setStateData2, data2 } = data;
+  let query = ' ';
+  let params = [];
+  console.log('current ', _2_currentOffset);
+  query = _2_currentOffset == -1 ? "SELECT * from " + _2_data + " ORDER BY id DESC LIMIT " + PAGING_LIMIT  :
+          "SELECT * from " + _2_data + " WHERE id < "+ _2_currentOffset.toString() +" ORDER BY id DESC LIMIT " + PAGING_LIMIT;
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          //console.log(results.rows._array);
+          data2.push(results.rows._array);
+          setStateData2(items=> [...items, ...results.rows._array]);
+          _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
+        }
+      }, function(tx,err) {
+        Alert.alert(err.message);
+        return;
+      })
+    }
+  );
+
+}
+
+const _1_NextPage =(data)=>{
+  const { setStateData1, data1 } = data;
+  let query = ' ';
+  let params = [];
+  console.log('current ', _1_currentOffset);
+  query = _1_currentOffset == -1 ? "SELECT * from " + _1_data + " ORDER BY id DESC LIMIT " + PAGING_LIMIT  :
+          "SELECT * from " + _1_data + " WHERE id < "+ _1_currentOffset.toString() +" ORDER BY id DESC LIMIT " + PAGING_LIMIT;
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+         // console.log(results.rows._array);
+          data1.push(results.rows._array);
+          setStateData1(items=> [...items, ...results.rows._array]);
+          _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
+        }
+      }, function(tx,err) {
+        Alert.alert(err.message);
+        return;
+      })
+    }
+  );
+
+}
+
+
 export {
     CheckNote,
     AddNote,
