@@ -91,6 +91,7 @@ function NoteEditor({navigation, route}){
             navigation.goBack();
         else{
             const current = {
+                    id: currentNote.id, 
                     title,
                     note,
                     color: noteColor,
@@ -154,7 +155,7 @@ function NoteEditor({navigation, route}){
                                             />
                                         </TouchableOpacity>
                                         
-                                        <CheckBox checkedColor='white' uncheckedColor='white' checked={checked} 
+                                        <CheckBox checkedColor='white' uncheckedColor='white' checked={checked?true:false} 
                                             onPress={()=>setChecked(checked?false:true)}
                                             size={30}
                                             containerStyle={{flex: 0, width: 40, height: 40, top: -17, marginRight: 2,}}

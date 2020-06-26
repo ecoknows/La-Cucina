@@ -3,10 +3,11 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, PagingSelect, _1_NextPage, _2_NextPage } from '../database/database'
+import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList } from '../database/database'
 
+/*
 const data1 = [
-   /* {
+   {
         title:'Today\'s Ingrideints', 
         date: '14 April',
         color: '#5682FF',
@@ -25,10 +26,12 @@ const data1 = [
         isNote: true,
         isCheckList: false,
         checkList: [{_text: '', status: 0 }],
-    },*/
+    }
 ]
+*/
+/*
 const data2 = [
-  /*  {
+   {
         title:'Shopping Items', 
         date: '20 Dec',
         color: '#FF84DF',
@@ -66,14 +69,14 @@ const data2 = [
         isNote: true,
         isCheckList: false,
         checkList: [{_text: '', status: 0 }],
-    },*/
-]
+    },
+]*/
 
 
 function Ingridients({navigation, route}){
 
-    const [stateData1, setStateData1] = useState(data1.slice(0,5));
-    const [stateData2, setStateData2] = useState(data2.slice(0,5));
+    const [stateData1, setStateData1] = useState([]);
+    const [stateData2, setStateData2] = useState([]);
     const [isFirstRow,setIsFirstRow] = useState(true);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
@@ -82,24 +85,15 @@ function Ingridients({navigation, route}){
   //DropTable();
   //RemovePos();
   //SeeData();
- // PagingSelect();
     React.useEffect(() => {
-       InitialData({setStateData1, setStateData2, setIsFirstRow, data1, data2  });
+       InitialData({setStateData1, setStateData2, setIsFirstRow });
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 
             if(index == -1){
-                const data = isFirstRow ? data1 : data2;  
-                const stateData = isFirstRow ? stateData1 : stateData2;
                 const setData = isFirstRow ? setStateData1 : setStateData2;
 
-                if(data.length == stateData.length){
-                    data.unshift(post);
-                    setData(items=>[post,...items])
-                }else{
-                    data.unshift(post);
-                }
-
+                setData(items=>[post,...items])
                 setIsFirstRow(isFirstRow ? false : true); 
                 DataPos(isFirstRow);
                 AddNote(post,isFirstRow);
@@ -108,8 +102,13 @@ function Ingridients({navigation, route}){
                 switch(type){
                     case 1: 
                         updateData = stateData1;
-                        updateData[index] = post;
+                        let save = updateData[index];
+                        console.log('dsf : ' ,save.checkList, " ",post.checkList);
+                        //updateData[index] = post;
                         setStateData1( items=>[...updateData]);
+                        console.log('dsf : ' ,save.checkList, " ",post.checkList);
+                        //UpdateTable(QueryChanges({save, post}), post.id.toString());
+                        QueryChangesList({save, post});
                         break;
                     case 2: 
                         updateData = stateData2;
@@ -174,8 +173,9 @@ function Ingridients({navigation, route}){
                 <ScrollView
                   onScroll={({nativeEvent}) => {
                     if (isCloseToBottom(nativeEvent)) {
-                        _1_NextPage({setStateData1, data1});
-                        _2_NextPage({setStateData2, data2});
+                        console.log('asda');
+                        _1_NextPage(setStateData1);
+                        _2_NextPage(setStateData2);
                     }
                   }}
                   scrollEventThrottle={400}

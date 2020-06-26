@@ -21,11 +21,11 @@ const PAGING_LIMIT = "4";
 let isInitial = true;
 
 const InitialData =(dataState)=> {
-  const {setStateData1, setStateData2, setIsFirstRow, data1, data2} = dataState;
+  const {setStateData1, setStateData2, setIsFirstRow} = dataState;
   if(isInitial){
     GetDataPos(setIsFirstRow);
-    _1_SelecData(setStateData1,data1);
-    _2_SelecData(setStateData2,data2);
+    _1_SelecData(setStateData1);
+    _2_SelecData(setStateData2);
     isInitial = false;
   }
 }
@@ -146,7 +146,7 @@ const AddNote = (pugi, isFirstRow) =>{
 }
 
 const DeleteAll =()=>{
-    let query = "DELETE from " + _2_check_tbl;
+    let query = "DELETE from " + _2_data;
     let params = [];
     db.transaction(
       (tx)=> {
@@ -178,8 +178,8 @@ const DropTable =()=>{
     );
 }
 
-const _1_SelecData = (setStateData1,data1) =>{
-  let query = "SELECT * from " + _1_data + " ORDER BY id DESC";
+const _1_SelecData = (setStateData1) =>{
+  let query = "SELECT * from " + _1_data + " ORDER BY id DESC LIMIT 5";
   let params = [];
 
   db.transaction(
@@ -187,8 +187,9 @@ const _1_SelecData = (setStateData1,data1) =>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           //console.log(results.rows._array);
+          _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
           for(let i = results.rows._array.length - 1; i != -1; i--){
-            _1_SelectCheckList(results.rows._array[i],setStateData1,data1);
+            _1_SelectCheckList(results.rows._array[i],setStateData1);
           }
          //console.log(...results.rows._array);
         }
@@ -202,8 +203,8 @@ const _1_SelecData = (setStateData1,data1) =>{
 
 }
 
-const _2_SelecData = (setStateData2,data2) =>{
-  let query = "SELECT * from " + _2_data + " ORDER BY id DESC";
+const _2_SelecData = (setStateData2) =>{
+  let query = "SELECT * from " + _2_data + " ORDER BY id DESC LIMIT 5";
   let params = [];
 
 
@@ -212,8 +213,9 @@ const _2_SelecData = (setStateData2,data2) =>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           //console.log(results.rows._array);
+          _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
           for(let i = results.rows._array.length - 1; i != -1; i--){
-            _2_SelectCheckList(results.rows._array[i],setStateData2,data2);
+            _2_SelectCheckList(results.rows._array[i],setStateData2);
           }
          //console.log(...results.rows._array);
         }
@@ -227,7 +229,7 @@ const _2_SelecData = (setStateData2,data2) =>{
 
 }
 
-const _1_SelectCheckList =(array,setStateData1,data1)=>{
+const _1_SelectCheckList =(array,setStateData1)=>{
   let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
   let params = [];
 
@@ -237,6 +239,7 @@ const _1_SelectCheckList =(array,setStateData1,data1)=>{
         if(results.rows._array.length > 0){
           
           let modified = {
+            id: array.id,
             title: array.title, 
             date: array.date,
             color: array.color,
@@ -245,7 +248,6 @@ const _1_SelectCheckList =(array,setStateData1,data1)=>{
             isCheckList: !array.isCheckList ? false : true,
             checkList: results.rows._array,
           }
-          data1.unshift(modified);
           setStateData1(items=> [modified,...items]);
           console.log(modified);
         }
@@ -258,7 +260,7 @@ const _1_SelectCheckList =(array,setStateData1,data1)=>{
 
 
 }
-const _2_SelectCheckList =(array,setStateData2,data2)=>{
+const _2_SelectCheckList =(array,setStateData2)=>{
   const query = "SELECT * from " + _2_check_tbl + " WHERE parent_id = " + array.id;
   const params = [];
   console.log('data ', array.id );
@@ -269,6 +271,7 @@ const _2_SelectCheckList =(array,setStateData2,data2)=>{
         if(results.rows._array.length > 0){
           
           let modified = {
+            id: array.id,
             title: array.title, 
             date: array.date,
             color: array.color,
@@ -277,7 +280,6 @@ const _2_SelectCheckList =(array,setStateData2,data2)=>{
             isCheckList: !array.isCheckList ? false : true,
             checkList: results.rows._array,
           }
-          data2.unshift(modified);
           setStateData2(items=> [modified,...items]);
           console.log(modified);
         }
@@ -292,32 +294,10 @@ const _2_SelectCheckList =(array,setStateData2,data2)=>{
 }
 
 
-const PagingSelect =()=>{
-  let query = "SELECT * from " + _1_data + " ORDER BY id DESC";
-  let params = [];
-
-
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-          console.log();
-         
-         //console.log(...results.rows._array);
-        }
-      }, function(tx,err) {
-        Alert.alert(err.message);
-        return;
-      })
-    }
-  );
-}
-
-
 
 
 const SeeData =()=>{
-  let query = "SELECT * from " + _2_check_tbl;
+  let query = "SELECT * from " + _1_data;
   let params = [];
 
   db.transaction(
@@ -335,8 +315,7 @@ const SeeData =()=>{
 
 }
 
-const _2_NextPage =(data)=>{
-  const { setStateData2, data2 } = data;
+const _2_NextPage =(setStateData2)=>{
   let query = ' ';
   let params = [];
   console.log('current ', _2_currentOffset);
@@ -348,7 +327,6 @@ const _2_NextPage =(data)=>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           //console.log(results.rows._array);
-          data2.push(results.rows._array);
           setStateData2(items=> [...items, ...results.rows._array]);
           _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
         }
@@ -361,8 +339,7 @@ const _2_NextPage =(data)=>{
 
 }
 
-const _1_NextPage =(data)=>{
-  const { setStateData1, data1 } = data;
+const _1_NextPage =(setStateData1)=>{
   let query = ' ';
   let params = [];
   console.log('current ', _1_currentOffset);
@@ -374,7 +351,6 @@ const _1_NextPage =(data)=>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
          // console.log(results.rows._array);
-          data1.push(results.rows._array);
           setStateData1(items=> [...items, ...results.rows._array]);
           _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
         }
@@ -387,6 +363,62 @@ const _1_NextPage =(data)=>{
 
 }
 
+const UpdateTable =(change, id, table_id )=>{
+  let query = "UPDATE "+ table_id == 1 ? _1_data : _2_data+" SET" + change + " WHERE id = " + id;
+  console.log(query);
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        Alert.alert("Success");
+      }, function(tx,err) {
+        Alert.alert(err.message);
+        return;
+      })
+    }
+  );
+}
+
+const QueryChanges =(data)=>{
+  const { save, post } = data;
+  let addQuery = ' ';
+  addQuery = save.title != post.title ? addQuery + "title = '" + post.title +"', " : addQuery;
+  addQuery = save.note != post.note ? addQuery + "note = '" + post.note +"', " : addQuery;
+  addQuery = save.color != post.color ? addQuery + "color = '" + post.color +"', " : addQuery ;
+  addQuery = save.date != post.date ? addQuery + "date = '" + post.date +"', " : addQuery ;
+  addQuery = (save.isCheckList != post.isCheckList) ? addQuery + "isCheckList = " + (post.checkList ?  '1': '0') +", " : addQuery ;
+  addQuery = (save.isNote != post.isNote) ? addQuery + "isNote = " + (post.isNote ? "1" : "0") +", " : addQuery ;
+  
+  return addQuery.slice(0, -2);
+}
+
+
+const QueryChangesList =(data)=>{
+  const { save, post } = data;
+  let addQuery = ' ';
+  let saveCheckList = save.checkList;
+  let postCheckList = post.checkList;
+  for(let i = 0; i < postCheckList.length; i++){
+
+    addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
+    addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = '" + postCheckList[i].status +"', " : addQuery;
+    console.log('Casd : ' ,saveCheckList[i], " ",postCheckList[i]);
+    console.log('Casd : ' ,addQuery);
+    /*
+    db.transaction(
+      (tx)=> {
+        tx.executeSql(query, params,(tx, results) =>{
+          Alert.alert("Success");
+        }, function(tx,err) {
+          Alert.alert(err.message);
+          return;
+        })
+      }
+    );*/
+  }
+
+}
 
 export {
     CheckNote,
@@ -398,7 +430,9 @@ export {
     InitialData,
     RemovePos,
     SeeData,
-    PagingSelect,
     _1_NextPage,
     _2_NextPage,
+    UpdateTable,
+    QueryChanges,
+    QueryChangesList,
 }
