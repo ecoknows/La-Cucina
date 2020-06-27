@@ -74,6 +74,7 @@ const data2 = [
 
 
 function Ingridients({navigation, route}){
+    console.log('agaha');
 
     const [stateData1, setStateData1] = useState([]);
     const [stateData2, setStateData2] = useState([]);
@@ -104,11 +105,11 @@ function Ingridients({navigation, route}){
                         updateData = stateData1;
                         let save = updateData[index];
                         console.log('dsf : ' ,save.checkList, " ",post.checkList);
-                        //updateData[index] = post;
-                        setStateData1( items=>[...updateData]);
-                        console.log('dsf : ' ,save.checkList, " ",post.checkList);
+                       // updateData[index] = post;
+                        //setStateData1( items=>[...updateData]);
+                        //console.log('dsf : ' ,save.checkList, " ",post.checkList);
                         //UpdateTable(QueryChanges({save, post}), post.id.toString());
-                        QueryChangesList({save, post});
+                        //QueryChangesList({save, post});
                         break;
                     case 2: 
                         updateData = stateData2;

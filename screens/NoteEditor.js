@@ -1,4 +1,4 @@
-import React,{useState, useRef} from 'react';
+import React,{useState, useRef, useEffect} from 'react';
 import { View, Input, Text, Pic, Circle, List } from '../components';
 import { theme } from '../constants';
 import { TouchableOpacity, ScrollView, Dimensions, Animated, Easing} from 'react-native';
