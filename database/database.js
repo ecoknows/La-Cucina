@@ -118,11 +118,11 @@ const AddNote = (pugi, isFirstRow) =>{
               tx.executeSql(query, params,(tx, results) =>{
                   console.log('Success CheckList!');
               }, function(tx,err) {
-                  Alert.alert(err.message);
+                  console.log(err.message);
                   return;
               })
               }
-      )
+          )
   
     }
 
@@ -137,7 +137,7 @@ const AddNote = (pugi, isFirstRow) =>{
             console.log('Success Note!');
             
           }, function(tx,err) {
-            Alert.alert(err.message);
+            console.log(err.message);
             return;
           })
         }
@@ -152,9 +152,9 @@ const DeleteAll =()=>{
       (tx)=> {
         tx.executeSql(query, params,(tx, results) =>{
           console.log(results);
-          Alert.alert('Success');
+          console.log('Success');
         }, function(tx,err) {
-          Alert.alert(err.message);
+          console.log(err.message);
           return;
         })
       }
@@ -169,9 +169,9 @@ const DropTable =()=>{
       (tx)=> {
         tx.executeSql(query, params,(tx, results) =>{
           console.log(results);
-          Alert.alert('Success');
+          console.log('Success');
         }, function(tx,err) {
-          Alert.alert(err.message);
+          console.log(err.message);
           return;
         })
       }
@@ -195,7 +195,7 @@ const _1_SelecData = (setStateData1) =>{
         }
        // console.log('Success'); 
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
@@ -221,7 +221,7 @@ const _2_SelecData = (setStateData2) =>{
         }
        // console.log('Success'); 
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
@@ -252,7 +252,7 @@ const _1_SelectCheckList =(array,setStateData1)=>{
           console.log(modified);
         }
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
@@ -284,7 +284,7 @@ const _2_SelectCheckList =(array,setStateData2)=>{
           console.log(modified);
         }
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
@@ -307,7 +307,7 @@ const SeeData =()=>{
           console.log(results.rows._array);
         }
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
@@ -315,7 +315,7 @@ const SeeData =()=>{
 
 }
 
-const _2_NextPage =(setStateData2)=>{
+const _2_NextPage =(setStateData2,stateData2)=>{
   let query = ' ';
   let params = [];
   console.log('current ', _2_currentOffset);
@@ -327,11 +327,14 @@ const _2_NextPage =(setStateData2)=>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           //console.log(results.rows._array);
-          setStateData2(items=> [...items, ...results.rows._array]);
+          setStateData2(items=> [...items,...results.rows._array]);
           _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
+          for(let i = 0; i < results.rows._array.length; i++){
+            _2_NextPageCheckList(results.rows._array[i],setStateData2,stateData2);
+          }
         }
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
@@ -339,7 +342,7 @@ const _2_NextPage =(setStateData2)=>{
 
 }
 
-const _1_NextPage =(setStateData1)=>{
+const _1_NextPage =(setStateData1, stateData1)=>{
   let query = ' ';
   let params = [];
   console.log('current ', _1_currentOffset);
@@ -351,11 +354,14 @@ const _1_NextPage =(setStateData1)=>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
          // console.log(results.rows._array);
-          setStateData1(items=> [...items, ...results.rows._array]);
+          setStateData1(items=> [...items,...results.rows._array]);
           _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
+          for(let i = 0; i < results.rows._array.length; i++){
+            _1_NextPageCheckList(results.rows._array[i],setStateData1,stateData1);
+          }
         }
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
@@ -363,21 +369,106 @@ const _1_NextPage =(setStateData1)=>{
 
 }
 
-const UpdateTable =(change, id, table_id )=>{
-  let query = "UPDATE "+ table_id == 1 ? _1_data : _2_data+" SET" + change + " WHERE id = " + id;
-  console.log(query);
+
+const _1_NextPageCheckList =(array,setStateData1,stateData1)=>{
+  let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
   let params = [];
 
   db.transaction(
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
-        Alert.alert("Success");
+        if(results.rows._array.length > 0){
+          
+          let modified = {
+            id: array.id,
+            title: array.title, 
+            date: array.date,
+            color: array.color,
+            note: array.note,
+            isNote: !array.isNote ? false : true,
+            isCheckList: !array.isCheckList ? false : true,
+            checkList: results.rows._array,
+          }
+          stateData1[stateData1.length].checkList = [...stateData1[stateData1.length].checkList,modified];
+          console.log(modified);
+        }
       }, function(tx,err) {
-        Alert.alert(err.message);
+        console.log(err.message);
         return;
       })
     }
   );
+
+
+}
+
+
+const _2_NextPageCheckList =(array,setStateData2)=>{
+  let query = "SELECT * from " + _2_check_tbl + " WHERE parent_id = " + array.id;
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          
+          let modified = {
+            id: array.id,
+            title: array.title, 
+            date: array.date,
+            color: array.color,
+            note: array.note,
+            isNote: !array.isNote ? false : true,
+            isCheckList: !array.isCheckList ? false : true,
+            checkList: results.rows._array,
+          }
+          
+          stateData2[stateData2.length].checkList = [...stateData2[stateData2.length].checkList,results.rows._array];
+          console.log(modified);
+        }
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
+  );
+
+
+}
+
+const UpdateTable =(change, id, table_id )=>{
+
+  if(change != ' '){
+    let table = null;
+    switch(table_id){
+      case 1: 
+            table = _1_data;
+            break;
+      case 2: 
+            table = _2_data;
+            break;
+      case 3: 
+          table = _1_check_tbl;
+          break;
+      case 4: 
+          table = _2_check_tbl;
+          break;
+    }
+    let query = "UPDATE "+ table +" SET" + change + " WHERE id = " + id;
+    console.log(query);
+    let params = [];
+  
+    db.transaction(
+      (tx)=> {
+        tx.executeSql(query, params,(tx, results) =>{
+          console.log("Success");
+        }, function(tx,err) {
+          console.log(err.message);
+          return;
+        })
+      }
+    );
+  }
 }
 
 const QueryChanges =(data)=>{
@@ -390,32 +481,59 @@ const QueryChanges =(data)=>{
   addQuery = (save.isCheckList != post.isCheckList) ? addQuery + "isCheckList = " + (post.checkList ?  '1': '0') +", " : addQuery ;
   addQuery = (save.isNote != post.isNote) ? addQuery + "isNote = " + (post.isNote ? "1" : "0") +", " : addQuery ;
   
-  return addQuery.slice(0, -2);
+  return addQuery == ' ' ? ' ' : addQuery.slice(0, -2);
 }
 
 
-const QueryChangesList =(data)=>{
+const QueryChangesList =(data,table_id)=>{
   const { save, post } = data;
   let addQuery = ' ';
   let saveCheckList = save.checkList;
   let postCheckList = post.checkList;
-  for(let i = 0; i < postCheckList.length; i++){
+  for(let i = 0; i < saveCheckList.length; i++){
 
     addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
-    addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = '" + postCheckList[i].status +"', " : addQuery;
-    console.log('Casd : ' ,saveCheckList[i], " ",postCheckList[i]);
-    console.log('Casd : ' ,addQuery);
-    /*
-    db.transaction(
-      (tx)=> {
-        tx.executeSql(query, params,(tx, results) =>{
-          Alert.alert("Success");
-        }, function(tx,err) {
-          Alert.alert(err.message);
-          return;
-        })
-      }
-    );*/
+    addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
+ 
+    if(addQuery != ' '){
+      let query = "UPDATE "+ (table_id == 1 ? _1_check_tbl : _2_check_tbl) +" SET" + addQuery.slice(0,-2) + " WHERE id = " + postCheckList[i].id.toString();
+      let params = [];
+      console.log('ecce ',query);
+    
+      
+      db.transaction(
+        (tx)=> {
+          tx.executeSql(query, params,(tx, results) =>{
+            console.log("Success");
+          }, function(tx,err) {
+            console.log(err.message);
+            return;
+          })
+        }
+      );
+  
+    }
+
+  }
+
+  if(postCheckList.length > saveCheckList.length ){
+    let i = saveCheckList.length;
+    for( ; i < postCheckList.length; i++){
+      let query = "INSERT INTO "+ (table_id == 1 ? _1_check_tbl : _2_check_tbl) +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
+      let params = [post.id, postCheckList[i]._text, postCheckList[i].status];
+
+      db.transaction(
+          (tx)=> {
+          tx.executeSql(query, params,(tx, results) =>{
+              console.log('Success CheckList!');
+          }, function(tx,err) {
+              console.log(err.message);
+              return;
+          })
+          }
+      )
+
+    }
   }
 
 }

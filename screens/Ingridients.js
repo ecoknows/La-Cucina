@@ -99,22 +99,23 @@ function Ingridients({navigation, route}){
                 DataPos(isFirstRow);
                 AddNote(post,isFirstRow);
             }else{
-                let updateData = null;
+                let updateData = null, save = null;
                 switch(type){
                     case 1: 
                         updateData = stateData1;
-                        let save = updateData[index];
-                        console.log('dsf : ' ,save.checkList, " ",post.checkList);
-                       // updateData[index] = post;
-                        //setStateData1( items=>[...updateData]);
-                        //console.log('dsf : ' ,save.checkList, " ",post.checkList);
-                        //UpdateTable(QueryChanges({save, post}), post.id.toString());
-                        //QueryChangesList({save, post});
+                        save = updateData[index];
+                        updateData[index] = post;
+                        setStateData1( items=>[...updateData]);
+                        UpdateTable(QueryChanges({save, post}), post.id.toString(),1);
+                        QueryChangesList({save, post},1);
                         break;
                     case 2: 
                         updateData = stateData2;
+                        save = updateData[index];
                         updateData[index] = post;
                         setStateData2( items=>[...updateData]);
+                        UpdateTable(QueryChanges({save, post}), post.id.toString(),2);
+                        QueryChangesList({save, post},2);
                         break;
                 }
                 
@@ -132,16 +133,17 @@ function Ingridients({navigation, route}){
 
 
     const CheckList =props=>{
-        const { item, stateData, mainIndex } = props;
+        const { item, stateData, mainIndex, table_type } = props;
         const { data, setData } = stateData
 
         const changeChecked =(index)=>{
-
             setTimeout(()=>{
                 let updatedData = data;
                 updatedData[mainIndex].checkList[index].status = updatedData[mainIndex].checkList[index].status ? 0 : 1;
+                UpdateTable(" status = " + updatedData[mainIndex].checkList[index].status, updatedData[mainIndex].checkList[index].id,table_type);
                 setData(items=> [...updatedData]);
             }, 1)
+            
         }
         
         const CheckItemView =props=>{
@@ -175,8 +177,8 @@ function Ingridients({navigation, route}){
                   onScroll={({nativeEvent}) => {
                     if (isCloseToBottom(nativeEvent)) {
                         console.log('asda');
-                        _1_NextPage(setStateData1);
-                        _2_NextPage(setStateData2);
+                        _1_NextPage(setStateData1, stateData1);
+                        _2_NextPage(setStateData2, stateData2);
                     }
                   }}
                   scrollEventThrottle={400}
@@ -201,7 +203,7 @@ function Ingridients({navigation, route}){
                                               inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type : 1}) }>
                                             <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>
                                            {item.isNote ?  <Text size={11} white family='semi-bold' bottom={10} numberOfLines={10} ellipsizeMode='tail'>{item.note}</Text> : null }
-                                           { item.isCheckList ? <CheckList item={item} stateData={{data: stateData1,setData: setStateData1}} /> : null}
+                                           { item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data: stateData1,setData: setStateData1}} table_type={3} /> : null}
                                             <Text size={12} white end top={20}>{item.date}</Text>
                                         </Card>
                                     </View>
@@ -221,7 +223,7 @@ function Ingridients({navigation, route}){
                                     >
                                         <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>
                                         {item.isNote ? <Text size={11} white family='semi-bold' >{item.note}</Text> : null }
-                                        { item.isCheckList ? <CheckList item={item} mainIndex={index} stateData={{data: stateData2, setData: setStateData2}}/> : null}
+                                        { item.isCheckList ? <CheckList item={item} mainIndex={index} stateData={{data: stateData2, setData: setStateData2}} table_type={4}/> : null}
                                         <Text size={12} white end top={40}>{item.date}</Text>
                                     </Card>
 

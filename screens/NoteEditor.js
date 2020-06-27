@@ -55,11 +55,12 @@ function CheckedList(props){
 
 function NoteEditor({navigation, route}){
     const { currentNote, index, type} = route.params;
+    const checkList = currentNote.checkList != null ?  currentNote.checkList.map(a => ({...a})) : [{_text: ' ', status: false}];
     const [ title, setTitle] = useState(currentNote.title);
     const [ note, setNote] = useState(currentNote.note);
     const [noteColor, setNoteColor] = useState(currentNote.color);
     const [checked, setChecked] = useState(currentNote.isCheckList);
-    const [stateCheckedData, setStateCheckedData] = useState(currentNote.checkList);
+    const [stateCheckedData, setStateCheckedData] = useState(checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);
     const colorWheel = useRef(new Animated.Value(0)).current;
 
@@ -87,26 +88,22 @@ function NoteEditor({navigation, route}){
     });
 
     const checkData =()=>{
-        if(title == '' && note == '')
-            navigation.goBack();
-        else{
-            const current = {
-                    id: currentNote.id, 
-                    title,
-                    note,
-                    color: noteColor,
-                    date: currentNote.date,
-                    checkList: stateCheckedData,
-                    isCheckList: checked,
-                    isNote,
-            }
-            navigation.navigate('Ingridients',{post:
-                current,
-                index,
-                type,
-            });
-            //console.log('asd ff ', stateCheckedData.length);
+        const current = {
+                id: currentNote.id, 
+                title,
+                note,
+                color: noteColor,
+                date: currentNote.date,
+                checkList: stateCheckedData,
+                isCheckList: checked,
+                isNote,
         }
+        navigation.navigate('Ingridients',{post:
+            current,
+            index,
+            type,
+        });
+        
     }
 
     return(
