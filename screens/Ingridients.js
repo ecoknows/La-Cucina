@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList } from '../database/database'
+import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList } from '../database/database'
 
 /*
 const data1 = [
@@ -82,12 +82,33 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     
+    useEffect(()=> {
+        if(stateData1.length != 0){
+            
+            const array = stateData1[stateData1.length-1];
+                
+            let modified = {
+                id: array.id,
+                title: 'mamamo', 
+                date: array.date,
+                color: array.color,
+                note: array.note,
+                isNote: !array.isNote ? false : true,
+                isCheckList: !array.isCheckList ? false : true,
+                checkList: results.rows._array,
+            }
+            stateData1[stateData1.length-1] = modified;
+           // _1_SelectCheckList(stateData1[stateData1.length-1]);
+
+        }
+    },[stateData1]);
+
   //DeleteAll();
   //DropTable();
   //RemovePos();
   //SeeData();
-    React.useEffect(() => {
-       InitialData({setStateData1, setStateData2, setIsFirstRow });
+    useEffect(() => {
+       InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2 });
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 

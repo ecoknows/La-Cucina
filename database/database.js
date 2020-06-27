@@ -21,10 +21,10 @@ const PAGING_LIMIT = "4";
 let isInitial = true;
 
 const InitialData =(dataState)=> {
-  const {setStateData1, setStateData2, setIsFirstRow} = dataState;
+  const {setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2} = dataState;
   if(isInitial){
     GetDataPos(setIsFirstRow);
-    _1_SelecData(setStateData1);
+    _1_SelecData(setStateData1,stateData1);
     _2_SelecData(setStateData2);
     isInitial = false;
   }
@@ -178,7 +178,7 @@ const DropTable =()=>{
     );
 }
 
-const _1_SelecData = (setStateData1) =>{
+const _1_SelecData = (setStateData1, stateData1) =>{
   let query = "SELECT * from " + _1_data + " ORDER BY id DESC LIMIT 5";
   let params = [];
 
@@ -186,12 +186,8 @@ const _1_SelecData = (setStateData1) =>{
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          //console.log(results.rows._array);
+          setStateData1(items=> [...items, ...results.rows._array]);
           _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
-          for(let i = results.rows._array.length - 1; i != -1; i--){
-            _1_SelectCheckList(results.rows._array[i],setStateData1);
-          }
-         //console.log(...results.rows._array);
         }
        // console.log('Success'); 
       }, function(tx,err) {
@@ -229,7 +225,7 @@ const _2_SelecData = (setStateData2) =>{
 
 }
 
-const _1_SelectCheckList =(array,setStateData1)=>{
+const _1_SelectCheckList =(array)=>{
   let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
   let params = [];
 
@@ -248,8 +244,11 @@ const _1_SelectCheckList =(array,setStateData1)=>{
             isCheckList: !array.isCheckList ? false : true,
             checkList: results.rows._array,
           }
-          setStateData1(items=> [modified,...items]);
-          console.log(modified);
+          
+          array.checkList = results.rows._array;
+          //console.log(stateData1);
+          //setStateData1(items=> {console.log(items)});
+          //console.log(modified);
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -297,7 +296,8 @@ const _2_SelectCheckList =(array,setStateData2)=>{
 
 
 const SeeData =()=>{
-  let query = "SELECT * from " + _1_data;
+  let query = "SELECT r.*, l._text from " + _1_data + " r INNER JOIN " + _1_check_tbl+ " l ON r.id = l.parent_id";
+  //let query = "SELECT * FROM " + _1_data + " WHERE id = 1 = ( SELECT * FROM "+_1_check_tbl+" )"
   let params = [];
 
   db.transaction(
@@ -550,6 +550,7 @@ export {
     SeeData,
     _1_NextPage,
     _2_NextPage,
+    _1_SelectCheckList,
     UpdateTable,
     QueryChanges,
     QueryChangesList,
