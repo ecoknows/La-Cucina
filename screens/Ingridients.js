@@ -82,6 +82,7 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     
+    /*
     useEffect(()=> {
         if(stateData1.length != 0){
             
@@ -101,7 +102,7 @@ function Ingridients({navigation, route}){
            // _1_SelectCheckList(stateData1[stateData1.length-1]);
 
         }
-    },[stateData1]);
+    },[stateData1]);*/
 
   //DeleteAll();
   //DropTable();

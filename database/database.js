@@ -188,6 +188,9 @@ const _1_SelecData = (setStateData1, stateData1) =>{
         if(results.rows._array.length > 0){
           setStateData1(items=> [...items, ...results.rows._array]);
           _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
+          for(let i = results.rows._array.length - 1; i != -1; i--){
+            _1_SelectCheckList(results.rows._array[i],setStateData1,stateData1, i);
+          }
         }
        // console.log('Success'); 
       }, function(tx,err) {
@@ -225,7 +228,7 @@ const _2_SelecData = (setStateData2) =>{
 
 }
 
-const _1_SelectCheckList =(array)=>{
+const _1_SelectCheckList =(array,setStateData1, stateData1,index)=>{
   let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
   let params = [];
 
@@ -242,12 +245,12 @@ const _1_SelectCheckList =(array)=>{
             note: array.note,
             isNote: !array.isNote ? false : true,
             isCheckList: !array.isCheckList ? false : true,
-            checkList: results.rows._array,
+            checkList: [{_text :'co', status : 1}],
           }
-          
-          array.checkList = results.rows._array;
           //console.log(stateData1);
-          //setStateData1(items=> {console.log(items)});
+          const data = stateData1;
+          data[0] = modified
+          setStateData1(data);
           //console.log(modified);
         }
       }, function(tx,err) {
