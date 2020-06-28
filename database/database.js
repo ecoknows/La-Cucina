@@ -24,7 +24,7 @@ const InitialData =(dataState)=> {
   const {setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2} = dataState;
   if(isInitial){
     GetDataPos(setIsFirstRow);
-    _1_SelecData(setStateData1,stateData1);
+    _1_SelecData(setStateData1);
     _2_SelecData(setStateData2);
     isInitial = false;
   }
@@ -178,7 +178,7 @@ const DropTable =()=>{
     );
 }
 
-const _1_SelecData = (setStateData1, stateData1) =>{
+const _1_SelecData = (setStateData1) =>{
   let query = "SELECT * from " + _1_data + " ORDER BY id DESC LIMIT 5";
   let params = [];
 
@@ -188,9 +188,7 @@ const _1_SelecData = (setStateData1, stateData1) =>{
         if(results.rows._array.length > 0){
           setStateData1(items=> [...items, ...results.rows._array]);
           _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
-          for(let i = results.rows._array.length - 1; i != -1; i--){
-            _1_SelectCheckList(results.rows._array[i],setStateData1,stateData1, i);
-          }
+          
         }
        // console.log('Success'); 
       }, function(tx,err) {
@@ -212,10 +210,8 @@ const _2_SelecData = (setStateData2) =>{
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           //console.log(results.rows._array);
+          setStateData2(items=> [...items, ...results.rows._array]);
           _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
-          for(let i = results.rows._array.length - 1; i != -1; i--){
-            _2_SelectCheckList(results.rows._array[i],setStateData2);
-          }
          //console.log(...results.rows._array);
         }
        // console.log('Success'); 
@@ -228,7 +224,7 @@ const _2_SelecData = (setStateData2) =>{
 
 }
 
-const _1_SelectCheckList =(array,setStateData1, stateData1,index)=>{
+const _1_SelectCheckList =(array,stateData1,setStateData1,index)=>{
   let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
   let params = [];
 
@@ -245,12 +241,12 @@ const _1_SelectCheckList =(array,setStateData1, stateData1,index)=>{
             note: array.note,
             isNote: !array.isNote ? false : true,
             isCheckList: !array.isCheckList ? false : true,
-            checkList: [{_text :'co', status : 1}],
+            checkList:results.rows._array,
           }
           //console.log(stateData1);
           const data = stateData1;
-          data[0] = modified
-          setStateData1(data);
+          data[index] = modified;
+          setStateData1(state => [...data]);
           //console.log(modified);
         }
       }, function(tx,err) {
@@ -262,7 +258,7 @@ const _1_SelectCheckList =(array,setStateData1, stateData1,index)=>{
 
 
 }
-const _2_SelectCheckList =(array,setStateData2)=>{
+const _2_SelectCheckList =(array,stateData2,setStateData2,index)=>{
   const query = "SELECT * from " + _2_check_tbl + " WHERE parent_id = " + array.id;
   const params = [];
   console.log('data ', array.id );
@@ -282,7 +278,10 @@ const _2_SelectCheckList =(array,setStateData2)=>{
             isCheckList: !array.isCheckList ? false : true,
             checkList: results.rows._array,
           }
-          setStateData2(items=> [modified,...items]);
+          
+          const data = stateData2;
+          data[index] = modified;
+          setStateData2(state => [...data]);
           console.log(modified);
         }
       }, function(tx,err) {
@@ -299,8 +298,9 @@ const _2_SelectCheckList =(array,setStateData2)=>{
 
 
 const SeeData =()=>{
-  let query = "SELECT r.*, l._text from " + _1_data + " r INNER JOIN " + _1_check_tbl+ " l ON r.id = l.parent_id";
+  //let query = "SELECT r.*, l._text from " + _1_data + " r INNER JOIN " + _1_check_tbl+ " l ON r.id = l.parent_id";
   //let query = "SELECT * FROM " + _1_data + " WHERE id = 1 = ( SELECT * FROM "+_1_check_tbl+" )"
+  let query = "SELECT * FROM "+ _1_data;
   let params = [];
 
   db.transaction(
@@ -554,6 +554,7 @@ export {
     _1_NextPage,
     _2_NextPage,
     _1_SelectCheckList,
+    _2_SelectCheckList,
     UpdateTable,
     QueryChanges,
     QueryChangesList,

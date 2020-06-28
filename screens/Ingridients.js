@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList } from '../database/database'
+import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList,_2_SelectCheckList } from '../database/database'
 
 /*
 const data1 = [
@@ -72,6 +72,8 @@ const data2 = [
     },
 ]*/
 
+let _1_data = true;
+let _2_data = true;
 
 function Ingridients({navigation, route}){
     console.log('agaha');
@@ -82,27 +84,25 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     
-    /*
     useEffect(()=> {
-        if(stateData1.length != 0){
+        if(stateData1.length != 0 && _1_data){
             
-            const array = stateData1[stateData1.length-1];
-                
-            let modified = {
-                id: array.id,
-                title: 'mamamo', 
-                date: array.date,
-                color: array.color,
-                note: array.note,
-                isNote: !array.isNote ? false : true,
-                isCheckList: !array.isCheckList ? false : true,
-                checkList: results.rows._array,
+            for(let i = 0; i < stateData1.length; i++){
+                _1_SelectCheckList(stateData1[i],stateData1,setStateData1, i);
             }
-            stateData1[stateData1.length-1] = modified;
-           // _1_SelectCheckList(stateData1[stateData1.length-1]);
-
+            _1_data = false;
         }
-    },[stateData1]);*/
+    },[stateData1]);
+    
+    useEffect(()=> {
+        if(stateData2.length != 0 && _2_data){
+            
+            for(let i = 0; i < stateData2.length; i++){
+                _2_SelectCheckList(stateData2[i],stateData2,setStateData2, i);
+            }
+            _2_data = false;
+        }
+    },[stateData2]);
 
   //DeleteAll();
   //DropTable();
