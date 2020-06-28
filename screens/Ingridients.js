@@ -74,6 +74,8 @@ const data2 = [
 
 let _1_data = true;
 let _2_data = true;
+let _1_latest_offset_data = 0;
+let _2_latest_offset_data = 0;
 
 function Ingridients({navigation, route}){
     console.log('agaha');
@@ -87,9 +89,10 @@ function Ingridients({navigation, route}){
     useEffect(()=> {
         if(stateData1.length != 0 && _1_data){
             
-            for(let i = 0; i < stateData1.length; i++){
+            for(let i = _1_latest_offset_data; i < stateData1.length; i++){
                 _1_SelectCheckList(stateData1[i],stateData1,setStateData1, i);
             }
+            _1_latest_offset_data = stateData1.length;
             _1_data = false;
         }
     },[stateData1]);
@@ -97,9 +100,11 @@ function Ingridients({navigation, route}){
     useEffect(()=> {
         if(stateData2.length != 0 && _2_data){
             
-            for(let i = 0; i < stateData2.length; i++){
+            for(let i = _2_latest_offset_data; i < stateData2.length; i++){
                 _2_SelectCheckList(stateData2[i],stateData2,setStateData2, i);
             }
+            
+            _2_latest_offset_data = stateData2.length;
             _2_data = false;
         }
     },[stateData2]);
@@ -198,9 +203,10 @@ function Ingridients({navigation, route}){
                 <ScrollView
                   onScroll={({nativeEvent}) => {
                     if (isCloseToBottom(nativeEvent)) {
-                        console.log('asda');
-                        _1_NextPage(setStateData1, stateData1);
-                        _2_NextPage(setStateData2, stateData2);
+                        _1_data = true;
+                        _2_data = true;
+                        _1_NextPage(setStateData1);
+                        _2_NextPage(setStateData2);
                     }
                   }}
                   scrollEventThrottle={400}

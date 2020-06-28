@@ -282,7 +282,7 @@ const _2_SelectCheckList =(array,stateData2,setStateData2,index)=>{
           const data = stateData2;
           data[index] = modified;
           setStateData2(state => [...data]);
-          console.log(modified);
+          //console.log(modified);
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -318,7 +318,7 @@ const SeeData =()=>{
 
 }
 
-const _2_NextPage =(setStateData2,stateData2)=>{
+const _2_NextPage =(setStateData2)=>{
   let query = ' ';
   let params = [];
   console.log('current ', _2_currentOffset);
@@ -332,9 +332,6 @@ const _2_NextPage =(setStateData2,stateData2)=>{
           //console.log(results.rows._array);
           setStateData2(items=> [...items,...results.rows._array]);
           _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
-          for(let i = 0; i < results.rows._array.length; i++){
-            _2_NextPageCheckList(results.rows._array[i],setStateData2,stateData2);
-          }
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -345,7 +342,7 @@ const _2_NextPage =(setStateData2,stateData2)=>{
 
 }
 
-const _1_NextPage =(setStateData1, stateData1)=>{
+const _1_NextPage =(setStateData1)=>{
   let query = ' ';
   let params = [];
   console.log('current ', _1_currentOffset);
@@ -359,9 +356,6 @@ const _1_NextPage =(setStateData1, stateData1)=>{
          // console.log(results.rows._array);
           setStateData1(items=> [...items,...results.rows._array]);
           _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
-          for(let i = 0; i < results.rows._array.length; i++){
-            _1_NextPageCheckList(results.rows._array[i],setStateData1,stateData1);
-          }
         }
       }, function(tx,err) {
         console.log(err.message);

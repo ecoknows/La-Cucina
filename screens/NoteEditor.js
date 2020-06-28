@@ -7,7 +7,6 @@ import { AddNote, SelectNote, DeleteAll, DropTable } from '../database/database'
 
 const { height } = Dimensions.get('screen');
 
-let open = false;
 
 function CheckedList(props){
     const { item, index,checkedData } = props;
@@ -63,6 +62,7 @@ function NoteEditor({navigation, route}){
     const [stateCheckedData, setStateCheckedData] = useState(checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);
     const colorWheel = useRef(new Animated.Value(0)).current;
+    let open = false;
 
     const colorOpen =()=> {
 
@@ -160,6 +160,7 @@ function NoteEditor({navigation, route}){
         
         
                                         <TouchableOpacity onPress={()=> {
+                                            console.log('pogs',open);
                                             open ? colorClose() : colorOpen();
                                             open = open ? false : true;
                                         }} >
