@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DeleteAll, DropTable, GetDataPos, InitialData, DataPos, RemovePos, SeeData, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList,_2_SelectCheckList } from '../database/database'
+import { AddNote, DropTable, InitialData, DataPos, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList,_2_SelectCheckList } from '../database/database'
 
 /*
 const data1 = [
@@ -76,6 +76,8 @@ let _1_data = true;
 let _2_data = true;
 let _1_latest_offset_data = 0;
 let _2_latest_offset_data = 0;
+let _1_id_latest_data = 1;
+let _2_id_latest_data = 1;
 
 function Ingridients({navigation, route}){
     console.log('agaha');
@@ -93,6 +95,7 @@ function Ingridients({navigation, route}){
                 _1_SelectCheckList(stateData1[i],stateData1,setStateData1, i);
             }
             _1_latest_offset_data = stateData1.length;
+            _1_id_latest_data = stateData1[0].id+1;
             _1_data = false;
         }
     },[stateData1]);
@@ -105,13 +108,13 @@ function Ingridients({navigation, route}){
             }
             
             _2_latest_offset_data = stateData2.length;
+            _2_id_latest_data = stateData2[0].id+1;
             _2_data = false;
         }
     },[stateData2]);
 
   //DeleteAll();
   //DropTable();
-  //RemovePos();
   //SeeData();
     useEffect(() => {
        InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2 });
@@ -120,7 +123,7 @@ function Ingridients({navigation, route}){
 
             if(index == -1){
                 const setData = isFirstRow ? setStateData1 : setStateData2;
-
+                if(isFirstRow){_1_id_latest_data++;} else { _2_id_latest_data++;}
                 setData(items=>[post,...items])
                 setIsFirstRow(isFirstRow ? false : true); 
                 DataPos(isFirstRow);
@@ -131,6 +134,7 @@ function Ingridients({navigation, route}){
                     case 1: 
                         updateData = stateData1;
                         save = updateData[index];
+                        console.log('eco = ',post)
                         updateData[index] = post;
                         setStateData1( items=>[...updateData]);
                         UpdateTable(QueryChanges({save, post}), post.id.toString(),1);
@@ -139,6 +143,7 @@ function Ingridients({navigation, route}){
                     case 2: 
                         updateData = stateData2;
                         save = updateData[index];
+                        console.log('eco = ',post)
                         updateData[index] = post;
                         setStateData2( items=>[...updateData]);
                         UpdateTable(QueryChanges({save, post}), post.id.toString(),2);
@@ -155,7 +160,7 @@ function Ingridients({navigation, route}){
         const paddingToBottom = 0;
         return layoutMeasurement.height + contentOffset.y >=
           contentSize.height - paddingToBottom;
-      };
+    };
 
 
 
@@ -272,7 +277,7 @@ function Ingridients({navigation, route}){
             
             <View  center middle >
                 <Card touchable round={50} accent size={[100]} center middle row
-                    press={()=> navigation.navigate('NoteEditor',{currentNote: {title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.accent, checkList: [{_text: '', status: false}]}, index: -1}) }
+                    press={()=> navigation.navigate('NoteEditor',{currentNote: {id: isFirstRow ? _1_id_latest_data : _2_id_latest_data,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.accent, checkList: [{_text: '', status: false}]}, index: -1}) }
                 >
                     <Text family='semi-bold' size={18} white>Create</Text>
                 </Card>

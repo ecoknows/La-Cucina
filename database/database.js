@@ -145,25 +145,8 @@ const AddNote = (pugi, isFirstRow) =>{
 
 }
 
-const DeleteAll =()=>{
-    let query = "DELETE from " + _2_data;
-    let params = [];
-    db.transaction(
-      (tx)=> {
-        tx.executeSql(query, params,(tx, results) =>{
-          console.log(results);
-          console.log('Success');
-        }, function(tx,err) {
-          console.log(err.message);
-          return;
-        })
-      }
-    );
-
-}
-
 const DropTable =()=>{
-    let query = "DROP TABLE " + note_tbl;
+    let query = "DROP TABLE " + _2_check_tbl;
     let params = [];
     db.transaction(
       (tx)=> {
@@ -538,12 +521,9 @@ const QueryChangesList =(data,table_id)=>{
 export {
     CheckNote,
     AddNote,
-    DeleteAll,
     DropTable,
     DataPos,
-    GetDataPos,
     InitialData,
-    RemovePos,
     SeeData,
     _1_NextPage,
     _2_NextPage,
