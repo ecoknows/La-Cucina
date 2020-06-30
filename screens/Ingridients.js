@@ -115,9 +115,9 @@ function Ingridients({navigation, route}){
     },[stateData2]);
 
   //DeleteAll();
-  //]]DropTable();
+  //DropTable();
   //SeeData();
-  RemovePos();
+  //RemovePos();
     useEffect(() => {
        GetFirstNote(setFirstItem);
        InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2 });
@@ -125,8 +125,10 @@ function Ingridients({navigation, route}){
             const {index, post, type} = route.params; 
 
             if(index == -1){
-                if(firstItem == null)
+                if(firstItem == null){
                     SetFirstNote(post);
+                    setFirstItem([post]);
+                }
                 else{
                     const setData = isFirstRow ? setStateData1 : setStateData2;
                     if(isFirstRow){_1_id_latest_data++;} else { _2_id_latest_data++;}
@@ -139,6 +141,10 @@ function Ingridients({navigation, route}){
             }else{
                 let updateData = null, save = null;
                 switch(type){
+                    case 0: 
+                        setFirstItem([post]);
+                        SetFirstNote(post);
+                        break;
                     case 1: 
                         updateData = stateData1;
                         save = updateData[index];
@@ -174,9 +180,14 @@ function Ingridients({navigation, route}){
 
     const CheckList =props=>{
         const { item, stateData, mainIndex, table_type } = props;
-        const { data, setData } = stateData
+        const { data, setData } = stateData;
 
         const changeChecked =(index)=>{
+            if(table_type == -1){
+                item.checkList[index].status = item.checkList[index].status ? 0 : 1;
+                SetFirstNote(item);
+                return;
+            }
             setTimeout(()=>{
                 let updatedData = data;
                 updatedData[mainIndex].checkList[index].status = updatedData[mainIndex].checkList[index].status ? 0 : 1;
@@ -228,10 +239,12 @@ function Ingridients({navigation, route}){
                 {
                     firstItem != null ? 
                         
-                    <Card round={25} color='#64D671' padding={theme.sizes.padding} accent marginX={[20,20]} marginBottom={8}>
+                    <Card inTouchable round={25} color={firstItem[0].color} padding={theme.sizes.padding} accent marginX={[20,20]} marginBottom={8}
+                         inPress={()=>navigation.navigate('NoteEditor',{currentNote: firstItem[0], index: 0, type : 0}) }
+                    >
                         <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{firstItem[0].title}</Text>
                         <Text size={11} white family='semi-bold' >{firstItem[0].note}</Text>
-                        { firstItem[0].isCheckList ? <CheckList item={firstItem[0]}  mainIndex={0} stateData={{data: firstItem,setData: setFirstItem}} table_type={3} /> : null}
+                        { firstItem[0].isCheckList ? <CheckList item={firstItem[0]}  mainIndex={0} stateData={{data: firstItem,setData: setFirstItem}} table_type={-1} /> : null}
                         <Text size={12} white family='bold' >{null}</Text>
                         <Text size={12} white end top={20}>12 Feb</Text>
                     </Card>

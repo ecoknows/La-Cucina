@@ -73,12 +73,14 @@ const SetFirstNote = async data => {
 }
 
 const GetFirstNote = async (setFirstItem)=>{
-  try{
-    result = await AsyncStorage.getItem(first_data) || null ;
-    if(result != null)
-      setFirstItem([JSON.parse(result)]);
-  }catch (error){
-    console.log(TAG, error);
+  if(isInitial){
+    try{
+      result = await AsyncStorage.getItem(first_data) || null ;
+      if(result != null)
+        setFirstItem([JSON.parse(result)]);
+    }catch (error){
+      console.log(TAG, error);
+    }
   }
 }
 
