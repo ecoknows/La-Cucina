@@ -11,6 +11,7 @@ const _1_check_tbl = 'check_table_1';
 const _2_check_tbl = 'check_table_2';
 
 const userId = 'Amber';
+const first_data = 'Eco';
 const TAG = 'DATABASE ';
 
 let _1_currentOffset = -1;
@@ -33,14 +34,13 @@ const InitialData =(dataState)=> {
 const DataPos = async pos => {
   try{
     await AsyncStorage.setItem(userId,pos.toString())
-    console.log('success datapos');
   }catch (error){
     console.log(TAG, error);
   }
 }
 const RemovePos = async () => {
   try{
-    await AsyncStorage.removeItem(userId)
+    await AsyncStorage.removeItem(first_data)
     console.log('success');
   }catch (error){
     console.log(TAG, error);
@@ -48,15 +48,35 @@ const RemovePos = async () => {
 }
 
 const GetDataPos = async (setDataPos) => {
-  try{
-    result = await AsyncStorage.getItem(userId) || 'none';
-    console.log('success get data pos');
-    if(result != 'none'){
-      setDataPos(result == '1' ? true :  false);
-    }else{
-      DataPos(1);
-      setDataPos(true);
+  if(isInitial){  
+    try{
+      result = await AsyncStorage.getItem(userId) || 'none';
+      console.log('success get data pos');
+      if(result != 'none'){
+        setDataPos(result == '1' ? true :  false);
+      }else{
+        DataPos(1);
+        setDataPos(true);
+      }
+    }catch (error){
+      console.log(TAG, error);
     }
+  }
+}
+
+const SetFirstNote = async data => {
+  try{
+    await AsyncStorage.setItem(first_data,JSON.stringify(data))
+  }catch (error){
+    console.log(TAG, error);
+  }
+}
+
+const GetFirstNote = async (setFirstItem)=>{
+  try{
+    result = await AsyncStorage.getItem(first_data) || null ;
+    if(result != null)
+      setFirstItem([JSON.parse(result)]);
   }catch (error){
     console.log(TAG, error);
   }
@@ -146,7 +166,7 @@ const AddNote = (pugi, isFirstRow) =>{
 }
 
 const DropTable =()=>{
-    let query = "DROP TABLE " + _2_check_tbl;
+    let query = "DROP TABLE " + _2_data;
     let params = [];
     db.transaction(
       (tx)=> {
@@ -532,4 +552,7 @@ export {
     UpdateTable,
     QueryChanges,
     QueryChangesList,
+    SetFirstNote,
+    GetFirstNote,
+    RemovePos
 }

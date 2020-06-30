@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DropTable, InitialData, DataPos, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList,_2_SelectCheckList } from '../database/database'
+import { AddNote, DropTable, InitialData, DataPos, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList,_2_SelectCheckList, SetFirstNote, GetFirstNote, RemovePos } from '../database/database'
 
 /*
 const data1 = [
@@ -85,6 +85,7 @@ function Ingridients({navigation, route}){
     const [stateData1, setStateData1] = useState([]);
     const [stateData2, setStateData2] = useState([]);
     const [isFirstRow,setIsFirstRow] = useState(true);
+    const [firstItem, setFirstItem] = useState(null);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     
@@ -114,20 +115,27 @@ function Ingridients({navigation, route}){
     },[stateData2]);
 
   //DeleteAll();
-  //DropTable();
+  //]]DropTable();
   //SeeData();
+  RemovePos();
     useEffect(() => {
+       GetFirstNote(setFirstItem);
        InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2 });
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 
             if(index == -1){
-                const setData = isFirstRow ? setStateData1 : setStateData2;
-                if(isFirstRow){_1_id_latest_data++;} else { _2_id_latest_data++;}
-                setData(items=>[post,...items])
-                setIsFirstRow(isFirstRow ? false : true); 
-                DataPos(isFirstRow);
-                AddNote(post,isFirstRow);
+                if(firstItem == null)
+                    SetFirstNote(post);
+                else{
+                    const setData = isFirstRow ? setStateData1 : setStateData2;
+                    if(isFirstRow){_1_id_latest_data++;} else { _2_id_latest_data++;}
+                    setData(items=>[post,...items])
+                    setIsFirstRow(isFirstRow ? false : true); 
+                    DataPos(isFirstRow);
+                    AddNote(post,isFirstRow);
+                }
+
             }else{
                 let updateData = null, save = null;
                 switch(type){
@@ -216,14 +224,20 @@ function Ingridients({navigation, route}){
                   }}
                   scrollEventThrottle={400}
                 >
-                    
-                <Card round={25} color='#64D671' padding={theme.sizes.padding} accent marginX={[20,20]} marginBottom={8}>
-                    <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>Plan to for make cupcake</Text>
-                    <Text size={11} white family='semi-bold' >Gusto ko ng cupcake, yung cupcake na matamis tamis, tapos may juice na pampapawi ng umay, at syempre may toppings yung cupcake.</Text>
-                    <Text size={12} white family='bold' >{null}</Text>
-                    <Text size={12} white end top={20}>12 Feb</Text>
-                </Card>
 
+                {
+                    firstItem != null ? 
+                        
+                    <Card round={25} color='#64D671' padding={theme.sizes.padding} accent marginX={[20,20]} marginBottom={8}>
+                        <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{firstItem[0].title}</Text>
+                        <Text size={11} white family='semi-bold' >{firstItem[0].note}</Text>
+                        { firstItem[0].isCheckList ? <CheckList item={firstItem[0]}  mainIndex={0} stateData={{data: firstItem,setData: setFirstItem}} table_type={3} /> : null}
+                        <Text size={12} white family='bold' >{null}</Text>
+                        <Text size={12} white end top={20}>12 Feb</Text>
+                    </Card>
+                    : 
+                    null 
+                }
                     
                 <View row flex={1}>
 
