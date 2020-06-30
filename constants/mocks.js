@@ -1,42 +1,45 @@
-import  * as directions from './directions';
+import * as directions from './directions';
+import * as ingridients from './ingridients';
 
 const breakfast = [
     {
-        id: 'lugaw',
-        name: 'Lugaw',
-        favorte: false,
+        id: 'banana-fritter-recipe',
+        name: 'Banana Fritter ( Maruya )',
+        favorite: false,
         tags: ['breakfast', 'rice', 'veggies', 'meat'],
         color: '#FFDFC4',
         image: require('../assets/images/test.png'),
-        time: '32 Minutes',
-        capacity: '2 Persons',
-        burn: '24 Calories',
-        description: 'Lugaw is a Filipino rice ' +
-         'porridge that is traditionally thought '+
-         'of as soft food for sick people, due to the '+
-         'fact that it doesn\'t require much chewing. ',
-        direction: directions.lugaw,
-        recipe: null,
+        time: '25 Minutes',
+        capacity: '6 People',
+        burn: '460 Calories',
+        description: 'Mashed bananas combined with flour '+
+        ' and other ingredients to make a batter and then'+
+        ' fried until golden brown. It is best when rolled'+
+        ' in granulated white sugar after frying.',
+        author: 'Vanjo Merano',
+        direction: directions.maruya,
+        ingridients: ingridients.maruya,
     },
     {
-        id: 'daing-na-bangus', 
-        name: 'Daing na Bangus',
-        favorte: false,
+        id: 'corned-beef-omelette', 
+        name: 'Corned Beef Omelet',
+        favorite: false,
         tags: ['breakfast', 'rice', 'seafood','fried'],
         color: '#FFDFC4',
         image: require('../assets/images/test.png'),
         time: '32 Minutes',
-        capacity: '2 Persons',
-        burn: '24 Calories',
+        capacity: '4 Persons',
+        burn: '248 Calories',
         description:'This traditional Filipino dish consists of butterflied,'+
         ' marinated milkfish that is pan-fried until crispy. ',
-        direction: directions.lugaw,
-        recipe: null,
+        author: 'Vanjo Merano',
+        direction: directions.corned_beef_omelet,
+        ingridients: ingridients.corned_beef_omelet,
     },
     {
         id: 'champorado',
         name: 'Champorado',
-        favorte: false,
+        favorite: false,
         tags: ['breakfast', 'rice', 'choco'],
         color: '#FFDFC4',
         image: require('../assets/images/test.png'),
@@ -48,12 +51,12 @@ const breakfast = [
         ' champorado can be served hot or cold, drizzled with condensed milk, or'+
         ' accompanied by salted dry fish.',
         direction: directions.lugaw,
-        recipe: null,
+        ingridients: null,
     },
     {
         id: 'tapsilog',
         name: 'Tapsilog',
-        favorte: false,
+        favorite: false,
         tags: ['breakfast', 'rice','fried', 'egg'],
         color: '#FFC4C4',
         image: require('../assets/images/test.png'),
@@ -65,12 +68,12 @@ const breakfast = [
         ' sliced beef jerky, known as tapa, a heap of garlic rice,'+
         ' and a fried egg.',
         direction: directions.lugaw,
-        recipe: null,
+        ingridients: null,
     },
     {
         id: 'arroz-caldo',
         name: 'Arroz Caldo',
-        favorte: false,
+        favorite: false,
         tags: ['breakfast', 'rice','veggies'],
         color: '#FFF3C4',
         image: require('../assets/images/test.png'),
@@ -83,12 +86,12 @@ const breakfast = [
         ' cooked in a ginger-infused broth and served with various accompaniments and seasonings.',
 
         direction: directions.lugaw,
-        recipe: null,
+        ingridients: null,
     },
     {
         id: 'tocino',
         name: 'Tocino',
-        favorte: false,
+        favorite: false,
         tags: ['breakfast', 'rice', 'meat', 'fried','egg'],
         color: '#C4FFE8',
         image: require('../assets/images/test.png'),
@@ -99,12 +102,12 @@ const breakfast = [
         ' popular Filipino everyday go-to meal, typically enjoyed for'+
         ' breakfast, but it is also readily available at any other time of the day.',
         direction: directions.lugaw,
-        recipe: null,
+        ingridients: null,
     },
     {
         id: 'torta',
         name: 'Torta',
-        favorte: false,
+        favorite: false,
         tags: ['breakfast', 'egg'],
         color: '#FFDFC4',
         image: require('../assets/images/test.png'),
@@ -119,7 +122,7 @@ const breakfast = [
          'for any type of meat and seasonings, just like a congee.',
          
         direction: directions.lugaw,
-        recipe: null,
+        ingridients: null,
     },
 ];
 

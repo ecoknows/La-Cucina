@@ -6,7 +6,7 @@ import { theme, directions, } from '../constants';
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(true);
     const { item } = props 
-    const { direction, recipe } = item;
+    const { direction, ingridients } = item;
 
 
 
@@ -30,14 +30,14 @@ function SheetText(props){
                 accent={!isDirection}
                 secondary={isDirection}
                 center
-                >Recipe</Text>
+                >Ingridients</Text>
 
             </View>
 
             <List 
                 scrollEnabled={true}
                 showsHorizontalScrollIndicator={false}
-                data={isDirection ? direction : recipe}
+                data={isDirection ? direction : ingridients}
                 renderItem={({ item, index }) =>  
                 
                 <View row marginY={[0,20]} marginX={[0,30]}>
@@ -46,7 +46,7 @@ function SheetText(props){
                 </View>
 
                 }
-                keyExtractor={item => item.id}
+                keyExtractor={(item,index)=>index.toString()}
                 
                 contentContainerStyle={{paddingStart : 40, paddingBottom: 200}}
             />
