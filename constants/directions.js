@@ -66,7 +66,51 @@ const corned_beef_omelet = [
     },
 ];
 
+
+
+const chicken_adobo_fried_rice_and_tortang_corned_beef = [
+    {
+        step: 'Prepare the omelette by '+
+        'combining corned beef, egg, and '+
+        'ground black pepper in a bowl. Mix well.',
+    },
+    {
+        step: 'Heat 4 tablespoons of cooking oil'+
+        ' in a pan. Scoop a quarter portion of the '+
+        'corned beef mixture and fry. Gently flatten'+
+        ' the mixture in the pan and continue to fry '+
+        'in medium heat for 1 to 2 minutes. Flip the '+
+        'corned beef omelette and fry the opposite side'+
+        ' until done. Remove from the pan and place in a '+
+        'clean plate. Perform the same steps until the mixture'+
+        ' is completely consumed.',
+    },
+    {
+        step: 'Prepare the rice by combining '+
+        'rice and salt. Gently mix while trying '+
+        'to separate the rice with each other.',
+    },
+    {
+        step: 'Heat 3 tablespoons oil in a pan. Add '+
+        'crushed garlic. Continue to cook in medium heat'+
+        ' until garlic turns light brown in color.',
+    },
+    {
+        step: 'Add chopped chicken adobo. Stir-fry for 1 minute.',
+    },
+    {
+        step: 'Transfer the chicken adobo fried rice in'+
+        ' a plate and then top with tortang corned beef.'+
+        ' Serve with your favorite condiment.',
+    },
+    {
+        step: 'Share and enjoy!',
+    },
+];
+
+
 export{
     maruya,
     corned_beef_omelet,
+    chicken_adobo_fried_rice_and_tortang_corned_beef,
 }

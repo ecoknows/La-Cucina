@@ -30,28 +30,32 @@ const breakfast = [
         time: '32 Minutes',
         capacity: '4 Persons',
         burn: '248 Calories',
-        description:'This traditional Filipino dish consists of butterflied,'+
-        ' marinated milkfish that is pan-fried until crispy. ',
+        description:'I consider Corned Beef Omelet (or Tortang Corned Beef) '+
+        'as a power breakfast food. It is a complete meal which gives me'+
+        ' enough energy that lasts until lunchtime. In addition, it tastes '+
+        'great and it is easy to make. Sometimes I enjoy it with toast'+
+        ' or with a cup of rice.',
         author: 'Vanjo Merano',
         direction: directions.corned_beef_omelet,
         ingridients: ingridients.corned_beef_omelet,
     },
     {
-        id: 'champorado',
-        name: 'Champorado',
+        id: 'chicken-adobo-fried-rice-and-tortang-corned-beef',
+        name: 'Chicken Adobo Fried Rice and Tortang Corned Beef',
         favorite: false,
         tags: ['breakfast', 'rice', 'choco'],
         color: '#FFDFC4',
         image: require('../assets/images/test.png'),
         time: '32 Minutes',
-        capacity: '2 Persons',
-        burn: '24 Calories',
+        capacity: '3 People',
+        burn: '721 Kilo Calories',
         description:'Champorado is a thick Filipino rice pudding. '+
         'Usually enjoyed as a hearty breakfast or a sweet afternoon snack, Filipino'+
         ' champorado can be served hot or cold, drizzled with condensed milk, or'+
         ' accompanied by salted dry fish.',
-        direction: directions.lugaw,
-        ingridients: null,
+        author: 'Vanjo Merano',
+        direction: directions.chicken_adobo_fried_rice_and_tortang_corned_beef,
+        ingridients: ingridients.chicken_adobo_fried_rice_and_tortang_corned_beef,
     },
     {
         id: 'tapsilog',
