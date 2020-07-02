@@ -7,11 +7,29 @@ function SheetText(props){
     const [ isDirection, setDirection ] = useState(true);
     const { item } = props 
     const { direction, ingridients } = item;
+    const current_step = 0;
 
+    const SheetListView = props => {
 
+        const {item, index} = props;
+        const itemColor = current_step == index ? theme.colors.accent : theme.colors.thirdary ;
+        const isActive = current_step == index ? true : false;
+        const Indicator = isActive ? <Text size={12} color='#18A623' family='bold' absolute>Start</Text> : null;
+
+        return(
+            <View row>
+            {Indicator}
+            <View row marginY={[0,20]} marginX={[40,30]} >
+                <Circle accent size={7} marginY={[5]}/>
+                <Text size={14} color={itemColor} left={5} family='semi-bold'>{item.step}</Text>
+            </View>
+
+            </View>
+        );
+    }
 
     return(
-        <View marginY={[50]} marginX={[theme.sizes.margin,theme.sizes.margin]} >
+        <View marginY={[50]} marginX={[theme.sizes.margin * 2,theme.sizes.margin * 2]} >
             <View flex={false} row center marginY={[0,theme.sizes.margin*2]}>
                 <Text size={18} family='bold' 
                 touchable
@@ -38,17 +56,11 @@ function SheetText(props){
                 scrollEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 data={isDirection ? direction : ingridients}
-                renderItem={({ item, index }) =>  
-                
-                <View row marginY={[0,20]} marginX={[0,30]}>
-                    <Circle accent size={7} marginY={[5]}/>
-                    <Text size={14} thirdary left={5} >{item.step}</Text>
-                </View>
-
+                renderItem={({ item, index }) =>  <SheetListView item={item} index={index}/>
                 }
                 keyExtractor={(item,index)=>index.toString()}
                 
-                contentContainerStyle={{paddingStart : 40, paddingBottom: 200}}
+                contentContainerStyle={{paddingBottom: 200}}
             />
 
         </View>
@@ -62,7 +74,7 @@ function CuisineSelected({navigation, route}){
     const pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { name , color, time, capacity, burn} = item;
+    const { name , color, cooking_time, prep_time, capacity, burn} = item;
     
 
     const panResponderTwo = useRef( PanResponder.create({
@@ -91,6 +103,7 @@ function CuisineSelected({navigation, route}){
 
     return(
         <View color={color}  >
+            
         <Text touchable end size={30} top={20} right={20}  accent
             press={()=>navigation.goBack()}
          >x</Text>
@@ -99,16 +112,25 @@ function CuisineSelected({navigation, route}){
                     <Text h2 family='bold'> {name} </Text>
                 </View>
 
-
                 <View row>
-                    <View paddingY={[30]} paddingX={[25]}>
+                    <View paddingX={[25]}>
+                        <View flex={false} row paddingY={[20]}>
+                            <Pic 
+                                src={require('../assets/images/chopping-knife.png')}
+                                size={[33,33]}
+                                accent
+                            />
+                            <Text end family='semi-bold' size={13} thirdary left={0}>{prep_time}</Text>
+                            <Text gray3 end family='semi-bold' size={12} thirdary left={0}> preparation</Text>
+                        </View>
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
                                 src={require('../assets/images/time.png')}
                                 size={[25,25]}
                                 accent
                             />
-                            <Text end family='semi-bold' size={13} thirdary left={7}>{time}</Text>
+                            <Text end family='semi-bold' size={13} thirdary left={7}>{cooking_time}</Text>
+                            <Text gray3 end family='semi-bold' size={12} thirdary left={0}> cooking</Text>
                         </View>
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
@@ -127,18 +149,36 @@ function CuisineSelected({navigation, route}){
                           <Text end family='semi-bold' size={13} thirdary left={7}>{burn}</Text>
                         </View>
 
+                        <View flex={false} marginLeft={-45} marginTop={25}>
+                            
+                            <View flex={false} absolute>
+                                
+                                <Pic 
+                                    resizeMode='contain'
+                                    src={require('../assets/images/nutrients.png')}
+                                    size={[120,40]}
+                                    accent
+                                />
+                                <Text top={9} left={15} absolute white family='bold' size={16}>Nutrients</Text>   
+                            </View>
+
+                        </View>
+                        
 
                     </View>
+
 
                     <View >
                         <Pic src={require('../assets/images/test.png')}
                             resizeMode='contain'
-                            size={[300,300]}
+                            size={[250,250]}
                          />
 
                     </View>
 
+
                 </View>
+                
 
             </View>
 
@@ -190,5 +230,5 @@ const styles = StyleSheet.create({
         height: 8,
         width: 90,
         borderRadius: 20,
-    }
+    },
 });

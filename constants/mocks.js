@@ -4,12 +4,13 @@ import * as ingridients from './ingridients';
 const breakfast = [
     {
         id: 'banana-fritter-recipe',
-        name: 'Banana Fritter ( Maruya )',
+        name: 'Maruya',
         favorite: false,
         tags: ['breakfast', 'rice', 'veggies', 'meat'],
         color: '#FFDFC4',
         image: require('../assets/images/test.png'),
-        time: '25 Minutes',
+        cooking_time: '10 mins',
+        prep_time: '15 mins',
         capacity: '6 People',
         burn: '460 Calories',
         description: 'Mashed bananas combined with flour '+

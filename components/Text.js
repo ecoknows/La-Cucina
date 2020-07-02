@@ -54,6 +54,7 @@ const TextEdited = props => {
         color,
         opacity,
         gray,
+        gray3,
 
 
         ...rest
@@ -117,6 +118,7 @@ const TextEdited = props => {
         thirdary && styles.thirdary,
         color && {color: color},
         gray && styles.gray,
+        gray3 && styles.gray3,
 
         opacity && {opacity : opacity},
 
@@ -189,6 +191,7 @@ const styles = StyleSheet.create({
     white: {color: theme.colors.white},
     thirdary: {color: theme.colors.thirdary},
     gray:  {color: theme.colors.gray},
+    gray3: {color: theme.colors.gray3},
 
     // font size
     h1: {fontSize: theme.fonts.h1},

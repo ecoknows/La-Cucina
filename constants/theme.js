@@ -13,6 +13,7 @@ const colors = {
     pinkish: '#FFDFC4',
     gray: '#595959',
     gray2: '#E6E6E6',
+    gray3: '#9B9B9B',
 
     white: 'white',
     black: 'black',
