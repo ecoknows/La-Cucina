@@ -3,24 +3,55 @@ import { View, Text, Pic, Circle, List  } from '../components';
 import { PanResponder,StyleSheet, Animated } from 'react-native';
 import { theme, directions, } from '../constants';
 
+const DONE = 0;
+const START = 1;
+let current_step = 0;
+
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(true);
+    const [isIndicator, setIsIndicator] = useState(true);
+    const [isCurrentStepState, setIsCurrentStepState] = useState(START);
     const { item } = props 
     const { direction, ingridients } = item;
-    const current_step = 0;
+
+
+    const IndicatorClick =()=>{
+        setIsIndicator(isIndicator ? false : true);
+        setIsCurrentStepState( isCurrentStepState ? DONE : START);
+        if(isCurrentStepState == DONE)
+            current_step++;
+    }
 
     const SheetListView = props => {
 
         const {item, index} = props;
-        const itemColor = current_step == index ? theme.colors.accent : theme.colors.thirdary ;
+        let itemColor = null;
+        let isCircle = true;
+        if ( current_step == index && isCurrentStepState == DONE ) {
+            itemColor = theme.colors.accent;
+        } else if ( current_step > index){
+            itemColor = '#18A623';
+            isCircle = false;
+        }else{
+            itemColor = theme.colors.thirdary;
+        }
         const isActive = current_step == index ? true : false;
-        const Indicator = isActive ? <Text size={12} color='#18A623' family='bold' absolute>Start</Text> : null;
+        const Indicator = isActive ? 
+        <View flex={false} size={[33]}>
+            <Text size={12} color='#18A623' family='bold' touchable press={IndicatorClick}>
+                {isIndicator ? 'Start' : 'Done'}
+            </Text>
+        </View> : null;
 
         return(
             <View row>
             {Indicator}
-            <View row marginY={[0,20]} marginX={[40,30]} >
-                <Circle accent size={7} marginY={[5]}/>
+            <View row marginY={[0,20]} marginX={[ isActive ? 15 : 50 ,30]} >
+                { isCircle ?
+                <Circle color={itemColor == theme.colors.thirdary ? theme.colors.accent : itemColor } size={7} marginY={[5]}/>
+                :
+                <Pic src={require('../assets/images/check.png')} resizeMode='contain' size={[20,20]}/>
+                }
                 <Text size={14} color={itemColor} left={5} family='semi-bold'>{item.step}</Text>
             </View>
 
@@ -53,6 +84,7 @@ function SheetText(props){
             </View>
 
             <List 
+                extraData={isCurrentStepState}
                 scrollEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 data={isDirection ? direction : ingridients}
