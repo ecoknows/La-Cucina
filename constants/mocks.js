@@ -1,5 +1,6 @@
 import * as directions from './directions';
 import * as ingridients from './ingridients';
+import * as nutrition from './nutrition';
 
 const breakfast = [
     {
@@ -20,6 +21,7 @@ const breakfast = [
         author: 'Vanjo Merano',
         direction: directions.maruya,
         ingridients: ingridients.maruya,
+        nutrition: nutrition.maruya,
     },
     {
         id: 'corned-beef-omelette', 

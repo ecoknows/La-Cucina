@@ -32,16 +32,16 @@ function SheetText(props){
         const {item, index} = props;
         let itemColor = null;
         let isCircle = true;
-        if ( current_step == index && isCurrentStepState == DONE ) {
+        if ( current_step == index && isCurrentStepState == DONE && isDirection) {
             itemColor = theme.colors.accent;
-        } else if ( current_step > index){
+        } else if ( current_step > index  && isDirection){
             itemColor = '#18A623';
             isCircle = false;
         }else{
             itemColor = theme.colors.thirdary;
         }
         const isActive = current_step == index ? true : false;
-        const Indicator = isActive ? 
+        const Indicator = (isActive && isDirection) ? 
         <View flex={false} size={[33]}>
             <Text size={12} color='#18A623' family='bold' touchable press={IndicatorClick}>
                 {isIndicator ? 'Start' : 'Done'}
@@ -51,7 +51,7 @@ function SheetText(props){
         return(
             <View row>
             {Indicator}
-            <View row marginY={[0,20]} marginX={[ isActive ? 15 : 50 ,30]} >
+            <View row marginY={[0,20]} marginX={[ (isActive && isDirection) ? 15 : 50 ,30]} >
                 { isCircle ?
                 <Circle color={itemColor == theme.colors.thirdary ? theme.colors.accent : itemColor } size={7} marginY={[5]}/>
                 :
@@ -109,10 +109,10 @@ function CuisineSelected({navigation, route}){
         headerShown: false,
     });
     const pan = useRef(new Animated.ValueXY()).current;
-    const nutrients = useRef(new Animated.ValueXY()).current;
+    const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { name , color, cooking_time, prep_time, capacity, burn} = item;
+    const { name , color, cooking_time, prep_time, capacity, burn, nutrition} = item;
     
 
     const panResponderTwo = useRef( PanResponder.create({
@@ -133,21 +133,21 @@ function CuisineSelected({navigation, route}){
         }
       })).current;
 
-    const NutrientsPanResponder = useRef( PanResponder.create({
+    const NutritionPanResponder = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
-          nutrients.setOffset({
-            x: nutrients.x._value
+          nutrition_pan.setOffset({
+            x: nutrition_pan.x._value
           });
         },
         onPanResponderMove: Animated.event(
           [
             null,
-            { dx: nutrients.x }
+            { dx: nutrition_pan.x }
           ]
         ),
         onPanResponderRelease: () => {
-            nutrients.flattenOffset();
+            nutrition_pan.flattenOffset();
         }
       })).current;
 
@@ -157,9 +157,9 @@ function CuisineSelected({navigation, route}){
         extrapolate: 'clamp',
       });
 
-      const xAxis = nutrients.x.interpolate({
-        inputRange: [0,160],
-        outputRange: [0,160],
+      const xAxis = nutrition_pan.x.interpolate({
+        inputRange: [0,200],
+        outputRange: [0,200],
         extrapolate: 'clamp',
       });
 
@@ -221,7 +221,7 @@ function CuisineSelected({navigation, route}){
                                     }
                                 ]
                             }}
-                             flex={false} absolute {...NutrientsPanResponder.panHandlers}>
+                             flex={false} absolute {...NutritionPanResponder.panHandlers}>
                                 
                                 <Pic 
                                     resizeMode='contain'
@@ -229,7 +229,7 @@ function CuisineSelected({navigation, route}){
                                     size={[120,40]}
                                     accent
                                 />
-                                <Text top={9} left={15} absolute white family='bold' size={16}>Nutrients</Text>   
+                                <Text top={9} left={15} absolute white family='bold' size={16}>Nutrition</Text>   
                             </View>
 
                         </View>
@@ -282,18 +282,38 @@ function CuisineSelected({navigation, route}){
             </View>
 
 
-            <View animated flex={false} size={['40%','100%']} accent 
-            style={[styles.nutrients,
-                {
-                    transform: [
-                        {
-                            translateX: xAxis
-                        }
-                    ]
-                }
-            ]} 
-            
-            absolute/>
+            <View animated flex={false} size={['50%','100%']} accent 
+            style={[styles.nutrients,{
+                transform: [
+                    {
+                        translateX: xAxis
+                    }
+                ]
+            }]} 
+            absolute
+
+
+            {...NutritionPanResponder.panHandlers}>
+                
+                    {nutrition.map((item, index) => 
+                        (
+                        <View row flex={false} key={index.toString()} paddingBottom={10}>
+                            <Pic    
+                                src={item.icon}
+                                size={[30,30]}
+                                accent
+                                tintColor='white'
+                                marginRight={5}
+                                marginTop={3}   
+                            
+                            />
+                            <Text white size={15} end>{item.weight} </Text>
+                            <Text white size={12} end >{item.type}</Text>
+                        </View>
+                        )
+                    )}
+                   
+            </View>
             
         </View>
     );
@@ -315,6 +335,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     nutrients: {
-        left: -160,
+        paddingTop: theme.sizes.padding * 5,
+        paddingHorizontal: 20,
+        marginLeft: -200,
     }
 });
