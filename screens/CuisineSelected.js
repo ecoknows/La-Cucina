@@ -6,6 +6,7 @@ import { theme, directions, } from '../constants';
 const DONE = 0;
 const START = 1;
 let current_step;
+let deym = 0;
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(true);
     const [isIndicator, setIsIndicator] = useState(true);
@@ -134,20 +135,23 @@ function CuisineSelected({navigation, route}){
       })).current;
 
     const NutritionPanResponder = useRef( PanResponder.create({
-        onMoveShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: (_,{dx}) => true,
         onPanResponderGrant: () => {
+            
           nutrition_pan.setOffset({
             x: nutrition_pan.x._value
           });
+
         },
-        onPanResponderMove: Animated.event(
-          [
-            null,
-            { dx: nutrition_pan.x }
-          ]
-        ),
+        onPanResponderMove: (e,gesture) => {
+            nutrition_pan.x.setValue(gesture.dx)
+        },
         onPanResponderRelease: () => {
             nutrition_pan.flattenOffset();
+            if(deym > 200){
+                nutrition_pan.x.setValue(200);
+                console.log(nutrition_pan.x);
+            }
         }
       })).current;
 
@@ -162,6 +166,8 @@ function CuisineSelected({navigation, route}){
         outputRange: [0,200],
         extrapolate: 'clamp',
       });
+      
+    nutrition_pan.x.addListener(({value}) => deym = value);
 
     return(
         <View color={color}  >
@@ -170,6 +176,7 @@ function CuisineSelected({navigation, route}){
             press={()=>navigation.goBack()}
          >x</Text>
             <View flex={1} paddingX={[theme.sizes.padding]} >
+                
                 <View flex={false}>
                     <Text h2 family='bold'> {name} </Text>
                 </View>
@@ -211,28 +218,6 @@ function CuisineSelected({navigation, route}){
                           <Text end family='semi-bold' size={13} thirdary left={7}>{burn}</Text>
                         </View>
 
-                        <View flex={false} marginLeft={-45} marginTop={25}>
-                            
-                            <View animated
-                            style={ {
-                                transform: [
-                                    {
-                                        translateX: xAxis
-                                    }
-                                ]
-                            }}
-                             flex={false} absolute {...NutritionPanResponder.panHandlers}>
-                                
-                                <Pic 
-                                    resizeMode='contain'
-                                    src={require('../assets/images/nutrients.png')}
-                                    size={[120,40]}
-                                    accent
-                                />
-                                <Text top={9} left={15} absolute white family='bold' size={16}>Nutrition</Text>   
-                            </View>
-
-                        </View>
                         
 
                     </View>
@@ -248,7 +233,26 @@ function CuisineSelected({navigation, route}){
 
 
                 </View>
+
                 
+                <View animated
+                    style={ [styles.nutrition,{
+                        transform: [
+                            {
+                                translateX: xAxis
+                            }
+                        ]  
+                    }]}
+                    flex={false} absolute {...NutritionPanResponder.panHandlers}>
+                    
+                    <Pic 
+                        resizeMode='contain'
+                        src={require('../assets/images/nutrients.png')}
+                        size={[120,40]}
+                        accent
+                    />
+                    <Text top={9} left={15} absolute white family='bold' size={16}>Nutrition</Text>   
+                </View>
 
             </View>
 
@@ -338,5 +342,9 @@ const styles = StyleSheet.create({
         paddingTop: theme.sizes.padding * 5,
         paddingHorizontal: 20,
         marginLeft: -200,
+    },
+    nutrition : {
+        marginTop: 250,
+        marginLeft: -10
     }
 });
