@@ -2,11 +2,13 @@ import React,{useState, useRef, useEffect} from 'react';
 import { View, Text, Pic, Circle, List  } from '../components';
 import { PanResponder,StyleSheet, Animated } from 'react-native';
 import { theme, directions, } from '../constants';
+import { CheckBox } from 'react-native-elements';
 
 const DONE = 0;
 const START = 1;
 let current_step;
-let deym = 0;
+let nutrition_latestoffset = 0;
+let sheet_latestoffset = 0;
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(true);
     const [isIndicator, setIsIndicator] = useState(true);
@@ -28,9 +30,17 @@ function SheetText(props){
             current_step++;
     }
 
+
     const SheetListView = props => {
 
         const {item, index} = props;
+        const [checked, setChecked] = useState(item.checked);
+        
+        const CheckBoxClick =()=>{
+            setChecked(checked ? false : true);
+            item.checked = checked ? false : true;
+        }
+
         let itemColor = null;
         let isCircle = true;
         if ( current_step == index && isCurrentStepState == DONE && isDirection) {
@@ -48,17 +58,26 @@ function SheetText(props){
                 {isIndicator ? 'Start' : 'Done'}
             </Text>
         </View> : null;
+        let SideTextIndicator = null;
+        let textLeft = 5;
+        if(isDirection){
+            if(!isCircle){
+                SideTextIndicator = <Pic src={require('../assets/images/check.png')} resizeMode='cover' size={[20,20]}/>
+            }else {
+                SideTextIndicator =   <Circle color={itemColor == theme.colors.thirdary ? theme.colors.accent : itemColor } size={7} marginY={[5]}/>;
+            }
+        }else{
+            SideTextIndicator =  <CheckBox checked={checked} checkedColor='green' uncheckedColor='green' size={18} containerStyle={{height: 10 ,width:30, paddingEnd: 10, marginLeft: -25, marginTop: 1,}} onPress={CheckBoxClick}/>
+            textLeft = -5;
+            itemColor = checked ? '#18A623' : theme.colors.thirdary;
+        }
 
         return(
             <View row>
             {Indicator}
             <View row marginY={[0,20]} marginX={[ (isActive && isDirection) ? 15 : 50 ,30]} >
-                { isCircle ?
-                <Circle color={itemColor == theme.colors.thirdary ? theme.colors.accent : itemColor } size={7} marginY={[5]}/>
-                :
-                <Pic src={require('../assets/images/check.png')} resizeMode='cover' size={[20,20]}/>
-                }
-                <Text size={14} color={itemColor} left={5} family='semi-bold'>{item.step}</Text>
+                {SideTextIndicator}
+                <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{item.step}</Text>
             </View>
 
             </View>
@@ -131,6 +150,13 @@ function CuisineSelected({navigation, route}){
         ),
         onPanResponderRelease: () => {
           pan.flattenOffset();
+          console.log(sheet_latestoffset)
+          if(sheet_latestoffset < -100){
+            pan.y.setValue(-100);
+          }
+          if(sheet_latestoffset > 0){
+            pan.y.setValue(0);
+          }
         }
       })).current;
 
@@ -143,14 +169,19 @@ function CuisineSelected({navigation, route}){
           });
 
         },
-        onPanResponderMove: (e,gesture) => {
-            nutrition_pan.x.setValue(gesture.dx)
-        },
+        onPanResponderMove: Animated.event(
+            [
+              null,
+              { dx: nutrition_pan.x }
+            ]
+          ),
         onPanResponderRelease: () => {
             nutrition_pan.flattenOffset();
-            if(deym > 200){
+            if(nutrition_latestoffset > 200){
                 nutrition_pan.x.setValue(200);
-                console.log(nutrition_pan.x);
+            }
+            if(nutrition_latestoffset < 0){
+                nutrition_pan.x.setValue(0);
             }
         }
       })).current;
@@ -167,7 +198,8 @@ function CuisineSelected({navigation, route}){
         extrapolate: 'clamp',
       });
       
-    nutrition_pan.x.addListener(({value}) => deym = value);
+    nutrition_pan.x.addListener(({value}) => nutrition_latestoffset = value);
+    pan.y.addListener(({value}) => sheet_latestoffset = value);
 
     return(
         <View color={color}  >
@@ -286,7 +318,7 @@ function CuisineSelected({navigation, route}){
             </View>
 
 
-            <View animated flex={false} size={['50%','100%']} accent 
+            <View animated flex={false} size={[200,'100%']} accent 
             style={[styles.nutrients,{
                 transform: [
                     {

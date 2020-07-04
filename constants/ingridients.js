@@ -1,30 +1,45 @@
 const maruya = [
     {
         step: '6 pieces banana saba or plantain variety, ripe (mashed)',
+        checked : false,
     },
     {
         step: '1 cup all-purpose flour',
+        checked : false,
     },
     {
         step: '1 1/2 teaspoon vanilla extract',
+        checked : false,
     },
     {
         step: '1 piece egg beaten',
+        
+        checked : false,
     },
     {
         step: '1 teaspoon baking powder',
+        
+        checked : false,
     },
     {
         step: '3/4 cup granulated white sugar',
+        
+        checked : false,
     },
     {
         step: '1 cup fresh milk',
+        
+        checked : false,
     },
     {
         step: '3/4 cups cooking oil',
+        
+        checked : false,
     },
     {
         step: '1/2 teaspoon salt',
+        
+        checked : false,
     }
 ];
 const corned_beef_omelet = [
