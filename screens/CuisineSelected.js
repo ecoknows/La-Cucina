@@ -133,6 +133,41 @@ function SheetText(props){
     );
 }
 
+function PeopleView(props){
+    const {item} = props;
+    const [capacity, setCapacity] = useState(item.capacity);
+    
+    return(
+        <View flex={false} row paddingY={[20]}>
+            <TouchableOpacity onPress={()=>{
+                    setCapacity(capacity+1);
+            }}>
+                <Pic 
+                    src={require('../assets/images/upgrade.png')}
+                    size={[25,25]}
+                    accent
+                />
+            </TouchableOpacity>
+            <Pic 
+                src={require('../assets/images/people.png')}
+                size={[25,25]}
+                accent
+            />
+            <Text end family='semi-bold' size={13} thirdary left={7}>{capacity}</Text>
+            <Text end family='semi-bold' size={13} thirdary> people</Text>
+            <TouchableOpacity onPress={()=>{
+                    setCapacity(capacity-1);
+            }}>
+                <Pic 
+                    src={require('../assets/images/downgrade.png')}
+                    size={[25,25]}
+                    accent
+                />
+            </TouchableOpacity>
+        </View>
+    )
+}
+
 function CuisineSelected({navigation, route}){
     navigation.setOptions({
         headerShown: false,
@@ -142,7 +177,6 @@ function CuisineSelected({navigation, route}){
 
     const { item } = route.params;
     const { name , color, cooking_time, prep_time, burn, nutrition,} = item;
-    const [capacity, setCapacity] = useState(item.capacity);
     
 
     const panResponderTwo = useRef( PanResponder.create({
@@ -245,37 +279,9 @@ function CuisineSelected({navigation, route}){
                             <Text end family='semi-bold' size={13} thirdary left={7}>{cooking_time}</Text>
                             <Text gray3 end family='semi-bold' size={12} thirdary left={0}> cooking</Text>
                         </View>
-                        <View flex={false} row paddingY={[20]}>
-                            <TouchableOpacity onPress={()=>{
-                                setTimeout(()=>{
-                                    setCapacity(capacity+1);
-                                },1)
-                            }}>
-                                <Pic 
-                                    src={require('../assets/images/upgrade.png')}
-                                    size={[25,25]}
-                                    accent
-                                />
-                            </TouchableOpacity>
-                            <Pic 
-                                src={require('../assets/images/people.png')}
-                                size={[25,25]}
-                                accent
-                            />
-                            <Text end family='semi-bold' size={13} thirdary left={7}>{capacity}</Text>
-                            <Text end family='semi-bold' size={13} thirdary> people</Text>
-                            <TouchableOpacity onPress={()=>{
-                                setTimeout(()=>{
-                                    setCapacity(capacity-1);
-                                },1)
-                            }}>
-                                <Pic 
-                                    src={require('../assets/images/downgrade.png')}
-                                    size={[25,25]}
-                                    accent
-                                />
-                            </TouchableOpacity>
-                        </View>
+                        
+                        <PeopleView item={item} />
+                        
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
                                 src={require('../assets/images/fire.png')}
@@ -349,8 +355,8 @@ function CuisineSelected({navigation, route}){
                         <View 
                             color={color}
                             style={styles.indicator}/>
-                    </View>
-                    <SheetText item={item} capacity={capacity} people={item.capacity} />
+                         </View>
+                    <SheetText item={item} capacity={item.capacity} people={item.capacity} />
             </View>
 
 
