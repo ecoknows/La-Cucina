@@ -26,7 +26,7 @@ const maruya = [
     },
     {
         value: 0.75,
-        step: '3/4 cup granulated white sugar',
+        step: 'cup granulated white sugar',
         
         checked : false,
     },
