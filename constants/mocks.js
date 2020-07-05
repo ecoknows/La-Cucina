@@ -12,7 +12,7 @@ const breakfast = [
         image: require('../assets/images/test.png'),
         cooking_time: '10 mins',
         prep_time: '15 mins',
-        capacity: '6 People',
+        capacity: 6,
         burn: '460 Calories',
         description: 'Mashed bananas combined with flour '+
         ' and other ingredients to make a batter and then'+

@@ -3,6 +3,7 @@ import { View, Text, Pic, Circle, List  } from '../components';
 import { PanResponder,StyleSheet, Animated } from 'react-native';
 import { theme, directions, } from '../constants';
 import { CheckBox } from 'react-native-elements';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const DONE = 0;
 const START = 1;
@@ -10,10 +11,10 @@ let current_step;
 let nutrition_latestoffset = 0;
 let sheet_latestoffset = 0;
 function SheetText(props){
-    const [ isDirection, setDirection ] = useState(true);
+    const [ isDirection, setDirection ] = useState(false);
     const [isIndicator, setIsIndicator] = useState(true);
     const [isCurrentStepState, setIsCurrentStepState] = useState(START);
-    const { item } = props 
+    const { item,capacity, people } = props 
     const { direction, ingridients } = item;
     
     useEffect(()=> {
@@ -59,6 +60,7 @@ function SheetText(props){
             </Text>
         </View> : null;
         let SideTextIndicator = null;
+        let ValueText = null;
         let textLeft = 5;
         if(isDirection){
             if(!isCircle){
@@ -70,6 +72,11 @@ function SheetText(props){
             SideTextIndicator =  <CheckBox checked={checked} checkedColor='green' uncheckedColor='green' size={18} containerStyle={{height: 10 ,width:30, paddingEnd: 10, marginLeft: -25, marginTop: 1,}} onPress={CheckBoxClick}/>
             textLeft = -5;
             itemColor = checked ? '#18A623' : theme.colors.thirdary;
+            const value = Math.round( ((item.value/ people)*(capacity-people) + item.value) * 100) / 100;
+            ValueText =  <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{value} </Text>
+            textLeft = 0;
+
+            //console.log(capacity, ' ', people);
         }
 
         return(
@@ -77,6 +84,7 @@ function SheetText(props){
             {Indicator}
             <View row marginY={[0,20]} marginX={[ (isActive && isDirection) ? 15 : 50 ,30]} >
                 {SideTextIndicator}
+                {ValueText}
                 <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{item.step}</Text>
             </View>
 
@@ -87,16 +95,8 @@ function SheetText(props){
     return(
         <View marginY={[50]} marginX={[theme.sizes.margin * 2,theme.sizes.margin * 2]} >
             <View flex={false} row center marginY={[0,theme.sizes.margin*2]}>
-                <Text size={18} family='bold' 
-                touchable
-                tFlex={1}
-                press={()=>setDirection(true)}
-                accent={isDirection}
-                secondary={!isDirection}
-                center
-                >Direction</Text>
                 
-                <Text 
+               <Text 
                 touchable
                 tFlex={1}
                 press={()=>setDirection(false)}
@@ -106,6 +106,15 @@ function SheetText(props){
                 center
                 >Ingridients</Text>
 
+                <Text size={18} family='bold' 
+                touchable
+                tFlex={1}
+                press={()=>setDirection(true)}
+                accent={isDirection}
+                secondary={!isDirection}
+                center
+                >Direction</Text>
+                
             </View>
 
             <List 
@@ -132,7 +141,8 @@ function CuisineSelected({navigation, route}){
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { name , color, cooking_time, prep_time, capacity, burn, nutrition} = item;
+    const { name , color, cooking_time, prep_time, burn, nutrition,} = item;
+    const [capacity, setCapacity] = useState(item.capacity);
     
 
     const panResponderTwo = useRef( PanResponder.create({
@@ -214,11 +224,12 @@ function CuisineSelected({navigation, route}){
                 </View>
 
                 <View row>
-                    <View paddingX={[25]}>
+                    <View >
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
                                 src={require('../assets/images/chopping-knife.png')}
                                 size={[33,33]}
+                                marginLeft={25}
                                 accent
                             />
                             <Text end family='semi-bold' size={13} thirdary left={0}>{prep_time}</Text>
@@ -228,22 +239,47 @@ function CuisineSelected({navigation, route}){
                             <Pic 
                                 src={require('../assets/images/time.png')}
                                 size={[25,25]}
+                                marginLeft={25}
                                 accent
                             />
                             <Text end family='semi-bold' size={13} thirdary left={7}>{cooking_time}</Text>
                             <Text gray3 end family='semi-bold' size={12} thirdary left={0}> cooking</Text>
                         </View>
                         <View flex={false} row paddingY={[20]}>
+                            <TouchableOpacity onPress={()=>{
+                                setTimeout(()=>{
+                                    setCapacity(capacity+1);
+                                },1)
+                            }}>
+                                <Pic 
+                                    src={require('../assets/images/upgrade.png')}
+                                    size={[25,25]}
+                                    accent
+                                />
+                            </TouchableOpacity>
                             <Pic 
                                 src={require('../assets/images/people.png')}
                                 size={[25,25]}
                                 accent
                             />
                             <Text end family='semi-bold' size={13} thirdary left={7}>{capacity}</Text>
+                            <Text end family='semi-bold' size={13} thirdary> people</Text>
+                            <TouchableOpacity onPress={()=>{
+                                setTimeout(()=>{
+                                    setCapacity(capacity-1);
+                                },1)
+                            }}>
+                                <Pic 
+                                    src={require('../assets/images/downgrade.png')}
+                                    size={[25,25]}
+                                    accent
+                                />
+                            </TouchableOpacity>
                         </View>
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
                                 src={require('../assets/images/fire.png')}
+                                marginLeft={25}
                                 size={[25,25]}
                                 accent
                             />
@@ -314,7 +350,7 @@ function CuisineSelected({navigation, route}){
                             color={color}
                             style={styles.indicator}/>
                     </View>
-                    <SheetText item={item} />
+                    <SheetText item={item} capacity={capacity} people={item.capacity} />
             </View>
 
 

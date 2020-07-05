@@ -1,43 +1,50 @@
 const maruya = [
     {
-        step: '6 pieces banana saba or plantain variety, ripe (mashed)',
+        value: 6,
+        step: 'pieces banana saba or plantain variety, ripe (mashed)',
         checked : false,
     },
     {
-        step: '1 cup all-purpose flour',
+        value: 1,
+        step: 'cup all-purpose flour',
         checked : false,
     },
     {
-        step: '1 1/2 teaspoon vanilla extract',
+        value: 1.5,
+        step: 'teaspoon vanilla extract',
         checked : false,
     },
     {
-        step: '1 piece egg beaten',
-        
+        value: 1,
+        step: 'piece egg beaten',
         checked : false,
     },
     {
-        step: '1 teaspoon baking powder',
-        
+        value: 1,
+        step: 'teaspoon baking powder',
         checked : false,
     },
     {
+        value: 0.75,
         step: '3/4 cup granulated white sugar',
         
         checked : false,
     },
     {
-        step: '1 cup fresh milk',
+        value: 1,
+        step: 'cup fresh milk',
         
         checked : false,
     },
     {
-        step: '3/4 cups cooking oil',
+        value: 0.75,
+        step: 'cups cooking oil',
         
         checked : false,
     },
     {
-        step: '1/2 teaspoon salt',
+        value: 0.5,
+        step: 'teaspoon salt',
         
         checked : false,
     }
