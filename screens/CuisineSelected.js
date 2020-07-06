@@ -1,33 +1,49 @@
 import React,{useState, useRef, useEffect} from 'react';
-import { View, Text, Pic, Circle, List  } from '../components';
+import { View, Text, Pic, Circle, List, Card  } from '../components';
 import { PanResponder,StyleSheet, Animated } from 'react-native';
 import { theme, directions, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Easing } from 'react-native-reanimated';
 
 const DONE = 0;
 const START = 1;
 let current_step;
+let oneTimeOnly; 
+let ingridents_finish_counter;
+let length_ingredients;
+
 let nutrition_latestoffset = 0;
 let sheet_latestoffset = 0;
-let oneTimeOnly = true; 
+let popUpIsDone;
+
+
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
     const [isIndicator, setIsIndicator] = useState(true);
     const [isCurrentStepState, setIsCurrentStepState] = useState(START);
     const { item,capacity, people, navigation } = props 
     const { direction, ingridients } = item;
+    
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const moveAnim = useRef(new Animated.Value(0)).current;
+    
+    
+    useEffect(()=> {
+        oneTimeOnly= true;
+        current_step = 0;
+        ingridents_finish_counter = 0;
+        length_ingredients = ingridients.length;
+        
+        popUpIsDone = length_ingredients == ingridents_finish_counter ? false : true; 
+
+    },[]);
+
+    
     if(isDirection && oneTimeOnly){
         navigation.navigate('InfoModal')
         oneTimeOnly = false;
     }
-    
-    useEffect(()=> {
-        
-    current_step = 0;
-
-    },[]);
-
 
     const IndicatorClick =()=>{
         setIsIndicator(isIndicator ? false : true);
@@ -43,8 +59,58 @@ function SheetText(props){
         const [checked, setChecked] = useState(item.checked);
         
         const CheckBoxClick =()=>{
+            ingridents_finish_counter = !checked ? ingridents_finish_counter+1 : ingridents_finish_counter-1;
             setChecked(checked ? false : true);
             item.checked = checked ? false : true;
+            
+        }
+        
+        const PopUpMessage =(props)=>{
+            
+            Animated.timing(moveAnim,
+            {
+            toValue: -200,
+            duration: 6000,
+            easing: Easing.linear(),
+            }).start();
+
+
+            Animated.sequence([
+            Animated.timing(fadeAnim,
+                {
+                toValue: 1,
+                duration: 3000,
+                easing: Easing.linear(),
+                })
+                ,
+                Animated.timing(fadeAnim,
+                {
+                    toValue: 0,
+                    duration: 3000,
+                    easing: Easing.linear(),
+                }  
+                )
+
+            ]).start(); 
+            popUpIsDone = false;
+
+            return(
+                <View animated flex={false} absolute marginX={[-15]}
+                style={{
+                    opacity: fadeAnim,
+                    transform: [{
+                        translateY: moveAnim,
+                    }]
+                }}
+                >
+                    <Card borderWidth={2} borderColor={theme.colors.accent} borderRadius={7} white size={[70,25]} justifyContent='center' alignItems='center'>
+                            <Text accent size={12} family='semi-bold'>Done! ^.^</Text>
+                    </Card>
+
+                </View> 
+            );
+
+
         }
 
         let itemColor = null;
@@ -65,6 +131,7 @@ function SheetText(props){
             </Text>
         </View> : null;
         let SideTextIndicator = null;
+        let FloatingCongrats = null;
         let ValueText = null;
         let textLeft = 5;
         if(isDirection){
@@ -84,6 +151,10 @@ function SheetText(props){
             value = value == 0.5 ? '1/2' : value;
             ValueText =  <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{value} </Text>
             textLeft = 0;
+            FloatingCongrats = (checked && ingridents_finish_counter == length_ingredients ) ? 
+            <PopUpMessage/>
+            : 
+            null;
 
             //console.log(capacity, ' ', people);
         }
@@ -95,6 +166,7 @@ function SheetText(props){
                 {SideTextIndicator}
                 {ValueText}
                 <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{item.step}</Text>
+                {FloatingCongrats}
             </View>
 
             </View>
@@ -210,7 +282,6 @@ function CuisineSelected({navigation, route}){
         ),
         onPanResponderRelease: () => {
           pan.flattenOffset();
-          console.log(sheet_latestoffset)
           if(sheet_latestoffset < -100){
             pan.y.setValue(-100);
           }

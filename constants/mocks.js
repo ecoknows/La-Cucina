@@ -93,7 +93,8 @@ const breakfast = [
         ' cooked in a ginger-infused broth and served with various accompaniments and seasonings.',
 
         direction: directions.lugaw,
-        ingridients: null,
+        ingridients: ingridients.corned_beef_omelet,
+        nutrition: nutrition.maruya,
     },
     {
         id: 'tocino',
