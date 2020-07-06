@@ -2,10 +2,9 @@ import React,{useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View, Pic } from '../components'
+import { Text, Pic } from '../components'
 import { Cuisine, Ingridients, Favorite, History,CuisineSelected, NoteEditor } from '../screens';
-
-import { theme } from '../constants';
+import InfoModal from '../modal/InfoModal';
 
 const Tab = createBottomTabNavigator();
 const Stack  = createStackNavigator();
@@ -60,7 +59,7 @@ function BottomNavigation({navigation}){
                 }}
             options={{
                 tabBarLabel: () => active === 'Ingridients' ? 
-                <Text accent familiy='semi-bold' size={13} style={{marginLeft: -5, marginTop: 5}}>Ingridients</Text>
+                <Text accent familiy='semi-bold' size={13} style={{marginLeft: -5, marginTop: 5}}>Ingredients</Text>
                 : null,
                 tabBarIcon: ({ color }) => (
                         <Pic 
@@ -122,10 +121,11 @@ function BottomNavigation({navigation}){
 function Navigation({navigation}){
     return(
         <NavigationContainer>
-            <Stack.Navigator  >
+            <Stack.Navigator mode='modal' >
                 <Stack.Screen name="Cuisine" component={BottomNavigation} />
                 <Stack.Screen name="CuisineSelected" component={CuisineSelected} />
                 <Stack.Screen name="NoteEditor" component={NoteEditor} />
+                <Stack.Screen name="InfoModal" component={InfoModal}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

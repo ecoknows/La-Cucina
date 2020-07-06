@@ -29,6 +29,7 @@ const Card = props => {
     const cardStyles = [
         style,
         flex && {flex},
+        flex == false && {flex: 0},
 
         absolute && {position: 'absolute'},
         

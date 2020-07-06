@@ -10,12 +10,17 @@ const START = 1;
 let current_step;
 let nutrition_latestoffset = 0;
 let sheet_latestoffset = 0;
+let oneTimeOnly = true; 
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
     const [isIndicator, setIsIndicator] = useState(true);
     const [isCurrentStepState, setIsCurrentStepState] = useState(START);
-    const { item,capacity, people } = props 
+    const { item,capacity, people, navigation } = props 
     const { direction, ingridients } = item;
+    if(isDirection && oneTimeOnly){
+        navigation.navigate('InfoModal')
+        oneTimeOnly = false;
+    }
     
     useEffect(()=> {
         
@@ -108,7 +113,7 @@ function SheetText(props){
                 accent={!isDirection}
                 secondary={isDirection}
                 center
-                >Ingridients</Text>
+                >Ingredients</Text>
 
                 <Text size={18} family='bold' 
                 touchable
@@ -369,7 +374,7 @@ function CuisineSelected({navigation, route}){
                             color={color}
                             style={styles.indicator}/>
                          </View>
-                    <SheetText item={item} capacity={capacity} people={item.capacity} />
+                    <SheetText item={item} capacity={capacity} people={item.capacity} navigation={navigation} />
             </View>
 
 
