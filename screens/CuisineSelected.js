@@ -11,7 +11,9 @@ const START = 1;
 let current_step;
 let oneTimeOnly; 
 let ingridents_finish_counter;
+let direction_finish_counter;
 let length_ingredients;
+let length_directions;
 
 let nutrition_latestoffset = 0;
 let sheet_latestoffset = 0;
@@ -32,8 +34,12 @@ function SheetText(props){
     useEffect(()=> {
         oneTimeOnly= true;
         current_step = 0;
+
         ingridents_finish_counter = 0;
+        direction_finish_counter = 0;
+
         length_ingredients = ingridients.length;
+        length_directions = direction.length;
         
         popUpIsDone = length_ingredients == ingridents_finish_counter ? false : true; 
 
@@ -46,6 +52,7 @@ function SheetText(props){
     }
 
     const IndicatorClick =()=>{
+        direction_finish_counter = isCurrentStepState == DONE?  direction_finish_counter + 1 : direction_finish_counter;
         setIsIndicator(isIndicator ? false : true);
         setIsCurrentStepState( isCurrentStepState ? DONE : START);
         if(isCurrentStepState == DONE)
@@ -132,14 +139,22 @@ function SheetText(props){
         </View> : null;
         let SideTextIndicator = null;
         let FloatingCongrats = null;
+        let DoneInfo = null;
         let ValueText = null;
         let textLeft = 5;
+        
         if(isDirection){
             if(!isCircle){
                 SideTextIndicator = <Pic src={require('../assets/images/check.png')} resizeMode='cover' size={[20,20]}/>
             }else {
                 SideTextIndicator =   <Circle color={itemColor == theme.colors.thirdary ? theme.colors.accent : itemColor } size={7} marginY={[5]}/>;
             }
+
+            DoneInfo = (length_directions == direction_finish_counter && index == length_directions-1) ? 
+                <Text accent size={13} end family='semi-bold'> Finish in 30 mins</Text>
+            :
+            null;
+
         }else{
             SideTextIndicator =  <CheckBox checked={checked} checkedColor='green' uncheckedColor='green' size={18} containerStyle={{height: 10 ,width:30, paddingEnd: 10, marginLeft: -25, marginTop: 1,}} onPress={CheckBoxClick}/>
             textLeft = -5;
@@ -151,22 +166,27 @@ function SheetText(props){
             value = value == 0.5 ? '1/2' : value;
             ValueText =  <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{value} </Text>
             textLeft = 0;
-            FloatingCongrats = (checked && ingridents_finish_counter == length_ingredients ) ? 
+            FloatingCongrats = (checked && ingridents_finish_counter == length_ingredients && popUpIsDone) ? 
             <PopUpMessage/>
             : 
             null;
 
             //console.log(capacity, ' ', people);
+        
         }
+        
+
 
         return(
             <View row>
             {Indicator}
             <View row marginY={[0,20]} marginX={[ (isActive && isDirection) ? 15 : 50 ,30]} >
+                
                 {SideTextIndicator}
                 {ValueText}
                 <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{item.step}</Text>
                 {FloatingCongrats}
+                {DoneInfo}
             </View>
 
             </View>
@@ -197,12 +217,11 @@ function SheetText(props){
                 >Direction</Text>
                 
             </View>
-
             <List 
                 extraData={isCurrentStepState}
                 scrollEnabled={true}
                 showsHorizontalScrollIndicator={false}
-                data={isDirection ? direction : ingridients}
+                data={isDirection ? direction : ingridients }
                 renderItem={({ item, index }) =>  <SheetListView item={item} index={index}/>
                 }
                 keyExtractor={(item,index)=>index.toString()}
