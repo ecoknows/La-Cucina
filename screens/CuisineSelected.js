@@ -151,7 +151,7 @@ function SheetText(props){
             }
 
             DoneInfo = (length_directions == direction_finish_counter && index == length_directions-1) ? 
-                <Text accent size={13} end family='semi-bold'> Finish in 30 mins</Text>
+                <Text accent size={13} family='semi-bold'> Finish in 30 mins</Text>
             :
             null;
 
@@ -184,9 +184,11 @@ function SheetText(props){
                 
                 {SideTextIndicator}
                 {ValueText}
-                <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{item.step}</Text>
+                <View flex={false} marginLeft={textLeft}>
+                    <Text size={14} color={itemColor}family='semi-bold'>{item.step}</Text>
+                    {DoneInfo}
+                </View>
                 {FloatingCongrats}
-                {DoneInfo}
             </View>
 
             </View>
