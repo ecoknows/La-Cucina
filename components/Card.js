@@ -17,6 +17,8 @@ const Card = props => {
         inTouchable,
         inPress,
 
+        //flex
+
 
         // behaviour
         round,

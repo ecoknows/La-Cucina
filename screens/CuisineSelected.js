@@ -8,6 +8,7 @@ import { Easing } from 'react-native-reanimated';
 
 const DONE = 0;
 const START = 1;
+
 let current_step;
 let oneTimeOnly; 
 let ingridents_finish_counter;
@@ -19,6 +20,8 @@ let nutrition_latestoffset = 0;
 let sheet_latestoffset = 0;
 let popUpIsDone;
 
+const SAVE = 1;
+const BACK = 2;
 
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
@@ -47,7 +50,9 @@ function SheetText(props){
 
     
     if(isDirection && oneTimeOnly){
-        navigation.navigate('InfoModal')
+        navigation.navigate('InfoModal',{info: {text: 'Make sure your ingredients are ready ^_^'},
+        button:[ {title: 'ok'}]
+    })
         oneTimeOnly = false;
     }
 
@@ -354,12 +359,50 @@ function CuisineSelected({navigation, route}){
         nutrition_pan.x.addListener(({value}) => nutrition_latestoffset = value);
         pan.y.addListener(({value}) => sheet_latestoffset = value);
     }, [])
+
+    useEffect(()=>
+    {
+        if(route.params?.modal){
+            switch(route.params.modal){
+                case SAVE:
+                    navigation.goBack();
+                    break;
+                case BACK:
+                    navigation.goBack();
+                    break;
+
+            }
+        }
+
+    },[route.params?.modal])
+
+    const BackButtonClick =()=>{
+        console.log(ingridents_finish_counter, ' ', direction_finish_counter)
+        if(ingridents_finish_counter != 0 || direction_finish_counter != 0)
+            navigation.navigate('InfoModal',{info: {text: 'Do you want to save it? ^_^'}, 
+            button: [
+                {
+                    title: 'Yes',
+                    navigate: 'CuisineSelected',
+                    purpose: SAVE,
+                },
+                {
+                    title: 'No',
+                    navigate: 'CuisineSelected',
+                    purpose: BACK,
+                }
+                ],
+            exit: true,
+            })
+        else
+            navigation.goBack();
+    }
       
     return(
         <View color={color}  >
             
         <Text touchable end size={30} top={20} right={20}  accent
-            press={()=>navigation.goBack()}
+            press={BackButtonClick}
          >x</Text>
             <View flex={1} paddingX={[theme.sizes.padding]} >
                 

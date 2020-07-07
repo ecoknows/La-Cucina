@@ -39,7 +39,7 @@ function BottomNavigation({navigation}){
                 },
                 }}
             options={{
-                tabBarLabel: () => active === 'Cuisine' ? <Text accent familiy='semi-bold' size={13} style={{marginLeft: -20, marginTop: 5}}>Cuisine</Text> : null,
+                tabBarLabel: () => active === 'Cuisine' ? <Text accent familiy='semi-bold' size={13} style={{marginLeft: 0, marginTop: 5}}>Cuisine</Text> : null,
                 tabBarIcon: ({ color }) => 
                     
                 <Pic
@@ -59,7 +59,7 @@ function BottomNavigation({navigation}){
                 }}
             options={{
                 tabBarLabel: () => active === 'Ingridients' ? 
-                <Text accent familiy='semi-bold' size={13} style={{marginLeft: -5, marginTop: 5}}>Ingredients</Text>
+                <Text accent familiy='semi-bold' size={13} style={{marginLeft: 0, marginTop: 5}}>Ingredients</Text>
                 : null,
                 tabBarIcon: ({ color }) => (
                         <Pic 
@@ -82,7 +82,7 @@ function BottomNavigation({navigation}){
                 }}
             options={{
                 tabBarLabel: () => active === 'Favorites' ? 
-                <Text accent familiy='semi-bold' size={13} style={{marginLeft: -5, marginTop: 5}}>Favorites</Text>
+                <Text accent familiy='semi-bold' size={13} style={{marginLeft: 0, marginTop: 5}}>Favorites</Text>
                 : null,
                 tabBarIcon: ({ color }) => (
                         <Pic resizeMode='contain' src={require('../assets/images/favorite.png')} 

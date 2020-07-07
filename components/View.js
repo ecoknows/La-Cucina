@@ -23,6 +23,7 @@ function ViewSheet(props){
         row,
         rowVerse,
         end,
+        columVerse,
 
         // rotation
         rotate,
@@ -64,6 +65,7 @@ function ViewSheet(props){
         end && styles.end,
         row && styles.row,
         rowVerse && styles.rowVerse,
+        columVerse && styles.columVerse,
 
         // size 
         flex && { flex },
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
     center: {justifyContent: 'center',},
     row: {flexDirection: 'row'},
     rowVerse: {flexDirection: 'row-reverse'},
+    columVerse: {flexDirection: 'column-reverse'},
     cent: { alignSelf: 'center'   },
     middle: {alignItems:  'center',},
     end: { alignSelf: 'flex-end'},
