@@ -22,6 +22,8 @@ let sheet_latestoffset = 0;
 let popUpIsDone;
 
 let original_capacity = {value: 0};
+let isDataFetch = {value: false};
+let _ingredients_changer = [];
 
 const SAVE = 1;
 const BACK = 2;
@@ -47,10 +49,10 @@ function SheetText(props){
     useEffect(()=> {
         oneTimeOnly= true;
         current_step = {value: 0};
-
         ingridents_finish_counter = 0;
         direction_finish_counter = 0;
-        GetHistory(item.id, current_step, setCapacity);
+        isDataFetch.value = false;
+        GetHistory(item.id, current_step, setCapacity, ingridients,setIsCurrentStepState,isCurrentStepState,isDataFetch);
 
         length_ingredients = ingridients.length;
         length_directions = direction.length;
@@ -85,6 +87,12 @@ function SheetText(props){
             ingridents_finish_counter = !checked ? ingridents_finish_counter+1 : ingridents_finish_counter-1;
             setChecked(checked ? false : true);
             item.checked = checked ? false : true;
+            if(item.checked){
+                _ingredients_changer.push(index);
+            }else{
+                let test = [index];
+                _ingredients_changer = _ingredients_changer.filter(value => !test.includes(value));
+            }
             
         }
         
@@ -377,14 +385,16 @@ function CuisineSelected({navigation, route}){
         if(route.params?.modal){
             switch(route.params.modal){
                 case SAVE:
+                    
                     const data = {
                         parent_id: id,
                         favorite,
                         capacity,
                         ingredients: 'asd', 
                         directions: 2,
+                        ingredients: _ingredients_changer.toString(),
                     }
-                    AddHistory(data);
+                    AddHistory(data,isDataFetch);
                     item.ingridients = _copy_ingridients;
                     _copy_ingridients = null;
                     navigation.goBack();

@@ -132,10 +132,19 @@ const CheckNote =()=>{
     );
 }
 
-const AddHistory =(data)=>{
+const AddHistory =(data,isDataFetch)=>{
   const {parent_id,favorite,capacity,ingredients, directions} = data;
-  let query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions) VALUES (null,?,?,?,?,?)";
-  let params = [parent_id,favorite,capacity,ingredients, directions];
+  let query = null;
+  let params = null;
+  console.log(ingredients);
+  if(!isDataFetch.value){   
+    query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions) VALUES (null,?,?,?,?,?)";
+    params = [parent_id,favorite,capacity,ingredients, directions];
+  }
+  else{
+    query = "UPDATE "+ history_tbl +" SET ingredients = '" + ingredients +"' WHERE parent_id = '" +parent_id+"'";
+    params = [];
+  }
   db.transaction(
     (tx)=> {
     tx.executeSql(query, params,(tx, results) =>{
@@ -148,7 +157,7 @@ const AddHistory =(data)=>{
   )
 }
 
-const GetHistory =(id, current_step, setCapacity)=>{ 
+const GetHistory =(id, current_step, setCapacity, ingredients,setIsCurrentStepState,isCurrentStepState,isDataFetch)=>{ 
   let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
   let params = [];
 
@@ -159,6 +168,13 @@ const GetHistory =(id, current_step, setCapacity)=>{
           console.log(results.rows._array[0].directions);
           current_step.value = results.rows._array[0].directions;
           setCapacity(results.rows._array[0].capacity);
+          let ing_arr = results.rows._array[0].ingredients.split(',').map(Number);
+          for(let i = 0; i < ing_arr.length; i++){
+            ingredients[ing_arr[i]].checked = true;
+          }
+          setIsCurrentStepState(-1);
+          setIsCurrentStepState(isCurrentStepState);
+          isDataFetch.value = true;
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -373,7 +389,7 @@ const _2_SelectCheckList =(array,stateData2,setStateData2,index)=>{
 const SeeData =()=>{
   //let query = "SELECT r.*, l._text from " + _1_data + " r INNER JOIN " + _1_check_tbl+ " l ON r.id = l.parent_id";
   //let query = "SELECT * FROM " + _1_data + " WHERE id = 1 = ( SELECT * FROM "+_1_check_tbl+" )"
-  let query = "SELECT * FROM "+ _1_data;
+  let query = "SELECT * FROM "+ history_tbl;
   let params = [];
 
   db.transaction(

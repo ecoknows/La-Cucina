@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DropTable, InitialData, DataPos, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList,_2_SelectCheckList, SetFirstNote, GetFirstNote, RemovePos } from '../database/database'
+import { AddNote, DropTable,SeeData ,InitialData, DataPos, _1_NextPage, _2_NextPage, UpdateTable, QueryChanges, QueryChangesList, _1_SelectCheckList,_2_SelectCheckList, SetFirstNote, GetFirstNote, RemovePos } from '../database/database'
 
 /*
 const data1 = [
@@ -116,7 +116,7 @@ function Ingridients({navigation, route}){
 
   //DeleteAll();
   //DropTable();
-  //SeeData();
+  SeeData();
   //RemovePos();
     useEffect(() => {
        GetFirstNote(setFirstItem);
