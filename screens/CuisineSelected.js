@@ -22,8 +22,9 @@ let sheet_latestoffset = 0;
 let popUpIsDone;
 
 let original_capacity = {value: 0};
+let original_direction = {value: 0};
 let isDataFetch = {value: false};
-let _ingredients_changer = [];
+let _ingredients_changer = {array: []};
 
 const SAVE = 1;
 const BACK = 2;
@@ -52,7 +53,7 @@ function SheetText(props){
         ingridents_finish_counter = 0;
         direction_finish_counter = 0;
         isDataFetch.value = false;
-        GetHistory(item.id, current_step, setCapacity, ingridients,setIsCurrentStepState,isCurrentStepState,isDataFetch);
+        GetHistory(item.id, current_step, setCapacity, ingridients,setIsCurrentStepState,isCurrentStepState,isDataFetch, original_direction,_ingredients_changer);
 
         length_ingredients = ingridients.length;
         length_directions = direction.length;
@@ -88,10 +89,10 @@ function SheetText(props){
             setChecked(checked ? false : true);
             item.checked = checked ? false : true;
             if(item.checked){
-                _ingredients_changer.push(index);
+                _ingredients_changer.array.push(index);
             }else{
                 let test = [index];
-                _ingredients_changer = _ingredients_changer.filter(value => !test.includes(value));
+                _ingredients_changer.array = _ingredients_changer.array.filter(value => !test.includes(value));
             }
             
         }
@@ -385,16 +386,15 @@ function CuisineSelected({navigation, route}){
         if(route.params?.modal){
             switch(route.params.modal){
                 case SAVE:
-                    
                     const data = {
                         parent_id: id,
                         favorite,
                         capacity,
-                        ingredients: 'asd', 
-                        directions: 2,
-                        ingredients: _ingredients_changer.toString(),
+                        directions: current_step.value,
+                        ingredients: _ingredients_changer.array.toString(),
                     }
-                    AddHistory(data,isDataFetch);
+                    console.log('asdsa = ', original_direction.value, ' ' , current_step.value);
+                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value);
                     item.ingridients = _copy_ingridients;
                     _copy_ingridients = null;
                     navigation.goBack();
