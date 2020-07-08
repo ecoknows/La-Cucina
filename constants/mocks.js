@@ -4,7 +4,7 @@ import * as nutrition from './nutrition';
 
 const breakfast = [
     {
-        id: 'banana-fritter-recipe',
+        id: 'maruya',
         name: 'Maruya',
         favorite: false,
         tags: ['breakfast', 'rice', 'veggies', 'meat'],
@@ -92,8 +92,8 @@ const breakfast = [
         ' Distinguished by the addition of chicken, arroz caldo is usually'+
         ' cooked in a ginger-infused broth and served with various accompaniments and seasonings.',
 
-        direction: directions.lugaw,
-        ingridients: ingridients.corned_beef_omelet,
+        direction: directions.maruya,
+        ingridients: ingridients.maruya,
         nutrition: nutrition.maruya,
     },
     {

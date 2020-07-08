@@ -10,6 +10,8 @@ const _2_data = 'note_table_2';
 const _1_check_tbl = 'check_table_1';
 const _2_check_tbl = 'check_table_2';
 
+const history_tbl = 'histroy_table';
+
 const userId = 'Amber';
 const first_data = 'Eco';
 const TAG = 'DATABASE ';
@@ -118,6 +120,72 @@ const CheckNote =()=>{
               `(id integer primary key not null, parent_id integer , _text text, status integer)`
           );
       }
+    );
+
+    db.transaction(
+      tx => {
+          tx.executeSql(
+              `create table if not exists ${history_tbl} `+
+              `(id integer primary key not null, parent_id text, favorite integer, capacity integer, ingredients text, directions integer)`
+          );
+      }
+    );
+}
+
+const AddHistory =(data)=>{
+  const {parent_id,favorite,capacity,ingredients, directions} = data;
+  let query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions) VALUES (null,?,?,?,?,?)";
+  let params = [parent_id,favorite,capacity,ingredients, directions];
+  db.transaction(
+    (tx)=> {
+    tx.executeSql(query, params,(tx, results) =>{
+        console.log('Success History!');
+    }, function(tx,err) {
+        console.log(err.message);
+        return;
+    })
+    }
+  )
+}
+
+const GetHistory =(id, current_step, setCapacity)=>{ 
+  let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          console.log(results.rows._array[0].directions);
+          current_step.value = results.rows._array[0].directions;
+          setCapacity(results.rows._array[0].capacity);
+        }
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
+  );
+
+
+}
+
+const GetHistroyCapacity =(id, setCapacity, original_capacity)=>{
+  let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          setCapacity(results.rows._array[0].capacity);
+          original_capacity.value=results.rows._array[0].capacity;
+        }
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
   );
 }
 
@@ -133,7 +201,7 @@ const AddNote = (pugi, isFirstRow) =>{
     const AddCheckList = (parent_id, checkList) => {
       const { _text, status } = checkList;
       let query = "INSERT INTO "+ check_table +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
-          let params = [parent_id, _text, status];
+      let params = [parent_id, _text, status];
   
           db.transaction(
               (tx)=> {
@@ -168,7 +236,7 @@ const AddNote = (pugi, isFirstRow) =>{
 }
 
 const DropTable =()=>{
-    let query = "DROP TABLE " + _2_data;
+    let query = "DROP TABLE " + history_tbl;
     let params = [];
     db.transaction(
       (tx)=> {
@@ -556,5 +624,8 @@ export {
     QueryChangesList,
     SetFirstNote,
     GetFirstNote,
-    RemovePos
+    RemovePos,
+    AddHistory,
+    GetHistory,
+    GetHistroyCapacity,
 }

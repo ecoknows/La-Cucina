@@ -5,11 +5,12 @@ import { theme, directions, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Easing } from 'react-native-reanimated';
+import { AddHistory, GetHistory,GetHistroyCapacity } from '../database/database'
 
 const DONE = 0;
 const START = 1;
 
-let current_step;
+let current_step = {value: 0};
 let oneTimeOnly; 
 let ingridents_finish_counter;
 let direction_finish_counter;
@@ -20,32 +21,42 @@ let nutrition_latestoffset = 0;
 let sheet_latestoffset = 0;
 let popUpIsDone;
 
+let original_capacity = {value: 0};
+
 const SAVE = 1;
 const BACK = 2;
+
+let _copy_ingridients;
 
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
     const [isIndicator, setIsIndicator] = useState(true);
     const [isCurrentStepState, setIsCurrentStepState] = useState(START);
-    const { item,capacity, people, navigation } = props 
+    const { item,capacity, people, navigation, setCapacity } = props 
     const { direction, ingridients } = item;
-    
+
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const moveAnim = useRef(new Animated.Value(0)).current;
+    
+    const typea = async() => {
+        return ingridients.map((a)=>({...a}));
+    }
+
     
     
     useEffect(()=> {
         oneTimeOnly= true;
-        current_step = 0;
+        current_step = {value: 0};
 
         ingridents_finish_counter = 0;
         direction_finish_counter = 0;
+        GetHistory(item.id, current_step, setCapacity);
 
         length_ingredients = ingridients.length;
         length_directions = direction.length;
         
         popUpIsDone = length_ingredients == ingridents_finish_counter ? false : true; 
-
+        typea().then((value)=> _copy_ingridients = value);
     },[]);
 
     
@@ -61,7 +72,7 @@ function SheetText(props){
         setIsIndicator(isIndicator ? false : true);
         setIsCurrentStepState( isCurrentStepState ? DONE : START);
         if(isCurrentStepState == DONE)
-            current_step++;
+            current_step.value++;
     }
 
 
@@ -127,15 +138,15 @@ function SheetText(props){
 
         let itemColor = null;
         let isCircle = true;
-        if ( current_step == index && isCurrentStepState == DONE && isDirection) {
+        if ( current_step.value == index && isCurrentStepState == DONE && isDirection) {
             itemColor = theme.colors.accent;
-        } else if ( current_step > index  && isDirection){
+        } else if ( current_step.value > index  && isDirection){
             itemColor = '#18A623';
             isCircle = false;
         }else{
             itemColor = theme.colors.thirdary;
         }
-        const isActive = current_step == index ? true : false;
+        const isActive = current_step.value == index ? true : false;
         const Indicator = (isActive && isDirection) ? 
         <View flex={false} size={[33]}>
             <Text size={12} color='#18A623' family='bold' touchable press={IndicatorClick}>
@@ -175,8 +186,6 @@ function SheetText(props){
             <PopUpMessage/>
             : 
             null;
-
-            //console.log(capacity, ' ', people);
         
         }
         
@@ -243,13 +252,18 @@ function SheetText(props){
 function PeopleView(props){
     const {item, mainCapacity} = props;
     const [capacity, setCapacity] = useState(item.capacity);
+
+    useEffect(()=>{
+        GetHistroyCapacity(item.id, setCapacity, original_capacity);
+    },[])
+
+    useEffect(()=>{
+        mainCapacity(capacity);
+    },[capacity])
     
     return(
         <View flex={false} row paddingY={[20]}>
             <TouchableOpacity onPress={()=>{
-                    setTimeout(() => {
-                        mainCapacity(capacity+1);
-                    }, 1);
                     setCapacity(capacity+1);
             }}>
                 <Pic 
@@ -266,9 +280,6 @@ function PeopleView(props){
             <Text end family='semi-bold' size={13} thirdary left={7}>{capacity}</Text>
             <Text end family='semi-bold' size={13} thirdary> people</Text>
             <TouchableOpacity onPress={()=>{
-                    setTimeout(() => {
-                        mainCapacity(capacity-1);
-                    }, 1);
                     setCapacity(capacity-1);
             }}>
                 <Pic 
@@ -289,7 +300,7 @@ function CuisineSelected({navigation, route}){
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { name , color, cooking_time, prep_time, burn, nutrition,} = item;
+    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite} = item;
     const [capacity, setCapacity] = useState(item.capacity);
     
 
@@ -358,6 +369,7 @@ function CuisineSelected({navigation, route}){
     useEffect(()=> {
         nutrition_pan.x.addListener(({value}) => nutrition_latestoffset = value);
         pan.y.addListener(({value}) => sheet_latestoffset = value);
+        original_capacity.value = item.capacity;
     }, [])
 
     useEffect(()=>
@@ -365,9 +377,21 @@ function CuisineSelected({navigation, route}){
         if(route.params?.modal){
             switch(route.params.modal){
                 case SAVE:
+                    const data = {
+                        parent_id: id,
+                        favorite,
+                        capacity,
+                        ingredients: 'asd', 
+                        directions: 2,
+                    }
+                    AddHistory(data);
+                    item.ingridients = _copy_ingridients;
+                    _copy_ingridients = null;
                     navigation.goBack();
                     break;
                 case BACK:
+                    item.ingridients = _copy_ingridients;
+                    _copy_ingridients = null;
                     navigation.goBack();
                     break;
 
@@ -377,8 +401,8 @@ function CuisineSelected({navigation, route}){
     },[route.params?.modal])
 
     const BackButtonClick =()=>{
-        console.log(ingridents_finish_counter, ' ', direction_finish_counter)
-        if(ingridents_finish_counter != 0 || direction_finish_counter != 0)
+       // console.log(ingridents_finish_counter, ' ', direction_finish_counter)
+        if(ingridents_finish_counter != 0 || direction_finish_counter != 0 || capacity != original_capacity.value ){
             navigation.navigate('InfoModal',{info: {text: 'Do you want to save it? ^_^'}, 
             button: [
                 {
@@ -394,7 +418,7 @@ function CuisineSelected({navigation, route}){
                 ],
             exit: true,
             })
-        else
+        }else
             navigation.goBack();
     }
       
@@ -509,7 +533,7 @@ function CuisineSelected({navigation, route}){
                             color={color}
                             style={styles.indicator}/>
                          </View>
-                    <SheetText item={item} capacity={capacity} people={item.capacity} navigation={navigation} />
+                    <SheetText item={item} capacity={capacity} setCapacity={setCapacity} people={item.capacity} navigation={navigation} />
             </View>
 
 
