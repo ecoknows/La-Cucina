@@ -116,7 +116,7 @@ function Ingridients({navigation, route}){
 
   //DeleteAll();
   //DropTable();
-  SeeData();
+  //SeeData();
   //RemovePos();
     useEffect(() => {
        GetFirstNote(setFirstItem);

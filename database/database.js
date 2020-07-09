@@ -132,7 +132,7 @@ const CheckNote =()=>{
     );
 }
 
-const AddHistory =(data,isDataFetch)=>{
+const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange)=>{
   const {parent_id,favorite,capacity,ingredients, directions} = data;
   let query = null;
   let params = null;
@@ -142,7 +142,13 @@ const AddHistory =(data,isDataFetch)=>{
     params = [parent_id,favorite,capacity,ingredients, directions];
   }
   else{
-    query = "UPDATE "+ history_tbl +" SET ingredients = '" + ingredients +"' WHERE parent_id = '" +parent_id+"'";
+    let setUpdate = '';
+    setUpdate = !isCapacityChange ? (setUpdate+" capacity = "+capacity.toString()+",") : setUpdate;
+    setUpdate = ingredients != '' ? (setUpdate+" ingredients = '"+ingredients +"',") : setUpdate + " ingredients = null,";
+    setUpdate = !isDirectionChange ? (setUpdate+" directions = "+directions.toString()+",") : setUpdate;
+    setUpdate = setUpdate != '' ? setUpdate.slice(0, -1) : setUpdate;
+    query = "UPDATE "+ history_tbl +" SET"+setUpdate+" WHERE parent_id = '" +parent_id+"'";
+    console.log(query)
     params = [];
   }
   db.transaction(
@@ -157,7 +163,7 @@ const AddHistory =(data,isDataFetch)=>{
   )
 }
 
-const GetHistory =(id, current_step, setCapacity, ingredients,setIsCurrentStepState,isCurrentStepState,isDataFetch)=>{ 
+const GetHistory =(id, current_step, setCapacity, ingredients,setIsCurrentStepState,isCurrentStepState,isDataFetch, original_directions,_ingredients_changer)=>{ 
   let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
   let params = [];
 
@@ -167,13 +173,22 @@ const GetHistory =(id, current_step, setCapacity, ingredients,setIsCurrentStepSt
         if(results.rows._array.length > 0){
           console.log(results.rows._array[0].directions);
           current_step.value = results.rows._array[0].directions;
+          original_directions.value = results.rows._array[0].directions;
           setCapacity(results.rows._array[0].capacity);
-          let ing_arr = results.rows._array[0].ingredients.split(',').map(Number);
-          for(let i = 0; i < ing_arr.length; i++){
-            ingredients[ing_arr[i]].checked = true;
+          console.log('tep ' , results.rows._array[0].ingredients)
+          if(results.rows._array[0].ingredients != null){
+            
+            let ing_arr = results.rows._array[0].ingredients.split(',').map(Number);
+            
+            _ingredients_changer.array = _ingredients_changer.array.filter(value => !ing_arr.includes(value));
+            _ingredients_changer.array = [..._ingredients_changer.array,...ing_arr];
+            for(let i = 0; i < ing_arr.length; i++){
+              ingredients[ing_arr[i]].checked = true;
+            }
+            setIsCurrentStepState(-1);
+            setIsCurrentStepState(isCurrentStepState);
+
           }
-          setIsCurrentStepState(-1);
-          setIsCurrentStepState(isCurrentStepState);
           isDataFetch.value = true;
         }
       }, function(tx,err) {
