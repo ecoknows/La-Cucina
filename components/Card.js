@@ -16,6 +16,7 @@ const Card = props => {
         absolute,
         inTouchable,
         inPress,
+        activeOpacity,
 
         //flex
 
@@ -47,7 +48,7 @@ const Card = props => {
     if(inTouchable){
         
         return( 
-            <TouchableOpacity onPress={inPress}>
+            <TouchableOpacity onPress={inPress} activeOpacity={activeOpacity}>
                 <View style={cardStyles} {...rest} >
                         {children}
                 </View>

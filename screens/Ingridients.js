@@ -1,9 +1,10 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect, useRef} from 'react';
 import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { AddNote, DropTable,SeeData,NextDataSelect ,InitialData, DataPos, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, SetFirstNote, GetFirstNote, RemovePos } from '../database/database'
+import { PanResponder, Animated } from 'react-native';
 
 let _1_data = true;
 let _2_data = true;
@@ -21,8 +22,7 @@ function Ingridients({navigation, route}){
     const [firstItem, setFirstItem] = useState(null);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
-    
-    
+
     useEffect(()=> {
         if(stateData1.length != 0 && _1_data){
             
@@ -110,8 +110,6 @@ function Ingridients({navigation, route}){
           contentSize.height - paddingToBottom;
     };
 
-
-
     const CheckList =props=>{
         const { item, stateData, mainIndex,isFirst } = props;
         const { data, setData } = stateData;
@@ -153,6 +151,63 @@ function Ingridients({navigation, route}){
         return null
     }
 
+    const NoteListView =props=>{
+    const {item, index, data, setData } = props;
+    const swipe = useRef(new Animated.ValueXY()).current;
+
+    const animationOut =()=>{
+        Animated.timing(swipe,{
+            toValue: 0,
+        }).start();
+    }
+        
+    const swipeResponder = useRef( PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+            swipe.setOffset({
+            x: swipe.x._value
+          });
+        },
+        onPanResponderMove: Animated.event(
+          [
+            null,
+            { dx: swipe.x }
+          ]
+        ),
+        onPanResponderRelease: (_, {dx}) => {
+          swipe.flattenOffset();
+          if(dx < 100 && dx > -100)
+            animationOut();
+        }
+      })).current;
+        return(
+            <View animated flex={false} marginBottom={8} width='85%' end marginRight={8} 
+            {...swipeResponder.panHandlers}
+            style={{
+                opacity: swipe.x.interpolate({
+                    inputRange: [-100,0, 100],
+                    outputRange: [0,1,0],
+                    extrapolate: 'clamp',
+                }),
+                transform: [{
+                translateX: swipe.x.interpolate({
+                    inputRange: [-70,0, 70],
+                    outputRange: [-70,0, 70],
+                    extrapolate: 'clamp',
+                })
+            }]}}
+            >
+                <Card activeOpacity={1} inTouchable round={25} color={item.color} padding={theme.sizes.padding} accent 
+                    inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type : 1}) }>
+                    <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>
+                {item.isNote ?  <Text size={11} white family='semi-bold' bottom={10} numberOfLines={10} ellipsizeMode='tail'>{item.note}</Text> : null }
+                { item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data,setData}} /> : null}
+                    <Text size={12} white end top={20}>{item.date}</Text>
+                </Card>
+            </View>
+        )
+    }
+
     return(
         <View white>
 
@@ -189,39 +244,14 @@ function Ingridients({navigation, route}){
 
                         <View flex={1} >
                             {stateData1.map(
-                                (item,index) => (
-                                    <View flex={false} key={index.toString()} marginBottom={8} width='85%' end marginRight={8}  >
-                
-                                        <Card inTouchable round={25} color={item.color} padding={theme.sizes.padding} accent 
-                                              inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type : 1}) }>
-                                            <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>
-                                           {item.isNote ?  <Text size={11} white family='semi-bold' bottom={10} numberOfLines={10} ellipsizeMode='tail'>{item.note}</Text> : null }
-                                           { item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data: stateData1,setData: setStateData1}} /> : null}
-                                            <Text size={12} white end top={20}>{item.date}</Text>
-                                        </Card>
-                                    </View>
-                                )
+                                (item,index) => <NoteListView key={index.toString()} item={item} index={index} data={stateData1} setData={setStateData1}/>
                             )}
     
                         </View>
 
                         <View flex={1} >
                             {stateData2.map(
-                                (item,index) => (
-                                  
-                                <View flex={false} key={index.toString()} marginBottom={8} width='85%' >
-                                    
-                                    <Card inTouchable round={25} color={item.color} padding={theme.sizes.padding} accent
-                                        inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type : 2}) }
-                                    >
-                                        <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>
-                                        {item.isNote ? <Text size={11} white family='semi-bold' >{item.note}</Text> : null }
-                                        { item.isCheckList ? <CheckList item={item} mainIndex={index} stateData={{data: stateData2, setData: setStateData2}}/> : null}
-                                        <Text size={12} white end top={40}>{item.date}</Text>
-                                    </Card>
-
-                                </View>
-                            )
+                                (item,index) =>  <NoteListView key={index.toString()} item={item} index={index} data={stateData2} setData={setStateData2}/>
                              )}
 
                         </View>
