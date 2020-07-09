@@ -378,6 +378,10 @@ function CuisineSelected({navigation, route}){
         nutrition_pan.x.addListener(({value}) => nutrition_latestoffset = value);
         pan.y.addListener(({value}) => sheet_latestoffset = value);
         original_capacity.value = item.capacity;
+        return () => {
+            nutrition_pan.x.removeAllListeners();
+            pan.y.removeAllListeners();
+        }
     }, [])
 
     useEffect(()=>

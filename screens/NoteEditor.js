@@ -1,7 +1,7 @@
 import React,{useState, useRef, useEffect} from 'react';
 import { View, Input, Text, Pic, Circle, List } from '../components';
 import { theme } from '../constants';
-import { TouchableOpacity, ScrollView, Dimensions, Animated, Easing} from 'react-native';
+import {TouchableOpacity,ScrollView, Dimensions, Animated, Easing, Keyboard} from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { AddNote, SelectNote, DeleteAll, DropTable } from '../database/database'
 
@@ -62,7 +62,14 @@ function NoteEditor({navigation, route}){
     const [stateCheckedData, setStateCheckedData] = useState(checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);
     const colorWheel = useRef(new Animated.Value(0)).current;
+    const scrollViewAnimated = useRef(new Animated.Value(height - (height * 0.1))).current;
     let open = false;
+
+    useEffect(()=>{
+        
+        const keyboardListener = Keyboard.addListener('keyboardDidHide', ()=>{scrollViewAnimated.setValue(height - (height * 0.1))});
+        return () => {keyboardListener.remove()}
+    },[]);
 
     const colorOpen =()=> {
 
@@ -213,8 +220,8 @@ function NoteEditor({navigation, route}){
                     </View>
                
             <ScrollView style={{flex: 0}}>
-                <View flex={1} paddingX={[theme.sizes.padding+4]} minHeight={height - (height * 0.1)}>
-
+                <View animated flex={1} paddingX={[theme.sizes.padding+4]} minHeight={scrollViewAnimated}>
+                                        
                     <Input
                         scrollEnabled={false}
                         h2
@@ -233,7 +240,9 @@ function NoteEditor({navigation, route}){
                     {
                         isNote ? <Input 
                         scrollEnabled={false}
-                        b1
+                        onTouchStart={()=>scrollViewAnimated.setValue(height - (height * 0.6))}
+                        b1 
+                        pointerEvents='none'
                         white
                         multiline
                         textAlignVertical='top'
