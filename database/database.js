@@ -1,14 +1,11 @@
 import React from 'react';
-import { Alert, AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('chevy');
 
-const _1_data = 'note_table_1';
-const _2_data = 'note_table_2';
-
-const _1_check_tbl = 'check_table_1';
-const _2_check_tbl = 'check_table_2';
+const note_table = 'note_table';
+const note_check_tbl = 'note_check_table';
 
 const history_tbl = 'histroy_table';
 
@@ -16,19 +13,17 @@ const userId = 'Amber';
 const first_data = 'Eco';
 const TAG = 'DATABASE ';
 
-let _1_currentOffset = -1;
-let _2_currentOffset = -1;
+let currentOffset = -1;
 
 const PAGING_LIMIT = "4";
 
 let isInitial = true;
 
 const InitialData =(dataState)=> {
-  const {setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2} = dataState;
+  const {setStateData1, setStateData2, setIsFirstRow} = dataState;
   if(isInitial){
     GetDataPos(setIsFirstRow);
-    _1_SelecData(setStateData1);
-    _2_SelecData(setStateData2);
+    DataSelect(setStateData1, setStateData2);
     isInitial = false;
   }
 }
@@ -90,38 +85,20 @@ const CheckNote =()=>{
     db.transaction(
         tx => {
             tx.executeSql(
-                `create table if not exists ${_1_data} `+
+                `create table if not exists ${note_table} `+
                 `(id integer primary key not null, title text, date text, color text, note text, isNote integer, isCheckList integer)`
             );
         }
     );
-    db.transaction(
-      tx => {
-          tx.executeSql(
-              `create table if not exists ${_2_data} `+
-              `(id integer primary key not null, title text, date text, color text, note text, isNote integer, isCheckList integer)`
-          );
-      }
-  );
 
     db.transaction(
         tx => {
             tx.executeSql(
-                `create table if not exists ${_1_check_tbl} `+
+                `create table if not exists ${note_check_tbl} `+
                 `(id integer primary key not null, parent_id integer , _text text, status integer)`
             );
         }
     );
-    
-    db.transaction(
-      tx => {
-          tx.executeSql(
-              `create table if not exists ${_2_check_tbl} `+
-              `(id integer primary key not null, parent_id integer , _text text, status integer)`
-          );
-      }
-    );
-
     db.transaction(
       tx => {
           tx.executeSql(
@@ -220,18 +197,16 @@ const GetHistroyCapacity =(id, setCapacity, original_capacity)=>{
   );
 }
 
-const AddNote = (pugi, isFirstRow) =>{
-    const { title, date, color, note, isNote, isCheckList, checkList,} = pugi;
-    const table = isFirstRow ? _1_data: _2_data;
-    const check_table = isFirstRow ? _1_check_tbl : _2_check_tbl;
+const AddNote = (data) =>{
+    const { title, date, color, note, isNote, isCheckList, checkList,} = data;
 
-    let query = "INSERT INTO "+ table +" (id,title, date, color, note, isNote, isCheckList) VALUES (null,?,?,?,?,?,?)";
+    let query = "INSERT INTO "+ note_table +" (id,title, date, color, note, isNote, isCheckList) VALUES (null,?,?,?,?,?,?)";
     let params = [title, date, color, note, isNote, isCheckList];
 
 
     const AddCheckList = (parent_id, checkList) => {
       const { _text, status } = checkList;
-      let query = "INSERT INTO "+ check_table +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
+      let query = "INSERT INTO "+ note_check_tbl +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
       let params = [parent_id, _text, status];
   
           db.transaction(
@@ -282,16 +257,19 @@ const DropTable =()=>{
     );
 }
 
-const _1_SelecData = (setStateData1) =>{
-  let query = "SELECT * from " + _1_data + " ORDER BY id DESC LIMIT 5";
+const DataSelect =(setStateData1, setStateData2) => {
+  let query = "SELECT * from " + note_table + " ORDER BY id DESC LIMIT 10";
   let params = [];
 
   db.transaction(
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          setStateData1(items=> [...items, ...results.rows._array]);
-          _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
+          let evenArray = results.rows._array.filter((a,i)=>i%2===0);
+          let oddArray = results.rows._array.filter((a,i)=>i%2===1);
+          setStateData1(items=> [...items, ...oddArray]);
+          setStateData2(items=> [...items, ...evenArray]);
+          currentOffset = results.rows._array[results.rows._array.length-1].id;
           
         }
        // console.log('Success'); 
@@ -304,32 +282,8 @@ const _1_SelecData = (setStateData1) =>{
 
 }
 
-const _2_SelecData = (setStateData2) =>{
-  let query = "SELECT * from " + _2_data + " ORDER BY id DESC LIMIT 5";
-  let params = [];
-
-
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-          //console.log(results.rows._array);
-          setStateData2(items=> [...items, ...results.rows._array]);
-          _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
-         //console.log(...results.rows._array);
-        }
-       // console.log('Success'); 
-      }, function(tx,err) {
-        console.log(err.message);
-        return;
-      })
-    }
-  );
-
-}
-
-const _1_SelectCheckList =(array,stateData1,setStateData1,index)=>{
-  let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
+const SelectCheckList =(array,stateData,setStateData,index)=>{
+  let query = "SELECT * from " + note_check_tbl + " WHERE parent_id = " + array.id;
   let params = [];
 
   db.transaction(
@@ -347,11 +301,9 @@ const _1_SelectCheckList =(array,stateData1,setStateData1,index)=>{
             isCheckList: !array.isCheckList ? false : true,
             checkList:results.rows._array,
           }
-          //console.log(stateData1);
-          const data = stateData1;
+          const data = stateData;
           data[index] = modified;
-          setStateData1(state => [...data]);
-          //console.log(modified);
+          setStateData(state => [...data]);
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -362,48 +314,12 @@ const _1_SelectCheckList =(array,stateData1,setStateData1,index)=>{
 
 
 }
-const _2_SelectCheckList =(array,stateData2,setStateData2,index)=>{
-  const query = "SELECT * from " + _2_check_tbl + " WHERE parent_id = " + array.id;
-  const params = [];
-  console.log('data ', array.id );
-
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-          
-          let modified = {
-            id: array.id,
-            title: array.title, 
-            date: array.date,
-            color: array.color,
-            note: array.note,
-            isNote: !array.isNote ? false : true,
-            isCheckList: !array.isCheckList ? false : true,
-            checkList: results.rows._array,
-          }
-          
-          const data = stateData2;
-          data[index] = modified;
-          setStateData2(state => [...data]);
-          //console.log(modified);
-        }
-      }, function(tx,err) {
-        console.log(err.message);
-        return;
-      })
-    }
-  );
-
-
-}
-
 
 
 
 const SeeData =()=>{
-  //let query = "SELECT r.*, l._text from " + _1_data + " r INNER JOIN " + _1_check_tbl+ " l ON r.id = l.parent_id";
-  //let query = "SELECT * FROM " + _1_data + " WHERE id = 1 = ( SELECT * FROM "+_1_check_tbl+" )"
+  //let query = "SELECT r.*, l._text from " + note_table + " r INNER JOIN " + note_check_tbl+ " l ON r.id = l.parent_id";
+  //let query = "SELECT * FROM " + note_table + " WHERE id = 1 = ( SELECT * FROM "+note_check_tbl+" )"
   let query = "SELECT * FROM "+ history_tbl;
   let params = [];
 
@@ -422,20 +338,23 @@ const SeeData =()=>{
 
 }
 
-const _2_NextPage =(setStateData2)=>{
+
+const NextDataSelect =(setStateData1,setStateData2) =>{
   let query = ' ';
   let params = [];
-  console.log('current ', _2_currentOffset);
-  query = _2_currentOffset == -1 ? "SELECT * from " + _2_data + " ORDER BY id DESC LIMIT " + PAGING_LIMIT  :
-          "SELECT * from " + _2_data + " WHERE id < "+ _2_currentOffset.toString() +" ORDER BY id DESC LIMIT " + PAGING_LIMIT;
+  query = currentOffset == -1 ? "SELECT * from " + note_table + " ORDER BY id DESC LIMIT " + PAGING_LIMIT  :
+          "SELECT * from " + note_table + " WHERE id < "+ currentOffset.toString() +" ORDER BY id DESC LIMIT " + PAGING_LIMIT;
 
   db.transaction(
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          //console.log(results.rows._array);
-          setStateData2(items=> [...items,...results.rows._array]);
-          _2_currentOffset = results.rows._array[results.rows._array.length-1].id;
+          let evenArray = results.rows._array.filter((a,i)=>i%2===0);
+          let oddArray = results.rows._array.filter((a,i)=>i%2===1);
+          setStateData1(items=> [...items, ...oddArray]);
+          setStateData2(items=> [...items, ...evenArray]);
+
+          currentOffset = results.rows._array[results.rows._array.length-1].id;
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -443,98 +362,6 @@ const _2_NextPage =(setStateData2)=>{
       })
     }
   );
-
-}
-
-const _1_NextPage =(setStateData1)=>{
-  let query = ' ';
-  let params = [];
-  console.log('current ', _1_currentOffset);
-  query = _1_currentOffset == -1 ? "SELECT * from " + _1_data + " ORDER BY id DESC LIMIT " + PAGING_LIMIT  :
-          "SELECT * from " + _1_data + " WHERE id < "+ _1_currentOffset.toString() +" ORDER BY id DESC LIMIT " + PAGING_LIMIT;
-
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-         // console.log(results.rows._array);
-          setStateData1(items=> [...items,...results.rows._array]);
-          _1_currentOffset = results.rows._array[results.rows._array.length-1].id;
-        }
-      }, function(tx,err) {
-        console.log(err.message);
-        return;
-      })
-    }
-  );
-
-}
-
-
-const _1_NextPageCheckList =(array,setStateData1,stateData1)=>{
-  let query = "SELECT * from " + _1_check_tbl + " WHERE parent_id = " + array.id;
-  let params = [];
-
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-          
-          let modified = {
-            id: array.id,
-            title: array.title, 
-            date: array.date,
-            color: array.color,
-            note: array.note,
-            isNote: !array.isNote ? false : true,
-            isCheckList: !array.isCheckList ? false : true,
-            checkList: results.rows._array,
-          }
-          stateData1[stateData1.length].checkList = [...stateData1[stateData1.length].checkList,modified];
-          console.log(modified);
-        }
-      }, function(tx,err) {
-        console.log(err.message);
-        return;
-      })
-    }
-  );
-
-
-}
-
-
-const _2_NextPageCheckList =(array,setStateData2)=>{
-  let query = "SELECT * from " + _2_check_tbl + " WHERE parent_id = " + array.id;
-  let params = [];
-
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-          
-          let modified = {
-            id: array.id,
-            title: array.title, 
-            date: array.date,
-            color: array.color,
-            note: array.note,
-            isNote: !array.isNote ? false : true,
-            isCheckList: !array.isCheckList ? false : true,
-            checkList: results.rows._array,
-          }
-          
-          stateData2[stateData2.length].checkList = [...stateData2[stateData2.length].checkList,results.rows._array];
-          console.log(modified);
-        }
-      }, function(tx,err) {
-        console.log(err.message);
-        return;
-      })
-    }
-  );
-
-
 }
 
 const UpdateTable =(change, id, table_id )=>{
@@ -543,16 +370,10 @@ const UpdateTable =(change, id, table_id )=>{
     let table = null;
     switch(table_id){
       case 1: 
-            table = _1_data;
+            table = note_table;
             break;
       case 2: 
-            table = _2_data;
-            break;
-      case 3: 
-          table = _1_check_tbl;
-          break;
-      case 4: 
-          table = _2_check_tbl;
+          table = note_check_tbl;
           break;
     }
     let query = "UPDATE "+ table +" SET" + change + " WHERE id = " + id;
@@ -586,7 +407,7 @@ const QueryChanges =(data)=>{
 }
 
 
-const QueryChangesList =(data,table_id)=>{
+const QueryChangesList =(data)=>{
   const { save, post } = data;
   let addQuery = ' ';
   let saveCheckList = save.checkList;
@@ -597,7 +418,7 @@ const QueryChangesList =(data,table_id)=>{
     addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
  
     if(addQuery != ' '){
-      let query = "UPDATE "+ (table_id == 1 ? _1_check_tbl : _2_check_tbl) +" SET" + addQuery.slice(0,-2) + " WHERE id = " + postCheckList[i].id.toString();
+      let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + postCheckList[i].id.toString();
       let params = [];
       console.log('ecce ',query);
     
@@ -620,7 +441,7 @@ const QueryChangesList =(data,table_id)=>{
   if(postCheckList.length > saveCheckList.length ){
     let i = saveCheckList.length;
     for( ; i < postCheckList.length; i++){
-      let query = "INSERT INTO "+ (table_id == 1 ? _1_check_tbl : _2_check_tbl) +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
+      let query = "INSERT INTO "+ note_check_tbl +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
       let params = [post.id, postCheckList[i]._text, postCheckList[i].status];
 
       db.transaction(
@@ -646,10 +467,7 @@ export {
     DataPos,
     InitialData,
     SeeData,
-    _1_NextPage,
-    _2_NextPage,
-    _1_SelectCheckList,
-    _2_SelectCheckList,
+    SelectCheckList,
     UpdateTable,
     QueryChanges,
     QueryChangesList,
@@ -659,4 +477,5 @@ export {
     AddHistory,
     GetHistory,
     GetHistroyCapacity,
+    NextDataSelect,
 }
