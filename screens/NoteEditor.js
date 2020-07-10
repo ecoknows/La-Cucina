@@ -14,6 +14,7 @@ function CheckedList(props){
     const { state, setState } = checkedData;
     const [text, setText] = useState(item._text);
     const [checked, setChecked] = useState(item.status? true : false);
+    const [isChange, setIsChange] = useState(true);
     
     
     const changeCheckedState =()=>{
@@ -29,8 +30,16 @@ function CheckedList(props){
     }
 
     const changeTextState =textChanged=>{
-        changesCnt = (textChanged == currentNote.checkList[index]._text) ? changesCnt-1 : changesCnt+1;
-        changesCnt = (changesCnt < 0) ? 0 : changesCnt; 
+        if(isChange && textChanged != currentNote.checkList[index]._text ){
+            changesCnt++;
+            setIsChange(false);
+        }
+
+        if(!isChange && textChanged == currentNote.checkList[index]._text ){
+            changesCnt--;
+            setIsChange(true);
+        }
+
         setText(textChanged);
         setTimeout(() => {
             let updateData = state;
@@ -72,6 +81,7 @@ function NoteEditor({navigation, route}){
 
     useEffect(()=>{
         open = false;
+        changesCnt = 0;
         const keyboardListener = Keyboard.addListener('keyboardDidHide', ()=>{scrollViewAnimated.setValue(height - (height * 0.1))});
         return () => {keyboardListener.remove()}
     },[]);
@@ -100,12 +110,11 @@ function NoteEditor({navigation, route}){
     });
 
     const checkData =()=>{
-        console.log(changesCnt, ' afa ');
-        /*
         if(title == currentNote.title
         && note == currentNote.note
         && noteColor == currentNote.color
-        && checked == currentNote.isCheckList)
+        && checked == currentNote.isCheckList
+        && changesCnt == 0)
         {
             navigation.goBack();
         }else{    
@@ -126,7 +135,7 @@ function NoteEditor({navigation, route}){
             });
         
 
-        }*/
+        }
     }
 
     return(
