@@ -10,8 +10,7 @@ let _1_data = true;
 let _2_data = true;
 let _1_latest_offset_data = 0;
 let _2_latest_offset_data = 0;
-let _1_id_latest_data = 1;
-let _2_id_latest_data = 1;
+let id_latest = {value : 1};
 
 function Ingridients({navigation, route}){
     console.log('agaha');
@@ -30,7 +29,7 @@ function Ingridients({navigation, route}){
                 SelectCheckList(stateData1[i],stateData1,setStateData1, i);
             }
             _1_latest_offset_data = stateData1.length;
-            _1_id_latest_data = stateData1[0].id+1;
+            //_1_id_latest_data = stateData1[0].id+1;
             _1_data = false;
         }
     },[stateData1]);
@@ -43,7 +42,7 @@ function Ingridients({navigation, route}){
             }
             
             _2_latest_offset_data = stateData2.length;
-            _2_id_latest_data = stateData2[0].id+1;
+            //_2_id_latest_data = stateData2[0].id+1;
             _2_data = false;
         }
     },[stateData2]);
@@ -54,7 +53,7 @@ function Ingridients({navigation, route}){
   //RemovePos();
     useEffect(() => {
        GetFirstNote(setFirstItem);
-       InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2 });
+       InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2, id_latest });
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 
@@ -65,7 +64,8 @@ function Ingridients({navigation, route}){
                 }
                 else{
                     const setData = isFirstRow ? setStateData1 : setStateData2;
-                    if(isFirstRow){_1_id_latest_data++;} else { _2_id_latest_data++;}
+                   // if(isFirstRow){_1_id_latest_data++;} else { _2_id_latest_data++;}
+                    id_latest.value++;
                     setData(items=>[post,...items])
                     setIsFirstRow(isFirstRow ? false : true); 
                     DataPos(isFirstRow);
@@ -82,17 +82,17 @@ function Ingridients({navigation, route}){
                     case 1: 
                         updateData = stateData1;
                         save = updateData[index];
-                        console.log('eco = ',post)
                         updateData[index] = post;
+                        console.log(save, ' gagaga = ', post)
                         setStateData1( items=>[...updateData]);
                         UpdateTable(QueryChanges({save, post}), post.id.toString(),1);
-                        QueryChangesList({save, post},1);
+                        QueryChangesList({save, post});
                         break;
                     case 2: 
                         updateData = stateData2;
                         save = updateData[index];
-                        console.log('eco = ',post)
                         updateData[index] = post;
+                        console.log(save, ' gagaga = ', post)
                         setStateData2( items=>[...updateData]);
                         UpdateTable(QueryChanges({save, post}), post.id.toString(),1);
                         QueryChangesList({save, post});
@@ -152,36 +152,36 @@ function Ingridients({navigation, route}){
     }
 
     const NoteListView =props=>{
-    const {item, index, data, setData } = props;
-    const swipe = useRef(new Animated.ValueXY()).current;
+        const {item, index, data, setData, type } = props;
+        const swipe = useRef(new Animated.ValueXY()).current;
 
-    const animationOut =()=>{
-        Animated.timing(swipe,{
-            toValue: 0,
-        }).start();
-    }
-        
-    const swipeResponder = useRef( PanResponder.create({
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderGrant: () => {
-            swipe.setOffset({
-            x: swipe.x._value
-          });
-        },
-        onPanResponderMove: Animated.event(
-          [
-            null,
-            { dx: swipe.x }
-          ]
-        ),
-        onPanResponderRelease: (_, {dx}) => {
-          swipe.flattenOffset();
-          if(dx < 100 && dx > -100)
-            animationOut();
+        const animationOut =()=>{
+            Animated.timing(swipe,{
+                toValue: 0,
+            }).start();
         }
-      })).current;
+            
+        const swipeResponder = useRef( PanResponder.create({
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderGrant: () => {
+                swipe.setOffset({
+                x: swipe.x._value
+            });
+            },
+            onPanResponderMove: Animated.event(
+            [
+                null,
+                { dx: swipe.x }
+            ]
+            ),
+            onPanResponderRelease: (_, {dx}) => {
+            swipe.flattenOffset();
+            if(dx < 100 && dx > -100)
+                animationOut();
+            }
+        })).current;
         return(
-            <View animated flex={false} marginBottom={8} width='85%' end marginRight={8} 
+            <View animated flex={false} marginBottom={8} width='85%' end marginRight={10} 
             {...swipeResponder.panHandlers}
             style={{
                 opacity: swipe.x.interpolate({
@@ -198,7 +198,7 @@ function Ingridients({navigation, route}){
             }]}}
             >
                 <Card activeOpacity={1} inTouchable round={25} color={item.color} padding={theme.sizes.padding} accent 
-                    inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type : 1}) }>
+                    inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type}) }>
                     <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>
                 {item.isNote ?  <Text size={11} white family='semi-bold' bottom={10} numberOfLines={10} ellipsizeMode='tail'>{item.note}</Text> : null }
                 { item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data,setData}} /> : null}
@@ -244,14 +244,14 @@ function Ingridients({navigation, route}){
 
                         <View flex={1} >
                             {stateData1.map(
-                                (item,index) => <NoteListView key={index.toString()} item={item} index={index} data={stateData1} setData={setStateData1}/>
+                                (item,index) => <NoteListView key={index.toString()} type={1} item={item} index={index} data={stateData1} setData={setStateData1}/>
                             )}
     
                         </View>
 
                         <View flex={1} >
                             {stateData2.map(
-                                (item,index) =>  <NoteListView key={index.toString()} item={item} index={index} data={stateData2} setData={setStateData2}/>
+                                (item,index) =>  <NoteListView key={index.toString()} type={2} item={item} index={index} data={stateData2} setData={setStateData2}/>
                              )}
 
                         </View>
@@ -267,7 +267,7 @@ function Ingridients({navigation, route}){
             
             <View  center middle >
                 <Card touchable round={50} accent size={[100]} center middle row
-                    press={()=> navigation.navigate('NoteEditor',{currentNote: {id: isFirstRow ? _1_id_latest_data : _2_id_latest_data,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.accent, checkList: [{_text: '', status: false}]}, index: -1}) }
+                    press={()=> navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.accent, checkList: [{_text: '', status: false}]}, index: -1}) }
                 >
                     <Text family='semi-bold' size={18} white>Create</Text>
                 </Card>

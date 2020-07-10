@@ -20,10 +20,10 @@ const PAGING_LIMIT = "4";
 let isInitial = true;
 
 const InitialData =(dataState)=> {
-  const {setStateData1, setStateData2, setIsFirstRow} = dataState;
+  const {setStateData1, setStateData2, setIsFirstRow, id_latest} = dataState;
   if(isInitial){
     GetDataPos(setIsFirstRow);
-    DataSelect(setStateData1, setStateData2);
+    DataSelect(setStateData1, setStateData2,id_latest);
     isInitial = false;
   }
 }
@@ -113,15 +113,15 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange)=>{
   const {parent_id,favorite,capacity,ingredients, directions} = data;
   let query = null;
   let params = null;
-  console.log(ingredients);
+  let ingredientsMod = (ingredients=='') ? ' ' : ingredients;
   if(!isDataFetch.value){   
     query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions) VALUES (null,?,?,?,?,?)";
-    params = [parent_id,favorite,capacity,ingredients, directions];
+    params = [parent_id,favorite,capacity,ingredientsMod, directions];
   }
   else{
     let setUpdate = '';
     setUpdate = !isCapacityChange ? (setUpdate+" capacity = "+capacity.toString()+",") : setUpdate;
-    setUpdate = ingredients != '' ? (setUpdate+" ingredients = '"+ingredients +"',") : setUpdate + " ingredients = null,";
+    setUpdate = ingredients != '' ? (setUpdate+" ingredients = '"+ingredients +"',") : setUpdate + " ingredients = ' ',";
     setUpdate = !isDirectionChange ? (setUpdate+" directions = "+directions.toString()+",") : setUpdate;
     setUpdate = setUpdate != '' ? setUpdate.slice(0, -1) : setUpdate;
     query = "UPDATE "+ history_tbl +" SET"+setUpdate+" WHERE parent_id = '" +parent_id+"'";
@@ -148,12 +148,11 @@ const GetHistory =(id, current_step, setCapacity, ingredients,setIsCurrentStepSt
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          console.log(results.rows._array[0].directions);
           current_step.value = results.rows._array[0].directions;
           original_directions.value = results.rows._array[0].directions;
           setCapacity(results.rows._array[0].capacity);
-          console.log('tep ' , results.rows._array[0].ingredients)
-          if(results.rows._array[0].ingredients != null){
+          if(results.rows._array[0].ingredients != ' '){
+            console.log('asddaaaaadddd');
             
             let ing_arr = results.rows._array[0].ingredients.split(',').map(Number);
             
@@ -242,7 +241,7 @@ const AddNote = (data) =>{
 }
 
 const DropTable =()=>{
-    let query = "DROP TABLE " + history_tbl;
+    let query = "DROP TABLE " + note_table;
     let params = [];
     db.transaction(
       (tx)=> {
@@ -257,7 +256,7 @@ const DropTable =()=>{
     );
 }
 
-const DataSelect =(setStateData1, setStateData2) => {
+const DataSelect =(setStateData1, setStateData2, id_latest) => {
   let query = "SELECT * from " + note_table + " ORDER BY id DESC LIMIT 10";
   let params = [];
 
@@ -267,6 +266,7 @@ const DataSelect =(setStateData1, setStateData2) => {
         if(results.rows._array.length > 0){
           let evenArray = results.rows._array.filter((a,i)=>i%2===0);
           let oddArray = results.rows._array.filter((a,i)=>i%2===1);
+          id_latest.value = results.rows._array[0].id + 1;
           setStateData1(items=> [...items, ...oddArray]);
           setStateData2(items=> [...items, ...evenArray]);
           currentOffset = results.rows._array[results.rows._array.length-1].id;

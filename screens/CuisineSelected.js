@@ -53,6 +53,7 @@ function SheetText(props){
         ingridents_finish_counter = 0;
         direction_finish_counter = 0;
         isDataFetch.value = false;
+        _ingredients_changer.array = [];
         GetHistory(item.id, current_step, setCapacity, ingridients,setIsCurrentStepState,isCurrentStepState,isDataFetch, original_direction,_ingredients_changer);
 
         length_ingredients = ingridients.length;
@@ -397,7 +398,6 @@ function CuisineSelected({navigation, route}){
                         directions: current_step.value,
                         ingredients: _ingredients_changer.array.toString(),
                     }
-                    console.log('asdsa = ', original_direction.value, ' ' , current_step.value);
                     AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value);
                     item.ingridients = _copy_ingridients;
                     _copy_ingridients = null;
