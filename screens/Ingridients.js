@@ -64,7 +64,6 @@ function Ingridients({navigation, route}){
                 }
                 else{
                     const setData = isFirstRow ? setStateData1 : setStateData2;
-                   // if(isFirstRow){_1_id_latest_data++;} else { _2_id_latest_data++;}
                     id_latest.value++;
                     setData(items=>[post,...items])
                     setIsFirstRow(isFirstRow ? false : true); 
@@ -92,7 +91,6 @@ function Ingridients({navigation, route}){
                         updateData = stateData2;
                         save = updateData[index];
                         updateData[index] = post;
-                        console.log(save, ' gagaga = ', post)
                         setStateData2( items=>[...updateData]);
                         UpdateTable(QueryChanges({save, post}), post.id.toString(),1);
                         QueryChangesList({save, post});

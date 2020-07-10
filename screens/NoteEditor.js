@@ -6,15 +6,20 @@ import { CheckBox } from 'react-native-elements';
 import { AddNote, SelectNote, DeleteAll, DropTable } from '../database/database'
 
 const { height } = Dimensions.get('screen');
-
+let open = null;
+let changesCnt = 0;
 
 function CheckedList(props){
-    const { item, index,checkedData } = props;
+    const { item, index,checkedData, currentNote } = props;
     const { state, setState } = checkedData;
     const [text, setText] = useState(item._text);
     const [checked, setChecked] = useState(item.status? true : false);
     
+    
     const changeCheckedState =()=>{
+        const currentListStatus = currentNote.checkList[index].status ? true : false;
+        changesCnt = (!checked == currentListStatus) ? changesCnt-1 : changesCnt+1;
+        changesCnt = (changesCnt < 0) ? 0 : changesCnt; 
         setChecked(checked?false : true);
         setTimeout(() => {
             let updateData = state;
@@ -24,6 +29,8 @@ function CheckedList(props){
     }
 
     const changeTextState =textChanged=>{
+        changesCnt = (textChanged == currentNote.checkList[index]._text) ? changesCnt-1 : changesCnt+1;
+        changesCnt = (changesCnt < 0) ? 0 : changesCnt; 
         setText(textChanged);
         setTimeout(() => {
             let updateData = state;
@@ -51,10 +58,9 @@ function CheckedList(props){
         </View>
     );
 }
-
 function NoteEditor({navigation, route}){
     const { currentNote, index, type} = route.params;
-    const checkList = currentNote.checkList != null ?  currentNote.checkList.map(a => ({...a})) : [{_text: ' ', status: false}];
+    const checkList = currentNote.checkList != null ?  currentNote.checkList.map(a => ({...a})) : [{_text: '', status: false}];
     const [ title, setTitle] = useState(currentNote.title);
     const [ note, setNote] = useState(currentNote.note);
     const [noteColor, setNoteColor] = useState(currentNote.color);
@@ -63,10 +69,9 @@ function NoteEditor({navigation, route}){
     const [isNote, setIsNote] = useState(currentNote.isNote);
     const colorWheel = useRef(new Animated.Value(0)).current;
     const scrollViewAnimated = useRef(new Animated.Value(height - (height * 0.1))).current;
-    let open = false;
 
     useEffect(()=>{
-        
+        open = false;
         const keyboardListener = Keyboard.addListener('keyboardDidHide', ()=>{scrollViewAnimated.setValue(height - (height * 0.1))});
         return () => {keyboardListener.remove()}
     },[]);
@@ -95,7 +100,16 @@ function NoteEditor({navigation, route}){
     });
 
     const checkData =()=>{
-        const current = {
+        console.log(changesCnt, ' afa ');
+        /*
+        if(title == currentNote.title
+        && note == currentNote.note
+        && noteColor == currentNote.color
+        && checked == currentNote.isCheckList)
+        {
+            navigation.goBack();
+        }else{    
+            const current = {
                 id: currentNote.id, 
                 title,
                 note,
@@ -104,13 +118,15 @@ function NoteEditor({navigation, route}){
                 checkList: stateCheckedData,
                 isCheckList: checked,
                 isNote,
-        }
-        navigation.navigate('Ingridients',{post:
-            current,
-            index,
-            type,
-        });
+            }
+            navigation.navigate('Ingridients',{post:
+                current,
+                index,
+                type,
+            });
         
+
+        }*/
     }
 
     return(
@@ -260,7 +276,7 @@ function NoteEditor({navigation, route}){
                         checked ? 
                         <View flex={50}> 
                             {stateCheckedData.map((item, index) => (
-                                <CheckedList key={index.toString()} item={item} index={index} checkedData={{state: stateCheckedData, setState: setStateCheckedData}}/>
+                                <CheckedList key={index.toString()} item={item} index={index} checkedData={{state: stateCheckedData, setState: setStateCheckedData}} currentNote={currentNote}/>
                             )
                             )}
                         </View>
