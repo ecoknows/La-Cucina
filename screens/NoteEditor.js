@@ -30,14 +30,18 @@ function CheckedList(props){
     }
 
     const changeTextState =textChanged=>{
-        if(isChange && textChanged != currentNote.checkList[index]._text ){
-            changesCnt++;
-            setIsChange(false);
-        }
+        if(currentNote.checkList[index] != null){
+            
+            if(isChange && textChanged != currentNote.checkList[index]._text ){
+                changesCnt++;
+                setIsChange(false);
+            }
 
-        if(!isChange && textChanged == currentNote.checkList[index]._text ){
-            changesCnt--;
-            setIsChange(true);
+            if(!isChange && textChanged == currentNote.checkList[index]._text ){
+                changesCnt--;
+                setIsChange(true);
+            }
+
         }
 
         setText(textChanged);

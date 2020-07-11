@@ -150,7 +150,7 @@ function Ingridients({navigation, route}){
     }
 
     const NoteListView =props=>{
-        const {item, index, data, setData, type } = props;
+        const {item, index, data, setData, type,data2, setData2 } = props;
         const swipe = useRef(new Animated.ValueXY()).current;
 
         const animationOut =()=>{
@@ -174,8 +174,23 @@ function Ingridients({navigation, route}){
             ),
             onPanResponderRelease: (_, {dx}) => {
             swipe.flattenOffset();
-            if(dx < 100 && dx > -100)
-                animationOut();
+                if(dx < 100 && dx > -100)
+                    animationOut();
+                else{
+                    let isGreater = data[index] > data2[index] ? 0 : 1;
+                    const data2_toSwap = data2.slice(index+isGreater, data2.length);
+                   if(data2_toSwap.length == 0){
+                        const dataTochange = [data[index]];
+                        const modified = data.filter(value=> !dataTochange.includes(value));    
+                        setData(modified);
+                    }else{
+                        const data1_toSwap = data.slice(index+1, data.length);
+                        const data1_modi = [...data.slice(0, index), ...data2_toSwap];
+                        const data2_modi = [...data2.slice(0, index+isGreater), ...data1_toSwap];
+                        setData(data1_modi);
+                        setData2(data2_modi);
+                    }
+                }
             }
         })).current;
         return(
@@ -242,14 +257,18 @@ function Ingridients({navigation, route}){
 
                         <View flex={1} >
                             {stateData1.map(
-                                (item,index) => <NoteListView key={index.toString()} type={1} item={item} index={index} data={stateData1} setData={setStateData1}/>
+                                (item,index) => <NoteListView key={index.toString()} type={1} item={item} index={index} data={stateData1} setData={setStateData1}
+                                    data2={stateData2} setData2={setStateData2}
+                                />
                             )}
     
                         </View>
 
                         <View flex={1} >
                             {stateData2.map(
-                                (item,index) =>  <NoteListView key={index.toString()} type={2} item={item} index={index} data={stateData2} setData={setStateData2}/>
+                                (item,index) =>  <NoteListView key={index.toString()} type={2} item={item} index={index} data={stateData2} setData={setStateData2}
+                                data2={stateData1} setData2={setStateData1}
+                                />
                              )}
 
                         </View>
