@@ -6,12 +6,6 @@ import { theme } from '../constants';
 function InfoModal({navigation, route}){
     const { info, button, exit } = route.params;
 
-    navigation.setOptions({
-        animationEnabled: false,
-        headerShown: false,
-        cardStyle: {backgroundColor: 'rgba(226,67,9,0.25)'},
-        cardOverlayEnabled: true,
-    });
 
     const modalPress = (item) => {
         if(item.navigate == null){
@@ -25,7 +19,7 @@ function InfoModal({navigation, route}){
 
     return(
             <View style={styles.container} >
-                <Card columVerse borderColor={theme.colors.accent} borderWidth={2} flex={false} white size={['60%']} 
+                <Card columVerse borderColor={theme.colors.accent} borderWidth={2} flex={false} white 
                       round={20} paddingX={[15,15]} paddingY={[15,10]}
                       >
                     <View  paddingY={[20]} flex={false} row style={{alignSelf:'flex-end'}}>

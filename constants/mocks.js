@@ -82,7 +82,7 @@ const breakfast = [
         name: 'Arroz Caldo',
         favorite: false,
         tags: ['breakfast', 'rice','veggies'],
-        color: '#FFF3C4',
+        color: '#FFDFC4',
         image: require('../assets/images/test.png'),
         time: '32 Minutes',
         capacity: '2 Persons',

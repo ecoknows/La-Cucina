@@ -30,6 +30,7 @@ function CheckedList(props){
     }
 
     const changeTextState =textChanged=>{
+        console.log('agagaga');
         if(currentNote.checkList[index] != null){
             
             if(isChange && textChanged != currentNote.checkList[index]._text ){
@@ -81,6 +82,7 @@ function NoteEditor({navigation, route}){
     const [stateCheckedData, setStateCheckedData] = useState(checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);
     const colorWheel = useRef(new Animated.Value(0)).current;
+
     const scrollViewAnimated = useRef(new Animated.Value(height - (height * 0.1))).current;
 
     useEffect(()=>{
@@ -109,9 +111,6 @@ function NoteEditor({navigation, route}){
     
     }
     
-    navigation.setOptions({
-        headerShown: false,
-    });
 
     const checkData =()=>{
         if(title == currentNote.title
@@ -256,8 +255,9 @@ function NoteEditor({navigation, route}){
                         h2
                         hint='Title'
                         white
-                        multiline
                         hintColor='white'
+                        width='95%'
+                        multiline
                         family='semi-bold'
                         selectionColor='white'
                         onChangeText={enteredText => setTitle(enteredText)}
@@ -279,6 +279,7 @@ function NoteEditor({navigation, route}){
                         hint='Note'
                         hintColor='white'
                         marginTop={5}
+                        width='95%'
                         onChangeText={enteredText => setNote(enteredText)}
                         value={note}
                         
@@ -298,6 +299,12 @@ function NoteEditor({navigation, route}){
 
                 </View>
             </ScrollView>
+            <View flex={false} paddingBottom={5} paddingTop={5} paddingRight={5}>
+                
+            <Text white end size={13} family='semi-bold' 
+            >{currentNote.date}</Text>
+
+            </View>
         </View>
     );
 }

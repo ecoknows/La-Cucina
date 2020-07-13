@@ -338,30 +338,34 @@ const SeeData =()=>{
 
 }
 
-
-const NextDataSelect =(setStateData1,setStateData2) =>{
+let fetching_nextPage = true;
+const NextDataSelect =(setStateData1,setStateData2, paging_limit) =>{
   let query = ' ';
   let params = [];
-  query = currentOffset == -1 ? "SELECT * from " + note_table + " ORDER BY id DESC LIMIT " + PAGING_LIMIT  :
-          "SELECT * from " + note_table + " WHERE id < "+ currentOffset.toString() +" ORDER BY id DESC LIMIT " + PAGING_LIMIT;
+  if(fetching_nextPage){
+      query = currentOffset == -1 ? "SELECT * from " + note_table + " ORDER BY id DESC LIMIT " + paging_limit  :
+              "SELECT * from " + note_table + " WHERE id < "+ currentOffset.toString() +" ORDER BY id DESC LIMIT " + paging_limit;
 
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-          let evenArray = results.rows._array.filter((a,i)=>i%2===0);
-          let oddArray = results.rows._array.filter((a,i)=>i%2===1);
-          setStateData1(items=> [...items, ...oddArray]);
-          setStateData2(items=> [...items, ...evenArray]);
+      db.transaction(
+        (tx)=> {
+          tx.executeSql(query, params,(tx, results) =>{
+            if(results.rows._array.length > 0){
+              let evenArray = results.rows._array.filter((a,i)=>i%2===0);
+              let oddArray = results.rows._array.filter((a,i)=>i%2===1);
+              setStateData1(items=> [...items, ...oddArray]);
+              setStateData2(items=> [...items, ...evenArray]);
 
-          currentOffset = results.rows._array[results.rows._array.length-1].id;
+              currentOffset = results.rows._array[results.rows._array.length-1].id;
+            }
+            fetching_nextPage = true;
+          }, function(tx,err) {
+            console.log(err.message);
+            return;
+          })
         }
-      }, function(tx,err) {
-        console.log(err.message);
-        return;
-      })
-    }
-  );
+      );
+    fetching_nextPage = false;
+  }
 }
 
 const UpdateTable =(change, id, table_id )=>{

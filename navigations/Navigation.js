@@ -123,9 +123,23 @@ function Navigation({navigation}){
         <NavigationContainer>
             <Stack.Navigator mode='modal' >
                 <Stack.Screen name="Cuisine" component={BottomNavigation} />
-                <Stack.Screen name="CuisineSelected" component={CuisineSelected} />
-                <Stack.Screen name="NoteEditor" component={NoteEditor} />
-                <Stack.Screen name="InfoModal" component={InfoModal}/>
+                <Stack.Screen name="CuisineSelected" component={CuisineSelected}
+                options={{
+                    headerShown: false
+                }}
+                />
+                <Stack.Screen name="NoteEditor" component={NoteEditor}
+                options={{
+                    headerShown: false
+                }}
+                />
+                <Stack.Screen name="InfoModal" component={InfoModal}
+                options={{                
+                    animationEnabled: false,
+                    headerShown: false,
+                    cardStyle: {backgroundColor: 'rgba(226,67,9,0.25)'},
+                    cardOverlayEnabled: true,
+                }}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

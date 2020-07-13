@@ -65,7 +65,7 @@ function SheetText(props){
 
     
     if(isDirection && oneTimeOnly){
-        navigation.navigate('InfoModal',{info: {text: 'Make sure your ingredients are ready ^_^'},
+        navigation.navigate('InfoModal',{info: {text: 'Make sure your ingredients \n are ready ^_^'},
         button:[ {title: 'ok'}]
     })
         oneTimeOnly = false;
@@ -303,9 +303,6 @@ function PeopleView(props){
 }
 
 function CuisineSelected({navigation, route}){
-    navigation.setOptions({
-        headerShown: false,
-    });
     const pan = useRef(new Animated.ValueXY()).current;
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 

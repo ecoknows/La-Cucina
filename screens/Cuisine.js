@@ -11,7 +11,9 @@ let swipeTO = null;
 let timeOut = null;
 let isSwipe = false;
 let currentMiddle = 0;
-let isFirst = false;
+
+const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
+
 
 function Middle (props){
     const [hColor, setHColor] = useState('white'); 
@@ -98,7 +100,7 @@ function Middle (props){
                 </View>
 
                 
-                <Text caption thirdary top={15}>
+                <Text size={13} thirdary top={10}>
                     {item.description}
                 </Text>
 
@@ -281,10 +283,13 @@ function Bottom(props){
 function Cuisine({navigation}){
     const listRef = useRef();
     const middleListRef = useRef();
+
     const topScrollX = new Animated.Value(0);
     const midScrollX = new Animated.Value(0);
-    const [ isCurrent, setIsCurrent] = useState(0);
-    const causineTabs  = tabs.cuisine.uppedTabs;
+
+    const [ isCurrent, setIsCurrent] = useState(0); // index of current mocks data
+
+
     const [ leftActive, setLeftActive] = useState('Rice');
     const [ bottomActive, setBottomActive] = useState(causineTabs[0].bottomTabs[0].name);
 
@@ -294,10 +299,7 @@ function Cuisine({navigation}){
         extrapolate: 'clamp'
     });
 
-
-
-
-    const getItemLayout = (data, index) => {
+    const getTopItemLayout = (data, index) => {
         const size = [
              100
             ,140
@@ -311,13 +313,13 @@ function Cuisine({navigation}){
         return {length: 10, width: size[index],offset: size[index] * index, index }
     }
 
-    const middleItemLayout =(data, index) =>{
+    const getMiddleItemLayout =(data, index) =>{
         let size = width - (width * .20);
     
         return  { length: 10, width: size, offset: size * index, index }
     }
 
-    const currentData = () => {
+    const CurrentCausine = () => {
         const cuisine = causineTabs[isCurrent].mocks;
 
         let filtered = cuisine.filter( 
@@ -331,10 +333,6 @@ function Cuisine({navigation}){
         return filtered;
     }
     
-    navigation.setOptions({
-        headerShown: false,
-    })
-
     return(
         <View animated white style={styles.container}>
             
@@ -347,8 +345,7 @@ function Cuisine({navigation}){
                     showsHorizontalScrollIndicator={false}
                     renderItem={({ item, index }) => <Top item={item} index={index} topScrollX={topScrollX} listRef={listRef} />}
                     contentContainerStyle={{paddingEnd : 240}}
-                    
-                    getItemLayout={getItemLayout}
+                    getItemLayout={getTopItemLayout}
                     
                     onScroll={
                         Animated.event(
@@ -360,13 +357,15 @@ function Cuisine({navigation}){
 
                                     if(swipeTO != null)
                                         clearTimeout(swipeTO);
-                                        swipeTO = setTimeout(() => {
+                                    
+                                    swipeTO = setTimeout(() => {
                                         isSwipe = false;
                                     }, 10);
-                                    
+                                
 
                                     if(timeOut != null)
                                         clearTimeout(timeOut);
+                                        
                                     if(offsetX != isCurrent ){
                                         timeOut = setTimeout(() => {
                                             setIsCurrent(offsetX);
@@ -396,12 +395,12 @@ function Cuisine({navigation}){
                         horizontal
                         initialNumToRender={2}
                         ref={middleListRef}
-                        data={currentData()}
+                        data={CurrentCausine()}
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item, index }) =>  <Middle middleListRef={middleListRef} item={item} index={index} navigation={navigation}/>}
                         keyExtractor={item => item.id}
                         contentContainerStyle={{paddingStart : 40, paddingEnd: 40}}
-                        getItemLayout={middleItemLayout}
+                        getItemLayout={getMiddleItemLayout}
                         
                         
                         onScroll={
