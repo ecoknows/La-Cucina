@@ -8,70 +8,8 @@ import { AddNote, SelectNote, DeleteAll, DropTable } from '../database/database'
 const { height } = Dimensions.get('screen');
 let open = null;
 let changesCnt = 0;
+let currentCheckListIndex = 0;
 
-function CheckedList(props){
-    const { item, index,checkedData, currentNote } = props;
-    const { state, setState } = checkedData;
-    const [text, setText] = useState(item._text);
-    const [checked, setChecked] = useState(item.status? true : false);
-    const [isChange, setIsChange] = useState(true);
-    
-    
-    const changeCheckedState =()=>{
-        const currentListStatus = currentNote.checkList[index].status ? true : false;
-        changesCnt = (!checked == currentListStatus) ? changesCnt-1 : changesCnt+1;
-        changesCnt = (changesCnt < 0) ? 0 : changesCnt; 
-        setChecked(checked?false : true);
-        setTimeout(() => {
-            let updateData = state;
-            updateData[index].status = state[index].status ? 0 : 1;
-            setState(items=> [...updateData]);
-        }, 1);
-    }
-
-    const changeTextState =textChanged=>{
-        console.log('agagaga');
-        if(currentNote.checkList[index] != null){
-            
-            if(isChange && textChanged != currentNote.checkList[index]._text ){
-                changesCnt++;
-                setIsChange(false);
-            }
-
-            if(!isChange && textChanged == currentNote.checkList[index]._text ){
-                changesCnt--;
-                setIsChange(true);
-            }
-
-        }
-
-        setText(textChanged);
-        setTimeout(() => {
-            let updateData = state;
-            updateData[index]._text = textChanged;
-            setState(items=> [...updateData]);
-        }, 1);
-    }
-    
-    return(
-        <View flex={false} row height={30}>
-            <CheckBox checked={checked} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,}} onPress={changeCheckedState}/>
-            <Input style={{width: '100%'}} autoFocus={true} 
-                onSubmitEditing={()=>{setState(
-                    items => [...items,{_text: '', status: false }])
-                }}
-                white
-                b1
-                hintColor='white'
-                family='semi-bold'
-                selectionColor='white'
-                value={text}
-                onChangeText={textChanged=> changeTextState(textChanged)}
-                
-            />
-        </View>
-    );
-}
 function NoteEditor({navigation, route}){
     const { currentNote, index, type} = route.params;
     const checkList = currentNote.checkList != null ?  currentNote.checkList.map(a => ({...a})) : [{_text: '', status: false}];
@@ -79,7 +17,7 @@ function NoteEditor({navigation, route}){
     const [ note, setNote] = useState(currentNote.note);
     const [noteColor, setNoteColor] = useState(currentNote.color);
     const [checked, setChecked] = useState(currentNote.isCheckList);
-    const [stateCheckedData, setStateCheckedData] = useState(checkList);
+    const [stateCheckedData, setStateCheckedData] = useState( checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);
     const colorWheel = useRef(new Animated.Value(0)).current;
 
@@ -88,6 +26,7 @@ function NoteEditor({navigation, route}){
     useEffect(()=>{
         open = false;
         changesCnt = 0;
+        currentCheckListIndex = 0;
         const keyboardListener = Keyboard.addListener('keyboardDidHide', ()=>{scrollViewAnimated.setValue(height - (height * 0.1))});
         return () => {keyboardListener.remove()}
     },[]);
@@ -120,7 +59,7 @@ function NoteEditor({navigation, route}){
         && changesCnt == 0)
         {
             navigation.goBack();
-        }else{    
+        }else{
             const current = {
                 id: currentNote.id, 
                 title,
@@ -136,9 +75,78 @@ function NoteEditor({navigation, route}){
                 index,
                 type,
             });
-        
-
         }
+    }
+
+    
+    function CheckedList(props){
+        const { item, index} = props;
+        const [text, setText] = useState(item._text);
+        const [checkedIndivid, setCheckedIndivid] = useState(item.status? true : false);
+        const [isChange, setIsChange] = useState(true);
+        
+        
+        const changeCheckedState =()=>{
+            const currentListStatus = currentNote.checkList[index].status ? true : false;
+            changesCnt = (!checkedIndivid == currentListStatus) ? changesCnt-1 : changesCnt+1;
+            changesCnt = (changesCnt < 0) ? 0 : changesCnt; 
+            setCheckedIndivid(checkedIndivid?false : true);
+            let updateData = stateCheckedData;
+            updateData[index].status = stateCheckedData[index].status ? 0 : 1;
+        }
+
+        const changeTextState =textChanged=>{
+            if(currentNote.checkList[index] != null){
+                
+                if(isChange && textChanged != currentNote.checkList[index]._text ){
+                    changesCnt++;
+                    setIsChange(false);
+                }
+
+                if(!isChange && textChanged == currentNote.checkList[index]._text ){
+                    changesCnt--;
+                    setIsChange(true);
+                }
+
+            }
+
+            setText(textChanged);
+            stateCheckedData[index]._text = textChanged;
+        }
+        
+        return(
+            <View flex={false} row>
+                <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 10}} onPress={changeCheckedState}/>
+                <Input style={{width: '50%'}} autoFocus={currentCheckListIndex == index ? true : false} 
+                
+                    onSubmitEditing={()=>{
+                        const modified = [...stateCheckedData.slice(0, index+1),{_text: '', status: false}, ...stateCheckedData.slice(index+1,stateCheckedData.length)]
+                        setStateCheckedData(modified);
+                        currentCheckListIndex= index+1;
+                    }}
+                    onKeyPress={({ nativeEvent }) => {
+                        if (nativeEvent.key === 'Backspace' && text == '') {
+                            const toRemove = [stateCheckedData[index]];
+                            const modified = stateCheckedData.filter(value=> !toRemove.includes(value));   
+                            setStateCheckedData(modified);
+                            currentCheckListIndex= index-1;
+                        }
+                    }}
+                    white
+                    b1
+                    scrollEnabled={false}
+                    blurOnSubmit={true}
+                    multiline
+                    textAlignVertical='top'
+                    hintColor='white'
+                    family='semi-bold'
+                    selectionColor='white'
+                    value={text}
+                    onChangeText={textChanged=> changeTextState(textChanged)}
+                    
+                />
+            </View>
+        );
     }
 
     return(
@@ -290,7 +298,7 @@ function NoteEditor({navigation, route}){
                         checked ? 
                         <View flex={50}> 
                             {stateCheckedData.map((item, index) => (
-                                <CheckedList key={index.toString()} item={item} index={index} checkedData={{state: stateCheckedData, setState: setStateCheckedData}} currentNote={currentNote}/>
+                                <CheckedList key={index.toString()} item={item} index={index} />
                             )
                             )}
                         </View>

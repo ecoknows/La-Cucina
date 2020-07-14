@@ -44,6 +44,7 @@ const RemovePos = async () => {
   }
 }
 
+
 const GetDataPos = async (setDataPos) => {
   if(isInitial){  
     try{
@@ -237,6 +238,23 @@ const AddNote = (data) =>{
           })
         }
     );
+
+}
+
+const RemoveNote =(id)=>{
+  let query = "DELETE from " + note_table + " WHERE id = " + id;
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+    tx.executeSql(query, params,(tx, results) =>{
+        console.log('Success Removing From Database!');
+    }, function(tx,err) {
+        console.log(err.message);
+        return;
+    })
+    }
+)
 
 }
 
@@ -482,4 +500,5 @@ export {
     GetHistory,
     GetHistroyCapacity,
     NextDataSelect,
+    RemoveNote,
 }

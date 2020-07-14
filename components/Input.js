@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{forwardRef} from 'react';
 import { TextInput, StyleSheet } from 'react-native';
 import { theme } from '../constants';
 
@@ -47,6 +47,7 @@ const Input = props => {
 
     return(
         <TextInput style={inputStyles} 
+            ref={props.innerRef}
             placeholder={hint} 
             placeholderTextColor={hintColor}
             {...rest} />
@@ -54,7 +55,7 @@ const Input = props => {
 
 }
 
-export default Input;
+export default forwardRef((props, ref) => <Input innerRef={ref} {...props} />);
 
 const styles = StyleSheet.create({
     input: {

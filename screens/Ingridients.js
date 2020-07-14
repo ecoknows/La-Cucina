@@ -3,7 +3,7 @@ import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DropTable,SeeData,NextDataSelect ,InitialData, DataPos, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, SetFirstNote, GetFirstNote, RemovePos } from '../database/database'
+import { AddNote, DropTable,SeeData,NextDataSelect ,InitialData, DataPos, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, SetFirstNote, GetFirstNote, RemovePos, RemoveNote } from '../database/database'
 import { PanResponder, Animated } from 'react-native';
 
 let _1_data = true;
@@ -182,10 +182,12 @@ function Ingridients({navigation, route}){
                     let isGreater = data[index] > data2[index] ? 0 : 1;
                     const data2_toSwap = data2.slice(index+isGreater, data2.length);
                    if(data2_toSwap.length == 0){
+                        RemoveNote(data[index].id);
                         const dataTochange = [data[index]];
                         const modified = data.filter(value=> !dataTochange.includes(value));    
                         setData(modified);
                     }else{
+                        RemoveNote(data[index].id);
                         const data1_toSwap = data.slice(index+1, data.length);
                         const data1_modi = [...data.slice(0, index), ...data2_toSwap];
                         const data2_modi = [...data2.slice(0, index+isGreater), ...data1_toSwap];
@@ -254,7 +256,7 @@ function Ingridients({navigation, route}){
         }
     })).current;
 
-    const firstItemMaxNoteLineLength = firstItem[0].isCheckList != null ? firstItem[0].checkList.length >= 5 ? 2 : 10 : 10;
+    const firstItemMaxNoteLineLength = firstItem != null ? firstItem[0].isCheckList != null ? firstItem[0].checkList.length >= 5 ? 2 : 10 : 10 : 10;
 
 
     return(
