@@ -87,9 +87,11 @@ function NoteEditor({navigation, route}){
         
         
         const changeCheckedState =()=>{
-            const currentListStatus = currentNote.checkList[index].status ? true : false;
-            changesCnt = (!checkedIndivid == currentListStatus) ? changesCnt-1 : changesCnt+1;
-            changesCnt = (changesCnt < 0) ? 0 : changesCnt; 
+            if(currentNote.checkList[index] != null){
+                const currentListStatus = currentNote.checkList[index].status ? true : false;
+                changesCnt = (!checkedIndivid == currentListStatus) ? changesCnt-1 : changesCnt+1;
+                changesCnt = (changesCnt < 0) ? 0 : changesCnt; 
+            }
             setCheckedIndivid(checkedIndivid?false : true);
             let updateData = stateCheckedData;
             updateData[index].status = stateCheckedData[index].status ? 0 : 1;
@@ -116,8 +118,8 @@ function NoteEditor({navigation, route}){
         
         return(
             <View flex={false} row>
-                <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 10}} onPress={changeCheckedState}/>
-                <Input style={{width: '50%'}} autoFocus={currentCheckListIndex == index ? true : false} 
+                <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 0}} onPress={changeCheckedState}/>
+                <Input style={{width: '80%', marginTop: 3}} autoFocus={currentCheckListIndex == index ? true : false} 
                 
                     onSubmitEditing={()=>{
                         const modified = [...stateCheckedData.slice(0, index+1),{_text: '', status: false}, ...stateCheckedData.slice(index+1,stateCheckedData.length)]
@@ -143,8 +145,15 @@ function NoteEditor({navigation, route}){
                     selectionColor='white'
                     value={text}
                     onChangeText={textChanged=> changeTextState(textChanged)}
-                    
                 />
+                <Text touchable white family='bold' size={20} left={10} 
+                    press={()=>{
+                        const toRemove = [stateCheckedData[index]];
+                        const modified = stateCheckedData.filter(value=> !toRemove.includes(value));   
+                        setStateCheckedData(modified);
+                        currentCheckListIndex= -1;
+                    }}
+                >x</Text>
             </View>
         );
     }
@@ -301,9 +310,18 @@ function NoteEditor({navigation, route}){
                                 <CheckedList key={index.toString()} item={item} index={index} />
                             )
                             )}
+                            <View touchable flex={false} row press={()=>{
+                                 const modified = [...stateCheckedData,{_text: '', status: false}]
+                                 setStateCheckedData(modified);    
+                                 currentCheckListIndex = stateCheckedData.length;
+                            }}>
+                                <Text white size={30} left={-5} top={-5}> + </Text>
+                                <Text size={20} white top={3} left={-5}> List</Text>
+                            </View>
                         </View>
                         : null
                     }
+
 
                 </View>
             </ScrollView>

@@ -248,13 +248,27 @@ const RemoveNote =(id)=>{
   db.transaction(
     (tx)=> {
     tx.executeSql(query, params,(tx, results) =>{
-        console.log('Success Removing From Database!');
+      query = "DELETE from " + note_check_tbl + " WHERE parent_id = " + id;
+      
+      db.transaction(
+        (tx)=> {
+        tx.executeSql(query, params,(tx, results) =>{
+            console.log('Success Removing From Database!');
+        }, function(tx,err) {
+            console.log(err.message);
+            return;
+        })
+        }
+      )
+      
     }, function(tx,err) {
         console.log(err.message);
         return;
     })
     }
-)
+  )
+
+
 
 }
 
