@@ -448,17 +448,15 @@ const QueryChangesList =(data)=>{
   let addQuery = ' ';
   let saveCheckList = save.checkList;
   let postCheckList = post.checkList;
-  for(let i = 0; i < saveCheckList.length; i++){
+  for(let i = 0; i < postCheckList.length; i++){
 
     addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
     addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
  
     if(addQuery != ' '){
+      postCheckList[i].id = ((postCheckList[i-1].id+1) ==  postCheckList[i].id)? postCheckList[i].id : (postCheckList[i-1].id+1);
       let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + postCheckList[i].id.toString();
       let params = [];
-      console.log('ecce ',query);
-    
-      
       db.transaction(
         (tx)=> {
           tx.executeSql(query, params,(tx, results) =>{
@@ -469,11 +467,9 @@ const QueryChangesList =(data)=>{
           })
         }
       );
-  
     }
 
   }
-
   if(postCheckList.length > saveCheckList.length ){
     let i = saveCheckList.length;
     for( ; i < postCheckList.length; i++){
@@ -484,6 +480,26 @@ const QueryChangesList =(data)=>{
           (tx)=> {
           tx.executeSql(query, params,(tx, results) =>{
               console.log('Success CheckList!');
+          }, function(tx,err) {
+              console.log(err.message);
+              return;
+          })
+          }
+      )
+
+    }
+  }
+
+  if(postCheckList.length < saveCheckList.length ){
+    let i = postCheckList.length;
+    for( ; i < saveCheckList.length; i++){
+      let query = "DELETE FROM "+ note_check_tbl +" WHERE id = " + saveCheckList[i].id.toString();
+      let params = [];
+
+      db.transaction(
+          (tx)=> {
+          tx.executeSql(query, params,(tx, results) =>{
+              console.log('DELETE CheckList!');
           }, function(tx,err) {
               console.log(err.message);
               return;

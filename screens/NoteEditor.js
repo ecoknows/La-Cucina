@@ -115,17 +115,20 @@ function NoteEditor({navigation, route}){
             setText(textChanged);
             stateCheckedData[index]._text = textChanged;
         }
+
+        const AddNewCheckList =()=>{
+            const modified = [...stateCheckedData.slice(0, index+1),{_text: '', status: false}, ...stateCheckedData.slice(index+1,stateCheckedData.length)]
+            setStateCheckedData(modified);
+            currentCheckListIndex= index+1;
+            changesCnt++;
+        }
         
         return(
             <View flex={false} row>
                 <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 0}} onPress={changeCheckedState}/>
                 <Input style={{width: '80%', marginTop: 3}} autoFocus={currentCheckListIndex == index ? true : false} 
                 
-                    onSubmitEditing={()=>{
-                        const modified = [...stateCheckedData.slice(0, index+1),{_text: '', status: false}, ...stateCheckedData.slice(index+1,stateCheckedData.length)]
-                        setStateCheckedData(modified);
-                        currentCheckListIndex= index+1;
-                    }}
+                    onSubmitEditing={AddNewCheckList}
                     onKeyPress={({ nativeEvent }) => {
                         if (nativeEvent.key === 'Backspace' && text == '') {
                             const toRemove = [stateCheckedData[index]];
@@ -314,6 +317,7 @@ function NoteEditor({navigation, route}){
                                  const modified = [...stateCheckedData,{_text: '', status: false}]
                                  setStateCheckedData(modified);    
                                  currentCheckListIndex = stateCheckedData.length;
+                                 changesCnt++;
                             }}>
                                 <Text white size={30} left={-5} top={-5}> + </Text>
                                 <Text size={20} white top={3} left={-5}> List</Text>
