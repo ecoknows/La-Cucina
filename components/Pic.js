@@ -10,7 +10,6 @@ const Pic = props => {
         src,
         animated,
         press,
-        onPress,
 
         // positions
         absolute,

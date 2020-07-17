@@ -12,8 +12,8 @@ const START = 1;
 
 let current_step = {value: 0};
 let oneTimeOnly; 
-let ingridents_finish_counter;
-let direction_finish_counter;
+let ingridents_finish_counter = {value: 0};
+let direction_finish_counter = {value: 0};
 let length_ingredients;
 let length_directions;
 
@@ -23,6 +23,9 @@ let popUpIsDone;
 
 let original_capacity = {value: 0};
 let original_direction = {value: 0};
+let original_ingridients = {value: 0};
+
+
 let isDataFetch = {value: false};
 let _ingredients_changer = {array: []};
 
@@ -30,6 +33,7 @@ const SAVE = 1;
 const BACK = 2;
 
 let _copy_ingridients;
+let open_nutrition;
 
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
@@ -50,16 +54,35 @@ function SheetText(props){
     useEffect(()=> {
         oneTimeOnly= true;
         current_step = {value: 0};
-        ingridents_finish_counter = 0;
-        direction_finish_counter = 0;
+        ingridents_finish_counter.value = 0;
+        direction_finish_counter.value = 0;
         isDataFetch.value = false;
         _ingredients_changer.array = [];
-        GetHistory(item.id, current_step, setCapacity, ingridients,setIsCurrentStepState,isCurrentStepState,isDataFetch, original_direction,_ingredients_changer);
+        original_capacity.value = 0;
+        original_direction.value = 0;
+        original_ingridients.value = 0
+        
+        const getHistory_Params = {
+            id: item.id,
+            current_step,
+            setCapacity,
+            ingridients,
+            setIsCurrentStepState,
+            isCurrentStepState,
+            isDataFetch, 
+            original_direction,
+            original_ingridients,
+            _ingredients_changer,
+            ingridents_finish_counter,
+            direction_finish_counter,
+        }
+
+        GetHistory(getHistory_Params);
 
         length_ingredients = ingridients.length;
         length_directions = direction.length;
         
-        popUpIsDone = length_ingredients == ingridents_finish_counter ? false : true; 
+        popUpIsDone = length_ingredients == ingridents_finish_counter.value ? false : true; 
         typea().then((value)=> _copy_ingridients = value);
     },[]);
 
@@ -72,7 +95,7 @@ function SheetText(props){
     }
 
     const IndicatorClick =()=>{
-        direction_finish_counter = isCurrentStepState == DONE?  direction_finish_counter + 1 : direction_finish_counter;
+        direction_finish_counter.value = isCurrentStepState == DONE?  direction_finish_counter.value + 1 : direction_finish_counter.value;
         setIsIndicator(isIndicator ? false : true);
         setIsCurrentStepState( isCurrentStepState ? DONE : START);
         if(isCurrentStepState == DONE)
@@ -86,7 +109,7 @@ function SheetText(props){
         const [checked, setChecked] = useState(item.checked);
         
         const CheckBoxClick =()=>{
-            ingridents_finish_counter = !checked ? ingridents_finish_counter+1 : ingridents_finish_counter-1;
+            ingridents_finish_counter.value = !checked ? ingridents_finish_counter.value+1 : ingridents_finish_counter.value-1;
             setChecked(checked ? false : true);
             item.checked = checked ? false : true;
             if(item.checked){
@@ -192,7 +215,7 @@ function SheetText(props){
             value = value == 0.5 ? '1/2' : value;
             ValueText =  <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{value} </Text>
             textLeft = 0;
-            FloatingCongrats = (checked && ingridents_finish_counter == length_ingredients && popUpIsDone) ? 
+            FloatingCongrats = (checked && ingridents_finish_counter.value == length_ingredients && popUpIsDone) ? 
             <PopUpMessage/>
             : 
             null;
@@ -358,22 +381,45 @@ function CuisineSelected({navigation, route}){
             if(nutrition_latestoffset < 0){
                 nutrition_pan.x.setValue(0);
             }
+            if(nutrition_latestoffset > 80){
+                OpenNutrition(true);
+            }else{
+                OpenNutrition(false);
+            }
         }
       })).current;
 
-      const yAxis = pan.y.interpolate({
+    const yAxis = pan.y.interpolate({
         inputRange: [-100,0],
         outputRange: [-100,0],
         extrapolate: 'clamp',
-      });
+    });
 
-      const xAxis = nutrition_pan.x.interpolate({
+    const xAxis = nutrition_pan.x.interpolate({
         inputRange: [0,200],
         outputRange: [0,200],
         extrapolate: 'clamp',
-      });
+    });
+
+    const OpenNutrition =(des)=>{
+        Animated.timing(nutrition_pan.x,{
+            toValue: des ? 200 : 0,
+        }).start();
+    }
+
+    const NutritionClick =()=>{
+        if(open_nutrition == false){
+            OpenNutrition(true);
+            open_nutrition = true;
+        }else{
+            OpenNutrition(false);
+            open_nutrition = false;
+        }
+        
+    }
 
     useEffect(()=> {
+        open_nutrition = false;
         nutrition_pan.x.addListener(({value}) => nutrition_latestoffset = value);
         pan.y.addListener(({value}) => sheet_latestoffset = value);
         original_capacity.value = item.capacity;
@@ -412,8 +458,8 @@ function CuisineSelected({navigation, route}){
     },[route.params?.modal])
 
     const BackButtonClick =()=>{
-       // console.log(ingridents_finish_counter, ' ', direction_finish_counter)
-        if(ingridents_finish_counter != 0 || direction_finish_counter != 0 || capacity != original_capacity.value ){
+        if(ingridents_finish_counter.value != original_ingridients.value
+            || direction_finish_counter.value != original_direction.value || capacity != original_capacity.value ){
             navigation.navigate('InfoModal',{info: {text: 'Do you want to save it? ^_^'}, 
             button: [
                 {
@@ -506,14 +552,16 @@ function CuisineSelected({navigation, route}){
                         ]  
                     }]}
                     flex={false} absolute {...NutritionPanResponder.panHandlers}>
-                    
-                    <Pic 
-                        resizeMode='contain'
-                        src={require('../assets/images/nutrients.png')}
-                        size={[120,40]}
-                        accent
-                    />
-                    <Text top={9} left={15} absolute white family='bold' size={16}>Nutrition</Text>   
+                    <TouchableOpacity activeOpacity={1} flex={0} onPress={NutritionClick}>
+                        <Pic 
+                            resizeMode='contain'
+                            src={require('../assets/images/nutrients.png')}
+                            size={[120,40]}
+                            accent
+                            onPress={()=>console.log('afafafa')} 
+                        />
+                        <Text top={9} left={15} absolute white family='bold' size={16}>Nutrition</Text> 
+                    </TouchableOpacity>  
                 </View>
 
             </View>
@@ -597,7 +645,7 @@ const styles = StyleSheet.create({
     indicator: {
         flex: 0,
         height: 8,
-        width: 90,
+        width: 150,
         borderRadius: 20,
     },
     nutrients: {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, forwardRef } from 'react';
+import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../components';
 import { StyleSheet, Animated, Dimensions,ActivityIndicator  } from 'react-native';
 
@@ -145,8 +145,11 @@ function Middle (props){
 
 function Left (props){
     const [isActive , setIsActive] = useState('Rice');
-    const {  setLeftActive } = props;
+    const { setLeftActive } = props;
 
+    useEffect(()=>{
+        setLeftActive(isActive)
+    }, [isActive]);
     const leftTabs = tabs.cuisine.leftTabs.breakfast;
 
     return(
@@ -159,12 +162,7 @@ function Left (props){
                 key={tab.name} flex={false} style={{flexDirection: 'column-reverse'}} >
                     
                     <TouchableOpacity 
-                        onPress={()=> {setIsActive(tab.name); 
-                            
-                            setTimeout(() => {
-                                    setLeftActive(tab.name)
-                            }, 1);
-                         }}
+                        onPress={()=> setIsActive(tab.name)}
                         style={{flexDirection: 'column-reverse'}}>
 
                       <Text secondary={!active} right={30} rotate={180} family='semi-bold' size={16} style={{width: tab.width}} >{tab.name}</Text>
@@ -239,6 +237,10 @@ function Bottom(props){
     const [ isActive, setIsActive] = useState('Veggies');
     const { setBottomActive, data } = props;
 
+    useEffect(()=>{
+        setBottomActive(isActive)
+    }, [isActive]);
+
     const BottomItem = (props) =>{
         
         const { item, } = props;
@@ -247,13 +249,7 @@ function Bottom(props){
         return(
             <Card marginX={[10]} center middle size={[70,70]} round={20} accent={active} gray2={!active}
                     touchable showOpacity={1} 
-                    press={()=> {
-                        setIsActive(item.name)
-                        
-                        setTimeout(() => {
-                            setBottomActive(item.name)
-                        }, 1);
-                    }}
+                    press={()=> setIsActive(item.name)}
                     >
                 <Text white={active} size={14} family='bold' gray={!active} >{item.name}</Text>
             </Card>
@@ -408,8 +404,13 @@ function Cuisine({navigation}){
                                 [{nativeEvent: {contentOffset: {x: midScrollX}}}],
                                 {
                                     listener: event => {
-                                        const offsetX = Math.floor(event.nativeEvent.contentOffset.x / (width - (width * .20)));
+                                        const x = event.nativeEvent.contentOffset.x / (width - (width * .20));
+                                        const offsetX = Math.floor(x);
                                         currentMiddle = offsetX;
+                                        if(x % 1 > 0.05){
+                                            currentMiddle = -1;
+                                        }
+
                                     }
                                 }
                             )
@@ -432,9 +433,6 @@ function Cuisine({navigation}){
 
     
 }
-
-
-
 
 export default Cuisine;
 

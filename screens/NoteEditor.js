@@ -12,12 +12,12 @@ let currentCheckListIndex = 0;
 
 function NoteEditor({navigation, route}){
     const { currentNote, index, type} = route.params;
-    const checkList = currentNote.checkList != null ?  currentNote.checkList.map(a => ({...a})) : [{_text: '', status: false}];
+    const checkList = currentNote.checkList != null?  currentNote.checkList.map(a => ({...a})) : [{_text:'', status: false}];
     const [ title, setTitle] = useState(currentNote.title);
     const [ note, setNote] = useState(currentNote.note);
     const [noteColor, setNoteColor] = useState(currentNote.color);
     const [checked, setChecked] = useState(currentNote.isCheckList);
-    const [stateCheckedData, setStateCheckedData] = useState( checkList);
+    const [stateCheckedData, setStateCheckedData] = useState(checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);
     const colorWheel = useRef(new Animated.Value(0)).current;
 
@@ -98,7 +98,7 @@ function NoteEditor({navigation, route}){
         }
 
         const changeTextState =textChanged=>{
-            if(currentNote.checkList[index] != null){
+            if(currentNote.checkList[index] != null && item.id != undefined){
                 
                 if(isChange && textChanged != currentNote.checkList[index]._text ){
                     changesCnt++;
@@ -132,6 +132,7 @@ function NoteEditor({navigation, route}){
                     onKeyPress={({ nativeEvent }) => {
                         if (nativeEvent.key === 'Backspace' && text == '') {
                             const toRemove = [stateCheckedData[index]];
+                            changesCnt = item.id == undefined ? changesCnt-1 : changesCnt+1;
                             const modified = stateCheckedData.filter(value=> !toRemove.includes(value));   
                             setStateCheckedData(modified);
                             currentCheckListIndex= index-1;
@@ -152,6 +153,8 @@ function NoteEditor({navigation, route}){
                 <Text touchable white family='bold' size={20} left={10} 
                     press={()=>{
                         const toRemove = [stateCheckedData[index]];
+                        console.log(' labkopadinbebeko = ', item.id);
+                        changesCnt = item.id == undefined ? changesCnt-1 : changesCnt+1;
                         const modified = stateCheckedData.filter(value=> !toRemove.includes(value));   
                         setStateCheckedData(modified);
                         currentCheckListIndex= -1;
@@ -208,7 +211,7 @@ function NoteEditor({navigation, route}){
                                         </TouchableOpacity>
                                         
                                         <CheckBox checkedColor='white' uncheckedColor='white' checked={checked?true:false} 
-                                            onPress={()=>setChecked(checked?false:true)}
+                                            onPress={()=>{setChecked(checked?false:true);}}
                                             size={30}
                                             containerStyle={{flex: 0, width: 40, height: 40, top: -17, marginRight: 2,}}
                                         />
@@ -229,36 +232,29 @@ function NoteEditor({navigation, route}){
                                             />
                                         </TouchableOpacity>
                                     </View >
-                                    <View animated style={{flex: 0, flexDirection: 'row', marginTop: 30,
-                                        width:  colorWheel.interpolate({
-                                            inputRange: [-100, 0],
-                                            outputRange: [100,0],
-                                            extrapolate: 'clamp'
-                                        }), position: 'absolute',
-                                        right: 0,
-                                    }} > 
-                                    <List
-                                        horizontal
-                                        showsHorizontalScrollIndicator={false}
-                                        data={[ 
-                                            {color: '#64D671' },
-                                            {color: '#5682FF' },
-                                            {color: '#FFA2A2' },
-                                            {color: '#FF84DF' },
-                                            {color: '#8685FF' },
-                                            {color: 'yellow' },
-                                        ]}
-                                        renderItem={({item}) => 
-                                        <TouchableOpacity style={{flex: 0}} onPress={()=> setNoteColor(item.color)}>
-                                            <Circle color={item.color} size={15} marginRight={5}
-                                            style={{borderColor: 'white',borderWidth: 1}}
-                                            /> 
-                                        </TouchableOpacity>
-                                        }
-                                        keyExtractor={item=> item.color}
-                                    />
+                                        <View animated style={{flex: 0, flexDirection: 'row', marginTop: 30,
+                                            width:  colorWheel.interpolate({
+                                                inputRange: [-100, 0],
+                                                outputRange: [100,0],
+                                                extrapolate: 'clamp'
+                                            }), position: 'absolute',
+                                            right: 0,
+                                        }} > 
+                                            <List
+                                                horizontal
+                                                showsHorizontalScrollIndicator={false}
+                                                data={theme.colors.wheel}
+                                                renderItem={({item}) => 
+                                                <TouchableOpacity style={{flex: 0}} onPress={()=> setNoteColor(item)}>
+                                                    <Circle color={item} size={15} marginRight={5}
+                                                    style={{borderColor: 'white',borderWidth: 1}}
+                                                    /> 
+                                                </TouchableOpacity>
+                                                }
+                                                keyExtractor={(item,index)=> index.toString()}
+                                            />
         
-                                    </View>
+                                        </View>
                                     
                                 </View>
                                 
@@ -275,6 +271,7 @@ function NoteEditor({navigation, route}){
                         h2
                         hint='Title'
                         white
+                        onFocus={()=> currentCheckListIndex = -1}
                         hintColor='white'
                         width='95%'
                         multiline
@@ -289,7 +286,8 @@ function NoteEditor({navigation, route}){
                     {
                         isNote ? <Input 
                         scrollEnabled={false}
-                        onTouchStart={()=>scrollViewAnimated.setValue(height - (height * 0.6))}
+                        onTouchStart={()=>{scrollViewAnimated.setValue(height - (height * 0.6))}}
+                        onFocus={()=> currentCheckListIndex = -1}
                         b1 
                         pointerEvents='none'
                         white
@@ -329,7 +327,7 @@ function NoteEditor({navigation, route}){
 
                 </View>
             </ScrollView>
-            <View flex={false} paddingBottom={5} paddingTop={5} paddingRight={5}>
+            <View flex={false} paddingBottom={15} paddingTop={15} paddingRight={15}>
                 
             <Text white end size={13} family='semi-bold' 
             >{currentNote.date}</Text>

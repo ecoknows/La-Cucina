@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import * as SQLite from 'expo-sqlite';
+import { theme } from '../constants';
 
 const db = SQLite.openDatabase('chevy');
 
@@ -12,6 +13,7 @@ const history_tbl = 'histroy_table';
 const userId = 'Amber';
 const first_data = 'Eco';
 const TAG = 'DATABASE ';
+const is_note_tbl_exist = 'exist_note_tbl';
 
 let currentOffset = -1;
 
@@ -27,6 +29,7 @@ const InitialData =(dataState)=> {
     isInitial = false;
   }
 }
+
 
 const DataPos = async pos => {
   try{
@@ -82,12 +85,48 @@ const GetFirstNote = async (setFirstItem)=>{
   }
 }
 
+const IsTableExist = async ()=>{
+    try{
+      result = await AsyncStorage.getItem(is_note_tbl_exist) || null ;
+      if(result == null){
+        AddInitialNote()
+        try{
+          await AsyncStorage.setItem(is_note_tbl_exist,'exist');
+        }catch (error){
+          console.log(TAG, error);
+        }
+      }
+      
+    }catch (error){
+      console.log(TAG, error);
+    }
+}
+const AddInitialNote =()=>{
+  const array = theme.initial_note_data; 
+  SetFirstNote(array[0]);
+  for(let i = 1; i < array.length; i++){
+    AddNote(array[i]);
+  }
+  
+}
+
+
 const CheckNote =()=>{
+  let isCheckNoteTableDone = false;
     db.transaction(
         tx => {
             tx.executeSql(
                 `create table if not exists ${note_table} `+
                 `(id integer primary key not null, title text, date text, color text, note text, isNote integer, isCheckList integer)`
+            , [], (tx, results) =>{
+              if(isCheckNoteTableDone)
+                IsTableExist();
+              else 
+                isCheckNoteTableDone = true;
+          }, function(tx,err) {
+              console.log(err.message);
+              return;
+          }
             );
         }
     );
@@ -97,6 +136,15 @@ const CheckNote =()=>{
             tx.executeSql(
                 `create table if not exists ${note_check_tbl} `+
                 `(id integer primary key not null, parent_id integer , _text text, status integer)`
+              , [], (tx, results) =>{
+                if(isCheckNoteTableDone)
+                  IsTableExist();
+                else 
+                  isCheckNoteTableDone = true;
+              }, function(tx,err) {
+                  console.log(err.message);
+                  return;
+              }
             );
         }
     );
@@ -141,7 +189,22 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange)=>{
   )
 }
 
-const GetHistory =(id, current_step, setCapacity, ingredients,setIsCurrentStepState,isCurrentStepState,isDataFetch, original_directions,_ingredients_changer)=>{ 
+const GetHistory =(arg)=>{ 
+  const { 
+    id, 
+    current_step,
+    setCapacity, 
+    ingridients,
+    setIsCurrentStepState,
+    isCurrentStepState,
+    isDataFetch,
+    original_direction,
+    original_ingridients,
+    _ingredients_changer,
+    ingridents_finish_counter,
+    direction_finish_counter
+  } = arg;
+
   let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
   let params = [];
 
@@ -150,17 +213,19 @@ const GetHistory =(id, current_step, setCapacity, ingredients,setIsCurrentStepSt
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
           current_step.value = results.rows._array[0].directions;
-          original_directions.value = results.rows._array[0].directions;
+          original_direction.value = results.rows._array[0].directions;
+          direction_finish_counter.value = results.rows._array[0].directions;
           setCapacity(results.rows._array[0].capacity);
           if(results.rows._array[0].ingredients != ' '){
-            console.log('asddaaaaadddd');
-            
+
             let ing_arr = results.rows._array[0].ingredients.split(',').map(Number);
+            ingridents_finish_counter.value = ing_arr.length;
+            original_ingridients.value = ing_arr.length;
             
             _ingredients_changer.array = _ingredients_changer.array.filter(value => !ing_arr.includes(value));
             _ingredients_changer.array = [..._ingredients_changer.array,...ing_arr];
             for(let i = 0; i < ing_arr.length; i++){
-              ingredients[ing_arr[i]].checked = true;
+              ingridients[ing_arr[i]].checked = true;
             }
             setIsCurrentStepState(-1);
             setIsCurrentStepState(isCurrentStepState);
@@ -225,10 +290,12 @@ const AddNote = (data) =>{
     db.transaction(
         (tx)=> {
           tx.executeSql(query, params,(tx, results) =>{
+            let size = 0;
+            if(checkList.length != 1 && checkList[0]._text != '' )
+              size = checkList.length;
             
-            for(let i = 0; i < checkList.length; i++){
-
-            AddCheckList(results.insertId, checkList[i]);
+            for(let i = 0; i < size; i++){
+              AddCheckList(results.insertId, checkList[i]);
             }
             console.log('Success Note!');
             
@@ -448,30 +515,35 @@ const QueryChangesList =(data)=>{
   let addQuery = ' ';
   let saveCheckList = save.checkList;
   let postCheckList = post.checkList;
-  for(let i = 0; i < postCheckList.length; i++){
+  if(saveCheckList[0].id != null)
+    for(let i = 0; i < saveCheckList.length; i++){
+      addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
+      addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
+  
+      if(addQuery != ' '){
+        
+        postCheckList[i].id = postCheckList[i].id == undefined ? postCheckList[i-1].id : postCheckList[i].id;
+        if(i != 0)
+          postCheckList[i].id = ((postCheckList[i-1].id+1) ==  postCheckList[i].id)? postCheckList[i].id : (postCheckList[i-1].id+1);
+        let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + postCheckList[i].id.toString();
+        let params = [];
+        db.transaction(
+          (tx)=> {
+            tx.executeSql(query, params,(tx, results) =>{
+              console.log("Success");
+            }, function(tx,err) {
+              console.log(err.message);
+              return;
+            })
+          }
+        );
+      }
 
-    addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
-    addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
- 
-    if(addQuery != ' '){
-      postCheckList[i].id = ((postCheckList[i-1].id+1) ==  postCheckList[i].id)? postCheckList[i].id : (postCheckList[i-1].id+1);
-      let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + postCheckList[i].id.toString();
-      let params = [];
-      db.transaction(
-        (tx)=> {
-          tx.executeSql(query, params,(tx, results) =>{
-            console.log("Success");
-          }, function(tx,err) {
-            console.log(err.message);
-            return;
-          })
-        }
-      );
     }
 
-  }
   if(postCheckList.length > saveCheckList.length ){
-    let i = saveCheckList.length;
+    
+    let i = saveCheckList[0].id == null ? 0 : saveCheckList.length;
     for( ; i < postCheckList.length; i++){
       let query = "INSERT INTO "+ note_check_tbl +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
       let params = [post.id, postCheckList[i]._text, postCheckList[i].status];

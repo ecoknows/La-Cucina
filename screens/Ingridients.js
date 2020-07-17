@@ -59,19 +59,12 @@ function Ingridients({navigation, route}){
             const {index, post, type} = route.params; 
 
             if(index == -1){
-                if(firstItem == null){
-                    SetFirstNote(post);
-                    setFirstItem([post]);
-                }
-                else{
-                    const setData = isFirstRow ? setStateData1 : setStateData2;
-                    id_latest.value++;
-                    setData(items=>[post,...items])
-                    setIsFirstRow(isFirstRow ? false : true); 
-                    DataPos(isFirstRow);
-                    AddNote(post);
-                }
-
+                const setData = isFirstRow ? setStateData1 : setStateData2;
+                id_latest.value++;
+                setData(items=>[post,...items])
+                setIsFirstRow(isFirstRow ? false : true); 
+                DataPos(isFirstRow);
+                AddNote(post);
             }else{
                 let updateData = null, save = null;
                 switch(type){
@@ -132,11 +125,11 @@ function Ingridients({navigation, route}){
             const { item,index } = props;
             const [checked, setChecked] = useState(item.status? true: false);
             return(
-                <View row>
+                <View row paddingRight={40} >
                 <CheckBox checked={checked} size={20} checkedColor='white' uncheckedColor='white'  containerStyle={{width: 30,height: 20, marginLeft: -10}} 
                     onPress={()=> { setChecked(checked ? false : true); changeChecked(index); }}
                     />
-                <Text size={12} white family='bold' top={5} left={-3} >
+                <Text size={12} white family='bold' top={5} left={-3}>
                     {item._text}</Text> 
                 </View>
             );  
@@ -218,7 +211,7 @@ function Ingridients({navigation, route}){
             >
                 <Card activeOpacity={1} inTouchable round={25} color={item.color} padding={theme.sizes.padding} accent 
                     inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type}) }>
-                    <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>
+                {item.title == ''? null :<Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>}
                 {(item.isNote)? item.note == '' ? null : <Text size={11} white family='semi-bold' bottom={10} numberOfLines={maxNoteLineLength} ellipsizeMode='tail'>{item.note}</Text> : null }
                 {item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data,setData}} /> : null}
                     <Text size={12} white end top={20}>{item.date}</Text>
@@ -249,9 +242,7 @@ function Ingridients({navigation, route}){
         ),
         onPanResponderRelease: (_, {dx}) => {
             fSwipe.flattenOffset();
-
-            if(dx < 100 && dx > -100)
-                animationOutFirstNote()
+            animationOutFirstNote()
             
         }
     })).current;
@@ -303,8 +294,8 @@ function Ingridients({navigation, route}){
                             inPress={()=>navigation.navigate('NoteEditor',{currentNote: firstItem[0], index: 0, type : 0}) }
                             
                             >
-                            <Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{firstItem[0].title}</Text>
-                            <Text size={11} white family='semi-bold' numberOfLines={firstItemMaxNoteLineLength}>{firstItem[0].note}</Text>
+                            {firstItem[0].title == '' ? null :<Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{firstItem[0].title}</Text>}
+                            {firstItem[0].note == '' ? null :<Text size={11} white family='semi-bold' numberOfLines={firstItemMaxNoteLineLength}>{firstItem[0].note}</Text>}
                             {firstItem[0].isCheckList ? <CheckList item={firstItem[0]}  mainIndex={0} stateData={{data: firstItem,setData: setFirstItem}} isFirst={true}/> : null}
                             <Text size={12} white family='bold' >{null}</Text>
                             <Text size={12} white end top={20}>12 Feb</Text>
@@ -346,7 +337,7 @@ function Ingridients({navigation, route}){
             
             <View paddingTop={10} center middle >
                 <Card touchable round={50} accent size={[100]} center middle 
-                    press={()=> navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.accent, checkList: [{_text: '', status: false}]}, index: -1}) }
+                    press={()=> navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]}, index: -1}) }
                 >
                     <Text family='semi-bold' size={18} white>Create</Text>
                 </Card>
