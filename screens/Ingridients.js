@@ -126,11 +126,11 @@ function Ingridients({navigation, route}){
             const [checked, setChecked] = useState(item.status? true: false);
             return(
                 <View row paddingRight={40} >
-                <CheckBox checked={checked} size={20} checkedColor='white' uncheckedColor='white'  containerStyle={{width: 30,height: 20, marginLeft: -10}} 
+                {item._text == '' ? null : <CheckBox checked={checked} size={20} checkedColor='white' uncheckedColor='white'  containerStyle={{width: 30,height: 20, marginLeft: -10}} 
                     onPress={()=> { setChecked(checked ? false : true); changeChecked(index); }}
-                    />
-                <Text size={12} white family='bold' top={5} left={-3}>
-                    {item._text}</Text> 
+                    />}
+                {item._text == '' ? null : <Text size={12} white family='bold' top={5} left={-3}>
+                             {item._text}</Text>}
                 </View>
             );  
         }

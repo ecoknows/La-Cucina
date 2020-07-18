@@ -389,7 +389,8 @@ const SelectCheckList =(array,stateData,setStateData,index)=>{
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          
+          if(array.title == 'Availabe Ingridients')
+            console.log(results.rows._array , ' < ggmomukhamo');
           let modified = {
             id: array.id,
             title: array.title, 
@@ -403,6 +404,8 @@ const SelectCheckList =(array,stateData,setStateData,index)=>{
           const data = stateData;
           data[index] = modified;
           setStateData(state => [...data]);
+        }else{
+          array.checkList = [{_text:'', status: false}];
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -498,12 +501,14 @@ const UpdateTable =(change, id, table_id )=>{
 
 const QueryChanges =(data)=>{
   const { save, post } = data;
+  console.log('sadreax ' , save.isCheckList);
+  console.log('sadreax_post ' , post.isCheckList);
   let addQuery = ' ';
   addQuery = save.title != post.title ? addQuery + "title = '" + post.title +"', " : addQuery;
   addQuery = save.note != post.note ? addQuery + "note = '" + post.note +"', " : addQuery;
   addQuery = save.color != post.color ? addQuery + "color = '" + post.color +"', " : addQuery ;
   addQuery = save.date != post.date ? addQuery + "date = '" + post.date +"', " : addQuery ;
-  addQuery = (save.isCheckList != post.isCheckList) ? addQuery + "isCheckList = " + (post.checkList ?  '1': '0') +", " : addQuery ;
+  addQuery = (save.isCheckList != post.isCheckList) ? addQuery + "isCheckList = " + (post.isCheckList ?  '1': '0') +", " : addQuery ;
   addQuery = (save.isNote != post.isNote) ? addQuery + "isNote = " + (post.isNote ? "1" : "0") +", " : addQuery ;
   
   return addQuery == ' ' ? ' ' : addQuery.slice(0, -2);

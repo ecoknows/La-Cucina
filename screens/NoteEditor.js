@@ -16,6 +16,7 @@ function NoteEditor({navigation, route}){
     const [ title, setTitle] = useState(currentNote.title);
     const [ note, setNote] = useState(currentNote.note);
     const [noteColor, setNoteColor] = useState(currentNote.color);
+    console.log('iwasafraid ' , currentNote.isCheckList);
     const [checked, setChecked] = useState(currentNote.isCheckList);
     const [stateCheckedData, setStateCheckedData] = useState(checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);
@@ -52,11 +53,12 @@ function NoteEditor({navigation, route}){
     
 
     const checkData =()=>{
+        console.log(changesCnt);
         if(title == currentNote.title
         && note == currentNote.note
         && noteColor == currentNote.color
-        && checked == currentNote.isCheckList
-        && changesCnt == 0)
+        && (checked == currentNote.isCheckList || (checked && (stateCheckedData.length == 1 && stateCheckedData[0]._text == '') ) || (checked && (stateCheckedData.length == 0)))
+        && changesCnt <= 0)
         {
             navigation.goBack();
         }else{
@@ -66,9 +68,9 @@ function NoteEditor({navigation, route}){
                 note,
                 color: noteColor,
                 date: currentNote.date,
-                checkList: stateCheckedData,
+                checkList: stateCheckedData.length == 0 ?  [{_text:'', status: false}] : stateCheckedData,
                 isCheckList: checked,
-                isNote,
+                isNote: isNote,
             }
             navigation.navigate('Ingridients',{post:
                 current,
@@ -124,10 +126,11 @@ function NoteEditor({navigation, route}){
         }
         
         return(
-            <View flex={false} row>
+            <View flex={false} row  marginTop={-10}>
                 <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 0}} onPress={changeCheckedState}/>
-                <Input style={{width: '80%', marginTop: 3}} autoFocus={currentCheckListIndex == index ? true : false} 
-                
+                <Input style={{width: '70%',marginTop: 3}} autoFocus={currentCheckListIndex == index ? true : false} 
+                    
+                    placeholder={ text + '\nf'}
                     onSubmitEditing={AddNewCheckList}
                     onKeyPress={({ nativeEvent }) => {
                         if (nativeEvent.key === 'Backspace' && text == '') {
@@ -140,20 +143,19 @@ function NoteEditor({navigation, route}){
                     }}
                     white
                     b1
+                    value={text=='' ? ' ' : text}
                     scrollEnabled={false}
                     blurOnSubmit={true}
-                    multiline
+                    multiline={true}
                     textAlignVertical='top'
                     hintColor='white'
                     family='semi-bold'
                     selectionColor='white'
-                    value={text}
                     onChangeText={textChanged=> changeTextState(textChanged)}
                 />
                 <Text touchable white family='bold' size={20} left={10} 
                     press={()=>{
                         const toRemove = [stateCheckedData[index]];
-                        console.log(' labkopadinbebeko = ', item.id);
                         changesCnt = item.id == undefined ? changesCnt-1 : changesCnt+1;
                         const modified = stateCheckedData.filter(value=> !toRemove.includes(value));   
                         setStateCheckedData(modified);
@@ -198,7 +200,7 @@ function NoteEditor({navigation, route}){
                                         }}
                                     >
                                         <TouchableOpacity style={{marginRight:-10}} onPress={
-                                            ()=>{setIsNote(isNote? false: true);}
+                                            ()=>{setIsNote(isNote? 0: 1);}
                                         }>
                                             
                                             <Pic 
@@ -211,7 +213,7 @@ function NoteEditor({navigation, route}){
                                         </TouchableOpacity>
                                         
                                         <CheckBox checkedColor='white' uncheckedColor='white' checked={checked?true:false} 
-                                            onPress={()=>{setChecked(checked?false:true);}}
+                                            onPress={()=>{setChecked(checked?0:1);}}
                                             size={30}
                                             containerStyle={{flex: 0, width: 40, height: 40, top: -17, marginRight: 2,}}
                                         />
@@ -297,6 +299,7 @@ function NoteEditor({navigation, route}){
                         hint='Note'
                         hintColor='white'
                         marginTop={5}
+                        marginBottom={10}
                         width='95%'
                         onChangeText={enteredText => setNote(enteredText)}
                         value={note}

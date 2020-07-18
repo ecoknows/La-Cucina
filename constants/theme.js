@@ -146,7 +146,7 @@ const initial_note_data = [
         color: '#24a19c',
         date: '16 July',
         checkList: [{_text:'', status: false}],
-        isCheckList: 1,
+        isCheckList: 0,
         isNote: 1,
     },
 ];
