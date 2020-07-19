@@ -126,11 +126,11 @@ function NoteEditor({navigation, route}){
         }
         
         return(
-            <View flex={false} row  marginTop={-10}>
+            <View flex={false} row >
                 <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 0}} onPress={changeCheckedState}/>
                 <Input style={{width: '70%',marginTop: 3}} autoFocus={currentCheckListIndex == index ? true : false} 
                     
-                    placeholder={ text + '\nf'}
+                    placeholder={ text }
                     onSubmitEditing={AddNewCheckList}
                     onKeyPress={({ nativeEvent }) => {
                         if (nativeEvent.key === 'Backspace' && text == '') {
@@ -143,7 +143,7 @@ function NoteEditor({navigation, route}){
                     }}
                     white
                     b1
-                    value={text=='' ? ' ' : text}
+                    value={text=='' ? '' : text}
                     scrollEnabled={false}
                     blurOnSubmit={true}
                     multiline={true}

@@ -50,9 +50,9 @@ function Ingridients({navigation, route}){
 
   //DeleteAll();
   //DropTable();
-  //SeeData();
   //RemovePos();
     useEffect(() => {
+       //SeeData();
        GetFirstNote(setFirstItem);
        InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2, id_latest });
         if (route.params?.post) {

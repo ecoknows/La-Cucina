@@ -422,7 +422,7 @@ const SelectCheckList =(array,stateData,setStateData,index)=>{
 const SeeData =()=>{
   //let query = "SELECT r.*, l._text from " + note_table + " r INNER JOIN " + note_check_tbl+ " l ON r.id = l.parent_id";
   //let query = "SELECT * FROM " + note_table + " WHERE id = 1 = ( SELECT * FROM "+note_check_tbl+" )"
-  let query = "SELECT * FROM "+ history_tbl;
+  let query = "SELECT * FROM "+ note_check_tbl;
   let params = [];
 
   db.transaction(
@@ -522,6 +522,7 @@ const QueryChangesList =(data)=>{
   let postCheckList = post.checkList;
   if(saveCheckList[0].id != null)
     for(let i = 0; i < saveCheckList.length; i++){
+      if(postCheckList[i] == undefined){continue;}
       addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
       addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
   
