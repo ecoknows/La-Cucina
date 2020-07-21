@@ -1,0 +1,96 @@
+ <ScrollView>
+
+            <View flex={false} white size={['100%', 210]} center>
+                   <View flex={false} center middle left={40} transform={[{rotate: '180deg'}]}>
+
+
+                        <View flex={false} accent style={styles.diagonal_right} bottom={52}/>
+                        
+                   </View>
+                   
+                   
+                   <Pic
+                        absolute
+                        size={[170,170]}
+                        src={require('../assets/images/test.png')} />
+          
+                   
+             </View>
+
+             
+            <View flex={false} white size={['100%', 210]} center>
+                   <View flex={false} center middle right={55}>
+
+                        <View flex={false} accent style={styles.diagonal_right}/>
+                        
+                        <View flex={false} accent style={styles.diagonal_left}/>
+                        
+                   </View>
+                   
+                   
+                   <Pic
+                        right={20}
+                        absolute
+                        size={[170,170]}
+                        src={require('../assets/images/test.png')} />
+          
+                   
+             </View>
+
+             
+            
+            <View flex={false} white size={['100%', 210]} center>
+                   <View flex={false} center middle left={40} transform={[{rotate: '180deg'}]}>
+
+                        <View flex={false} accent style={styles.diagonal_right}/>
+                        
+                        <View flex={false} accent style={styles.diagonal_left}/>
+                        
+                   </View>
+                   
+                   
+                   <Pic
+                        absolute
+                        size={[170,170]}
+                        src={require('../assets/images/test.png')} />
+          
+                   
+             </View>
+
+             
+            <View flex={false} white size={['100%', 210]} center>
+                   <View flex={false} center middle right={55}>
+
+                        <View flex={false} accent style={styles.diagonal_right} bottom={53}/>
+                        
+                        
+                   </View>
+                   
+                   
+                   <Pic
+                        right={20}
+                        absolute
+                        size={[170,170]}
+                        src={require('../assets/images/test.png')} />
+          
+                   
+             </View>
+
+
+             
+              
+                
+        </ScrollView>
+
+
+
+
+        
+       <View white>
+           <List 
+                data={[{ random: 'red'},{ random: 'yellow'},{ random: 'green'},{ random: 'blue'}]}
+                renderItem={({item,index})=> <ListView item={item} index={index} size={5} /> }
+                keyExtractor={(item,index)=> index.toString()}
+           />
+
+       </View>
