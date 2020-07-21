@@ -9,7 +9,6 @@ const { height } = Dimensions.get('screen');
 let open = null;
 let changesCnt = 0;
 let currentCheckListIndex = 0;
-
 function NoteEditor({navigation, route}){
     const { currentNote, index, type} = route.params;
     const checkList = currentNote.checkList != null?  currentNote.checkList.map(a => ({...a})) : [{_text:'', status: false}];
@@ -80,7 +79,6 @@ function NoteEditor({navigation, route}){
         }
     }
 
-    
     function CheckedList(props){
         const { item, index} = props;
         const [text, setText] = useState(item._text);
@@ -124,13 +122,14 @@ function NoteEditor({navigation, route}){
             currentCheckListIndex= index+1;
             changesCnt++;
         }
-        
         return(
-            <View flex={false} row >
+            <View flex={false} row onLayout={(event) => {
+                if(stateCheckedData[index].height < event.nativeEvent.layout.height - 10 || stateCheckedData[index].height == null){
+                    stateCheckedData[index].height = event.nativeEvent.layout.height;
+                }
+              }} >
                 <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 0}} onPress={changeCheckedState}/>
-                <Input style={{width: '70%',marginTop: 3}} autoFocus={currentCheckListIndex == index ? true : false} 
-                    
-                    placeholder={ text }
+                <Input style={{width: '70%',marginTop: 3, flex: 0}} autoFocus={currentCheckListIndex == index ? true : false} 
                     onSubmitEditing={AddNewCheckList}
                     onKeyPress={({ nativeEvent }) => {
                         if (nativeEvent.key === 'Backspace' && text == '') {
@@ -151,6 +150,7 @@ function NoteEditor({navigation, route}){
                     hintColor='white'
                     family='semi-bold'
                     selectionColor='white'
+                    minHeight={stateCheckedData[index].height}
                     onChangeText={textChanged=> changeTextState(textChanged)}
                 />
                 <Text touchable white family='bold' size={20} left={10} 
@@ -309,7 +309,7 @@ function NoteEditor({navigation, route}){
 
                     {
                         checked ? 
-                        <View flex={50}> 
+                        <View flex={50} > 
                             {stateCheckedData.map((item, index) => (
                                 <CheckedList key={index.toString()} item={item} index={index} />
                             )

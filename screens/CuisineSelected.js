@@ -330,7 +330,7 @@ function CuisineSelected({navigation, route}){
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite} = item;
+    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image} = item;
     const [capacity, setCapacity] = useState(item.capacity);
     
 
@@ -532,7 +532,7 @@ function CuisineSelected({navigation, route}){
 
 
                     <View >
-                        <Pic src={require('../assets/images/test.png')}
+                        <Pic src={image}
                             resizeMode='contain'
                             size={[250,250]}
                          />

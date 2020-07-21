@@ -78,7 +78,7 @@ function Middle (props){
                     right={-30}
                     marginY={[10,0]}
 
-                    size={[230,230]}
+                    size={[item.image_scale,item.image_scale]}
                     src={item.image} />
 
             </View>
