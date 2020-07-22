@@ -1,5 +1,6 @@
 import React from 'react';
-import { View } from '../components';
+import {StyleSheet} from 'react-native';
+import { View,Text } from '../components';
 
 function Favorite(){
     return(
