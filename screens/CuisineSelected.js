@@ -29,6 +29,10 @@ let original_ingridients = {value: 0};
 let isDataFetch = {value: false};
 let _ingredients_changer = {array: []};
 
+let last_save_date = {value : ' '};
+let last_time_finished = {value : ' '};
+let last_image = {value : 0};
+
 const SAVE = 1;
 const BACK = 2;
 
@@ -75,6 +79,9 @@ function SheetText(props){
             _ingredients_changer,
             ingridents_finish_counter,
             direction_finish_counter,
+            last_save_date,
+            last_time_finished,
+            last_image
         }
 
         GetHistory(getHistory_Params);
@@ -333,7 +340,7 @@ function CuisineSelected({navigation, route}){
     const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image} = item;
     const [capacity, setCapacity] = useState(item.capacity);
     
-
+    console.log('id ' , id);
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
@@ -434,14 +441,20 @@ function CuisineSelected({navigation, route}){
         if(route.params?.modal){
             switch(route.params.modal){
                 case SAVE:
+                    
+                    const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
+                    const newDate = monthsText[new Date().getMonth()] + ' / ' + new Date().getDate() + ' / ' + new Date().getFullYear();
                     const data = {
                         parent_id: id,
                         favorite,
                         capacity,
+                        newDate,
+                        time_finished: '~',
+                        image: image,
                         directions: current_step.value,
                         ingredients: _ingredients_changer.array.toString(),
                     }
-                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value);
+                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value, newDate == last_save_date.value,'~' == last_time_finished.value, last_image.value == image);
                     item.ingridients = _copy_ingridients;
                     _copy_ingridients = null;
                     navigation.goBack();

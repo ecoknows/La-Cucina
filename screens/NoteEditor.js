@@ -15,7 +15,6 @@ function NoteEditor({navigation, route}){
     const [ title, setTitle] = useState(currentNote.title);
     const [ note, setNote] = useState(currentNote.note);
     const [noteColor, setNoteColor] = useState(currentNote.color);
-    console.log('iwasafraid ' , currentNote.isCheckList);
     const [checked, setChecked] = useState(currentNote.isCheckList);
     const [stateCheckedData, setStateCheckedData] = useState(checkList);
     const [isNote, setIsNote] = useState(currentNote.isNote);

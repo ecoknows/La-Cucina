@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, ScrollView,TouchableOpacity, Animated } from 'react-native';
 import { View, Pic,List,Text } from '../components';
+import { FetchHistory } from '../database/database';
 import { Easing } from 'react-native-reanimated';
+import { mocks } from '../constants';
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
 const data_set = [
     { random: 'red'},
@@ -29,12 +31,12 @@ function ListView(props){
         }
     }
     const isOdd = ((index_plus % 2) == 1);
+
     
     const scale_line = useRef(new Animated.Value(0)).current;
     const text_anim = useRef(new Animated.Value(isOdd ?-200 : 200)).current;
     const image_anim = useRef(new Animated.Value(isOdd ? -30 : 30)).current;
     const title_anim = useRef(new Animated.Value(0)).current;
-
 
     const animation_in =()=>{
         
@@ -407,7 +409,7 @@ function ListView(props){
                             >Daing Silog </Text>
                 </View> : null }
                 
-                <View flex={false} center middle right={55}>
+                <View flex={false} center middle right={55} zIndex={3}>
 
                     <View flex={false} style={[styles.diagonal_right, {transform:[{rotate: '-45deg'}]}]}/>
                     
@@ -423,7 +425,7 @@ function ListView(props){
                     <TouchableOpacity activeOpacity={1} style={{zIndex: 5}} onPress={()=>{setLatestIndex(index);late_index = latestIndex;}}>
                         <Pic
                                 size={[170,170]}
-                                src={require('../assets/images/test.png')} />
+                                src={JSON.parse(item.image).pic} />
 
                     </TouchableOpacity>
                 </View>
@@ -432,7 +434,7 @@ function ListView(props){
                         <Text
                             accent
                             size={13}
-                            >2020, December 20</Text>
+                            >Dec / 02 / 2020</Text>
                 </View>
 
             
@@ -441,6 +443,7 @@ function ListView(props){
     }
 
     const Odd_Item = () => {
+        console.log(size);
         return(
 
                             
@@ -471,7 +474,7 @@ function ListView(props){
 
                         <Pic
                                 size={[170,170]}
-                                src={require('../assets/images/test.png')} />
+                                src={item.image} />
 
                     </TouchableOpacity>
                     
@@ -483,12 +486,12 @@ function ListView(props){
 
                 </View>
 
-                    <View flex={false} style={{position:'absolute',bottom:0, left: 25, width: 140,}} middle>
+                    <View flex={false} style={{position:'absolute',bottom:0, left: 0, width: '43%',}} middle>
                             
                             <Text
                                 accent
                                 size={13}
-                                >2020, December 20</Text>
+                                >Jan / 02 / 2020</Text>
                     </View>
             </View>
 
@@ -516,13 +519,18 @@ function ListView(props){
 
 function History(){
     const [latestIndex, setLatestIndex] = useState(0);
+    const [data , setData] = useState([]);
+
+    useEffect( ()=> {
+        FetchHistory(setData);
+    },[])
 
     return(
        <View white>
             <List 
                     marginTop={50}
-                    data={data_set}
-                    renderItem={({item,index})=> <ListView item={item} index={index} size={data_set.length}  latestIndex={latestIndex} setLatestIndex={setLatestIndex} /> }
+                    data={data}
+                    renderItem={({item,index})=> <ListView item={item} index={index} size={data.length}  latestIndex={latestIndex} setLatestIndex={setLatestIndex} /> }
                     keyExtractor={(item,index)=> index.toString()}
                     
                     contentContainerStyle={{paddingTop: 100,paddingBottom: 100}}

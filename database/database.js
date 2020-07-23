@@ -152,26 +152,29 @@ const CheckNote =()=>{
       tx => {
           tx.executeSql(
               `create table if not exists ${history_tbl} `+
-              `(id integer primary key not null, parent_id text, favorite integer, capacity integer, ingredients text, directions integer)`
+              `(id integer primary key not null, parent_id text, favorite integer, capacity integer, ingredients text, directions integer, date text, time_finished text, image integer)`
           );
       }
     );
 }
 
-const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange)=>{
-  const {parent_id,favorite,capacity,ingredients, directions} = data;
+const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewDate, isNewTimeFinished, isImage)=>{
+  const {parent_id,favorite,capacity,ingredients, directions, newDate, time_finished, image} = data;
   let query = null;
   let params = null;
   let ingredientsMod = (ingredients=='') ? ' ' : ingredients;
   if(!isDataFetch.value){   
-    query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions) VALUES (null,?,?,?,?,?)";
-    params = [parent_id,favorite,capacity,ingredientsMod, directions];
+    query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions, date, time_finished, image) VALUES (null,?,?,?,?,?,?,?,?)";
+    params = [parent_id,favorite,capacity,ingredientsMod, directions,newDate, time_finished,image];
   }
   else{
     let setUpdate = '';
     setUpdate = !isCapacityChange ? (setUpdate+" capacity = "+capacity.toString()+",") : setUpdate;
     setUpdate = ingredients != '' ? (setUpdate+" ingredients = '"+ingredients +"',") : setUpdate + " ingredients = ' ',";
     setUpdate = !isDirectionChange ? (setUpdate+" directions = "+directions.toString()+",") : setUpdate;
+    setUpdate = !isNewDate ? (setUpdate+" date = "+newDate+",") : setUpdate;
+    setUpdate = !isNewTimeFinished ? (setUpdate+" time_finished = "+time_finished+",") : setUpdate;
+    setUpdate = !isImage ? (setUpdate+" image = "+image.toString()+",") : setUpdate;
     setUpdate = setUpdate != '' ? setUpdate.slice(0, -1) : setUpdate;
     query = "UPDATE "+ history_tbl +" SET"+setUpdate+" WHERE parent_id = '" +parent_id+"'";
     console.log(query)
@@ -189,6 +192,29 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange)=>{
   )
 }
 
+const FetchHistory =(setData)=>{
+  
+
+  let query = "SELECT * from " + history_tbl ;
+  let params = [];
+
+  
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          setData(results.rows._array);
+        }
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
+  );
+
+
+}
+
 const GetHistory =(arg)=>{ 
   const { 
     id, 
@@ -202,7 +228,10 @@ const GetHistory =(arg)=>{
     original_ingridients,
     _ingredients_changer,
     ingridents_finish_counter,
-    direction_finish_counter
+    direction_finish_counter,
+    last_save_date,
+    last_time_finished,
+    last_image,
   } = arg;
 
   let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
@@ -215,6 +244,9 @@ const GetHistory =(arg)=>{
           current_step.value = results.rows._array[0].directions;
           original_direction.value = results.rows._array[0].directions;
           direction_finish_counter.value = results.rows._array[0].directions;
+          last_save_date.value = results.rows._array[0].date;
+          last_time_finished.value = results.rows._array[0].time_finished;
+          last_image.value = results.rows_array[0].image;
           setCapacity(results.rows._array[0].capacity);
           if(results.rows._array[0].ingredients != ' '){
 
@@ -422,7 +454,7 @@ const SelectCheckList =(array,stateData,setStateData,index)=>{
 const SeeData =()=>{
   //let query = "SELECT r.*, l._text from " + note_table + " r INNER JOIN " + note_check_tbl+ " l ON r.id = l.parent_id";
   //let query = "SELECT * FROM " + note_table + " WHERE id = 1 = ( SELECT * FROM "+note_check_tbl+" )"
-  let query = "SELECT * FROM "+ note_check_tbl;
+  let query = "SELECT * FROM "+ history_tbl;
   let params = [];
 
   db.transaction(
@@ -609,4 +641,5 @@ export {
     GetHistroyCapacity,
     NextDataSelect,
     RemoveNote,
+    FetchHistory,
 }
