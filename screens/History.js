@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView,TouchableOpacity, Animated } from 'react-native'
 import { View, Pic,List,Text } from '../components';
 import { FetchHistory } from '../database/database';
 import { Easing } from 'react-native-reanimated';
-import { mocks } from '../constants';
+import { tabs } from '../constants';
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
 const data_set = [
     { random: 'red'},
@@ -15,11 +15,23 @@ const data_set = [
     ];
 
 let late_index = 0;
-    
-    
+
+
+       
 function ListView(props){
-    const {item, index, size, latestIndex, setLatestIndex} = props;
-    const index_plus = index+1;    
+    const {item, index, size, latestIndex, setLatestIndex, navigation} = props;
+    const {mocks_tabs, mocks_index, capacity, time_finished, date} = item;
+    const index_plus = index+1;
+    
+    const cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index];    
+    const item_date = new Date(date);
+    const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
+    const display_date = monthsText[item_date.getMonth()] + ' / ' + item_date.getDate() + ' / ' + item_date.getFullYear();
+    let hour = item_date.getHours();
+    const std = (hour >= 12 )? 'PM': 'AM';
+    hour = (hour >= 13 ) ? (hour - 12) : hour;
+    let time = hour + ':' + item_date.getMinutes()+' '+ std;
+
     let item_state = (index_plus % 2) == 0 ? EVEN : ODD;
     item_state = (index_plus == 1) ? FIRST : item_state;
     if(index_plus == size){
@@ -175,7 +187,7 @@ function ListView(props){
                                 left={4}
                                 top={4}
                                 right={3}
-                                >2 persons</Text>
+                                >{capacity} persons</Text>
                                 
 
                         </View>
@@ -221,7 +233,7 @@ function ListView(props){
                                 left={4}
                                 top={4}
                                 right={6}
-                                >32 calories</Text>
+                                >{cuisine.burn}</Text>
 
                         </View>
 
@@ -343,7 +355,7 @@ function ListView(props){
                         left={4}
                         top={4}
                         end
-                        >2 persons</Text>
+                        >{capacity} persons</Text>
 
                     </View>
                     <View zIndex={2} absolute flex={false} left={-200} size={[200,25]} white/>
@@ -383,7 +395,7 @@ function ListView(props){
                         left={4}
                         top={4}
                         end
-                        >32 calories</Text>
+                        >{cuisine.burn}</Text>
 
                     </View>
                         
@@ -398,15 +410,15 @@ function ListView(props){
 
     const Even_Item = () => {
         return(
-            <View flex={false} white size={['100%', 210]} center>
-                 {(latestIndex == index || late_index == index) ? <View animated flex={false} middle style={{position:'absolute', top: -18, right: 15, width: 170, height: 30, opacity: title_anim}}>
+            <View flex={false} white size={['100%', 240]} center>
+                {(latestIndex == index || late_index == index) ? <View animated flex={false} middle style={{position:'absolute', top: -18, right: 15, width: 170, height: 30, opacity: title_anim}}>
                         <Text 
 
                             family='bold'
                             style={{position:'absolute', bottom: 0,textAlign:'center'}}
                             size={24}
                             accent
-                            >Daing Silog </Text>
+                            >{cuisine.name}</Text>
                 </View> : null }
                 
                 <View flex={false} center middle right={55} zIndex={3}>
@@ -422,10 +434,17 @@ function ListView(props){
                 {(latestIndex == index || late_index == index) ? <EvenInfo/> : null }
                 
 
-                    <TouchableOpacity activeOpacity={1} style={{zIndex: 5}} onPress={()=>{setLatestIndex(index);late_index = latestIndex;}}>
+                    <TouchableOpacity activeOpacity={1} style={{zIndex: 5}} onPress={()=>{
+                        if(latestIndex != index){
+                            setLatestIndex(index); 
+                            late_index = latestIndex;
+                        }else{
+                            navigation.navigate('CuisineSelected', {item: cuisine})
+                        }
+                    }}>
                         <Pic
                                 size={[170,170]}
-                                src={JSON.parse(item.image).pic} />
+                                src={item.image} />
 
                     </TouchableOpacity>
                 </View>
@@ -434,7 +453,12 @@ function ListView(props){
                         <Text
                             accent
                             size={13}
-                            >Dec / 02 / 2020</Text>
+                            >{display_date}</Text>
+                         <Text
+                            accent
+                            family='bold'
+                            size={12}
+                            >{time}</Text>
                 </View>
 
             
@@ -443,18 +467,17 @@ function ListView(props){
     }
 
     const Odd_Item = () => {
-        console.log(size);
         return(
 
                             
-            <View flex={false} white size={['100%', 210]} center>
+            <View flex={false} size={['100%', 240]} center>
                     {(latestIndex == index || late_index == index) ? <View animated flex={false} middle style={{position:'absolute', top: -20, left: 0, width: 170, height: 30,opacity: title_anim}}>
                         <Text 
                             family='bold'
                             style={{position:'absolute', bottom: 0,textAlign:'center'}}
                             size={24}
                             accent
-                            >Daing Silog</Text>
+                            >{cuisine.name}</Text>
                     </View> : null}
                     
                 
@@ -470,7 +493,14 @@ function ListView(props){
                 <View flex={false}  style={{position:'absolute'}} row>
                     
 
-                    <TouchableOpacity style={{zIndex: 5}} activeOpacity={1} onPress={()=>{setLatestIndex(index); late_index = latestIndex;}}>
+                    <TouchableOpacity style={{zIndex: 5}} activeOpacity={1} onPress={()=>{
+                        if(latestIndex != index){
+                            setLatestIndex(index); 
+                            late_index = latestIndex;
+                        }else{
+                            navigation.navigate('CuisineSelected', {item: cuisine})
+                        }
+                        }}>
 
                         <Pic
                                 size={[170,170]}
@@ -491,7 +521,13 @@ function ListView(props){
                             <Text
                                 accent
                                 size={13}
-                                >Jan / 02 / 2020</Text>
+                                >{display_date}</Text>
+                                
+                            <Text
+                                accent
+                                family='bold'
+                                size={12}
+                                >{time}</Text>
                     </View>
             </View>
 
@@ -517,20 +553,27 @@ function ListView(props){
 
 }
 
-function History(){
+    
+const data_length = { value : 0}
+
+function History({navigation}){
     const [latestIndex, setLatestIndex] = useState(0);
     const [data , setData] = useState([]);
 
-    useEffect( ()=> {
-        FetchHistory(setData);
-    },[])
+    useEffect(() => {
+        data_length.value = 0;
+        const unsubscribe = navigation.addListener('focus', () => {
+            FetchHistory(setData, data_length);
+        });
+          return unsubscribe;
+      }, [navigation]);
 
     return(
        <View white>
             <List 
                     marginTop={50}
                     data={data}
-                    renderItem={({item,index})=> <ListView item={item} index={index} size={data.length}  latestIndex={latestIndex} setLatestIndex={setLatestIndex} /> }
+                    renderItem={({item,index})=> <ListView item={item} index={index} size={data.length}  latestIndex={latestIndex} setLatestIndex={setLatestIndex} navigation={navigation}/> }
                     keyExtractor={(item,index)=> index.toString()}
                     
                     contentContainerStyle={{paddingTop: 100,paddingBottom: 100}}
@@ -545,16 +588,16 @@ export default History;
 const styles = StyleSheet.create({
     diagonal_left : {
         width: 3,
-        height: 150,
+        height: 160,
         left:100,
-        bottom: 22.53,
+        bottom: 12.53,
         backgroundColor: '#FFBE93'
     },
     diagonal_right : {
         width: 3,
         left:100,
-        height: 150,
-        bottom: -22.53,
+        height: 160,
+        bottom: -12.53,
         backgroundColor: '#FFBE93'
     },
 })

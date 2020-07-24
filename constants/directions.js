@@ -108,9 +108,43 @@ const chicken_adobo_fried_rice_and_tortang_corned_beef = [
     },
 ];
 
+const arroz_caldo = [
+    {
+        step: 'In a pot, heat the cooking oil then saute the garlic, onion, and ginger',
+    },
+    {
+        step: 'Dash-in some ground black pepper',
+    },
+    {
+        step: 'Add the chicken cube and cook until the cube melts',
+    },
+    {
+        step: 'Put-in the chicken and cook until outer layer color turns golden brown',
+    },
+    {
+        step: 'Add the fish sauce and uncooked rice then mix and cook for a few minutes',
+    },
+    {
+        step: 'Pour-in the water and bring to a boil',
+    },
+    {
+        step: 'Stir occasionally and simmer until the rice is fully cooked (about 30 to 40 minutes)',
+    },
+    {
+        step: 'Put-in the hard boiled eggs',
+    },
+    {
+        step: 'Add the safflower for additional color and aroma',
+    },
+    {
+        step: 'Serve hot with garlic, minced scallions, and lemon. Share and Enjoy!',
+    },
+
+];
 
 export{
     maruya,
     corned_beef_omelet,
     chicken_adobo_fried_rice_and_tortang_corned_beef,
+    arroz_caldo
 }

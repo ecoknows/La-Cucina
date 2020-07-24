@@ -71,7 +71,86 @@ const maruya = [
     },
 ];
 
+const arroz_caldo = [
+    {
+        weight : '6g',
+        type : 'Serving',
+        icon : require('../assets/nutrition/serving.png'),
+    },
+    {
+        weight : '538kcal',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '41g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '25g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '29g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '5g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '87mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '724mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '376mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '1g',
+        type : 'Fiber',
+        icon : require('../assets/nutrition/fiber.png'),
+    },
+    {
+        weight : '1g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '325iu',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },/*
+    {
+        weight : '325iu',
+        type : 'Vitamin C',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },*/
+    {
+        weight : '53mg',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '1.8mg',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
+
 
 export {
     maruya,
+    arroz_caldo,
 }

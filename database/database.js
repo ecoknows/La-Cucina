@@ -152,29 +152,31 @@ const CheckNote =()=>{
       tx => {
           tx.executeSql(
               `create table if not exists ${history_tbl} `+
-              `(id integer primary key not null, parent_id text, favorite integer, capacity integer, ingredients text, directions integer, date text, time_finished text, image integer)`
+              `(id integer primary key not null, parent_id text, favorite integer, capacity integer, ingredients text, directions integer, date text, time_finished text, image integer, mocks_index integer, mocks_tabs integer)`
           );
       }
     );
 }
 
-const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewDate, isNewTimeFinished, isImage)=>{
-  const {parent_id,favorite,capacity,ingredients, directions, newDate, time_finished, image} = data;
+const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewDate, isNewTimeFinished, isImage, isIndex, isMocksTabs)=>{
+  const {parent_id,favorite,capacity,ingredients, directions, newDate, time_finished, image, index, mocks_tabs} = data;
   let query = null;
   let params = null;
   let ingredientsMod = (ingredients=='') ? ' ' : ingredients;
   if(!isDataFetch.value){   
-    query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions, date, time_finished, image) VALUES (null,?,?,?,?,?,?,?,?)";
-    params = [parent_id,favorite,capacity,ingredientsMod, directions,newDate, time_finished,image];
+    query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions, date, time_finished, image, mocks_index, mocks_tabs) VALUES (null,?,?,?,?,?,?,?,?,?,?)";
+    params = [parent_id,favorite,capacity,ingredientsMod, "'"+directions,newDate+"'", time_finished,image, index, mocks_tabs];
   }
   else{
     let setUpdate = '';
     setUpdate = !isCapacityChange ? (setUpdate+" capacity = "+capacity.toString()+",") : setUpdate;
     setUpdate = ingredients != '' ? (setUpdate+" ingredients = '"+ingredients +"',") : setUpdate + " ingredients = ' ',";
     setUpdate = !isDirectionChange ? (setUpdate+" directions = "+directions.toString()+",") : setUpdate;
-    setUpdate = !isNewDate ? (setUpdate+" date = "+newDate+",") : setUpdate;
+    setUpdate = !isNewDate ? (setUpdate+" date = '"+newDate+"',") : setUpdate;
     setUpdate = !isNewTimeFinished ? (setUpdate+" time_finished = "+time_finished+",") : setUpdate;
     setUpdate = !isImage ? (setUpdate+" image = "+image.toString()+",") : setUpdate;
+    setUpdate = !isIndex ? (setUpdate+" mocks_index = "+index.toString()+",") : setUpdate;
+    setUpdate = !isMocksTabs ? (setUpdate+" mocks_tabs = "+mocks_tabs.toString()+",") : setUpdate;
     setUpdate = setUpdate != '' ? setUpdate.slice(0, -1) : setUpdate;
     query = "UPDATE "+ history_tbl +" SET"+setUpdate+" WHERE parent_id = '" +parent_id+"'";
     console.log(query)
@@ -192,10 +194,10 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
   )
 }
 
-const FetchHistory =(setData)=>{
+const FetchHistory =(setData, data)=>{
   
 
-  let query = "SELECT * from " + history_tbl ;
+  let query = "SELECT * from " + history_tbl + " ORDER BY date DESC";
   let params = [];
 
   
@@ -203,7 +205,10 @@ const FetchHistory =(setData)=>{
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          setData(results.rows._array);
+          if(data.value != results.rows._array.length){
+            data.value = results.rows._array.length;
+            setData(results.rows._array);
+          }
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -232,6 +237,8 @@ const GetHistory =(arg)=>{
     last_save_date,
     last_time_finished,
     last_image,
+    last_index,
+    last_mocks_tabs
   } = arg;
 
   let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
@@ -246,14 +253,15 @@ const GetHistory =(arg)=>{
           direction_finish_counter.value = results.rows._array[0].directions;
           last_save_date.value = results.rows._array[0].date;
           last_time_finished.value = results.rows._array[0].time_finished;
-          last_image.value = results.rows_array[0].image;
+          last_image.value = results.rows._array[0].image;
+          last_index.value = results.rows._array[0].mocks_index;
+          last_mocks_tabs.value =results.rows._array[0].mocks_tabs;
           setCapacity(results.rows._array[0].capacity);
           if(results.rows._array[0].ingredients != ' '){
 
             let ing_arr = results.rows._array[0].ingredients.split(',').map(Number);
             ingridents_finish_counter.value = ing_arr.length;
             original_ingridients.value = ing_arr.length;
-            
             _ingredients_changer.array = _ingredients_changer.array.filter(value => !ing_arr.includes(value));
             _ingredients_changer.array = [..._ingredients_changer.array,...ing_arr];
             for(let i = 0; i < ing_arr.length; i++){

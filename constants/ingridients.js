@@ -49,6 +49,80 @@ const maruya = [
         checked : false,
     }
 ];
+
+const arroz_caldo = [
+    {
+        value: 1.5,
+        step: 'lbs chicken cut into serving pieces',
+        checked : false,
+    },
+    {
+        value: 1.5,
+        step: 'cups rice uncooked',
+        checked : false,
+    },
+    {
+        value: 34,
+        step: 'ounces water about 1 liter',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'tablespoons fish sauce',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'teaspoon garlic',
+        checked : false,
+    },
+    {
+        value: 0.5,
+        step: 'tablespoon ground black pepper',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'cup onion minced',
+        checked : false,
+    },
+    {
+        value: 4,
+        step: 'pieces eggs hard boiled',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'cup scallions green onions, minced',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'knobs ginger julienned',
+        checked : false,
+    },
+    {
+        value: 3,
+        step: 'tbsp safflower kasubha',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'piece chicken cube bouillon',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'piece lemon or 4 pieces calamansi',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'tbsp cooking oil',
+        checked : false,
+    },
+];
+
 const corned_beef_omelet = [
     {
         step: '12 ounces corned beef',
@@ -108,4 +182,5 @@ export {
     maruya,
     corned_beef_omelet,
     chicken_adobo_fried_rice_and_tortang_corned_beef,
+    arroz_caldo,
 }

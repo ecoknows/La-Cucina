@@ -4,7 +4,7 @@ import { PanResponder,StyleSheet, Animated } from 'react-native';
 import { theme, directions, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Easing } from 'react-native-reanimated';
+import { Easing, set } from 'react-native-reanimated';
 import { AddHistory, GetHistory,GetHistroyCapacity } from '../database/database'
 
 const DONE = 0;
@@ -32,6 +32,10 @@ let _ingredients_changer = {array: []};
 let last_save_date = {value : ' '};
 let last_time_finished = {value : ' '};
 let last_image = {value : 0};
+let last_index = {value : 0};
+let last_mocks_tabs = {value : 0};
+
+let latest_check_ingridients;
 
 const SAVE = 1;
 const BACK = 2;
@@ -48,7 +52,6 @@ function SheetText(props){
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const moveAnim = useRef(new Animated.Value(0)).current;
-    
     const typea = async() => {
         return ingridients.map((a)=>({...a}));
     }
@@ -62,9 +65,10 @@ function SheetText(props){
         direction_finish_counter.value = 0;
         isDataFetch.value = false;
         _ingredients_changer.array = [];
+        _copy_ingridients = null;
         original_capacity.value = 0;
         original_direction.value = 0;
-        original_ingridients.value = 0
+        original_ingridients.value = 0;
         
         const getHistory_Params = {
             id: item.id,
@@ -81,7 +85,9 @@ function SheetText(props){
             direction_finish_counter,
             last_save_date,
             last_time_finished,
-            last_image
+            last_image,
+            last_index,
+            last_mocks_tabs
         }
 
         GetHistory(getHistory_Params);
@@ -90,6 +96,7 @@ function SheetText(props){
         length_directions = direction.length;
         
         popUpIsDone = length_ingredients == ingridents_finish_counter.value ? false : true; 
+        
         typea().then((value)=> _copy_ingridients = value);
     },[]);
 
@@ -116,6 +123,7 @@ function SheetText(props){
         const [checked, setChecked] = useState(item.checked);
         
         const CheckBoxClick =()=>{
+            latest_check_ingridients.add(index)
             ingridents_finish_counter.value = !checked ? ingridents_finish_counter.value+1 : ingridents_finish_counter.value-1;
             setChecked(checked ? false : true);
             item.checked = checked ? false : true;
@@ -337,10 +345,9 @@ function CuisineSelected({navigation, route}){
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image} = item;
+    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index} = item;
     const [capacity, setCapacity] = useState(item.capacity);
     
-    console.log('id ' , id);
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
@@ -427,12 +434,16 @@ function CuisineSelected({navigation, route}){
 
     useEffect(()=> {
         open_nutrition = false;
+        latest_check_ingridients = new Set();
         nutrition_pan.x.addListener(({value}) => nutrition_latestoffset = value);
         pan.y.addListener(({value}) => sheet_latestoffset = value);
         original_capacity.value = item.capacity;
         return () => {
             nutrition_pan.x.removeAllListeners();
             pan.y.removeAllListeners();
+            for (let i of latest_check_ingridients){
+                item.ingridients[parseInt(i)].checked = item.ingridients[parseInt(i)].checked ? false : true;
+            }
         }
     }, [])
 
@@ -442,8 +453,7 @@ function CuisineSelected({navigation, route}){
             switch(route.params.modal){
                 case SAVE:
                     
-                    const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
-                    const newDate = monthsText[new Date().getMonth()] + ' / ' + new Date().getDate() + ' / ' + new Date().getFullYear();
+                    const newDate = new Date().toISOString();
                     const data = {
                         parent_id: id,
                         favorite,
@@ -451,16 +461,16 @@ function CuisineSelected({navigation, route}){
                         newDate,
                         time_finished: '~',
                         image: image,
+                        index,
+                        mocks_tabs,
                         directions: current_step.value,
                         ingredients: _ingredients_changer.array.toString(),
                     }
-                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value, newDate == last_save_date.value,'~' == last_time_finished.value, last_image.value == image);
-                    item.ingridients = _copy_ingridients;
+                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value, newDate == last_save_date.value,'~' == last_time_finished.value, last_image.value == image, last_index == index, last_mocks_tabs == mocks_tabs);
                     _copy_ingridients = null;
                     navigation.goBack();
                     break;
                 case BACK:
-                    item.ingridients = _copy_ingridients;
                     _copy_ingridients = null;
                     navigation.goBack();
                     break;
@@ -471,6 +481,7 @@ function CuisineSelected({navigation, route}){
     },[route.params?.modal])
 
     const BackButtonClick =()=>{
+        console.log(direction_finish_counter.value);
         if(ingridents_finish_counter.value != original_ingridients.value
             || direction_finish_counter.value != original_direction.value || capacity != original_capacity.value ){
             navigation.navigate('InfoModal',{info: {text: 'Do you want to save it? ^_^'}, 

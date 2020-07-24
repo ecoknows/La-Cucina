@@ -18,7 +18,7 @@ const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs
 function Middle (props){
     const [hColor, setHColor] = useState('white'); 
     const [cColor, setCColor] = useState(theme.colors.accent); 
-    const { item, index, navigation, middleListRef} = props;
+    const { item, index, navigation, middleListRef, mocks_tabs} = props;
         
     const margin = index == 0 ? 10 : 0;
     let x = 30;
@@ -36,6 +36,7 @@ function Middle (props){
             middleListRef.current.scrollToIndex({index , animated: true });
             currentMiddle = index;
         }else{
+            item.mocks_tabs = mocks_tabs;
             navigation.navigate('CuisineSelected', {item})
         }
     }
@@ -393,7 +394,7 @@ function Cuisine({navigation}){
                         ref={middleListRef}
                         data={CurrentCausine()}
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({ item, index }) =>  <Middle middleListRef={middleListRef} item={item} index={index} navigation={navigation}/>}
+                        renderItem={({ item, index }) =>  <Middle middleListRef={middleListRef} item={item} index={index} navigation={navigation} mocks_tabs={isCurrent}/>}
                         keyExtractor={item => item.id}
                         contentContainerStyle={{paddingStart : 40, paddingEnd: 40}}
                         getItemLayout={getMiddleItemLayout}
