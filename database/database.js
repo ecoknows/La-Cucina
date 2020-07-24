@@ -165,7 +165,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
   let ingredientsMod = (ingredients=='') ? ' ' : ingredients;
   if(!isDataFetch.value){   
     query = "INSERT INTO "+ history_tbl +" (id,parent_id, favorite, capacity, ingredients, directions, date, time_finished, image, mocks_index, mocks_tabs) VALUES (null,?,?,?,?,?,?,?,?,?,?)";
-    params = [parent_id,favorite,capacity,ingredientsMod, "'"+directions,newDate+"'", time_finished,image, index, mocks_tabs];
+    params = [parent_id,favorite,capacity,ingredientsMod,directions,newDate, time_finished,image, index, mocks_tabs];
   }
   else{
     let setUpdate = '';
@@ -173,7 +173,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
     setUpdate = ingredients != '' ? (setUpdate+" ingredients = '"+ingredients +"',") : setUpdate + " ingredients = ' ',";
     setUpdate = !isDirectionChange ? (setUpdate+" directions = "+directions.toString()+",") : setUpdate;
     setUpdate = !isNewDate ? (setUpdate+" date = '"+newDate+"',") : setUpdate;
-    setUpdate = !isNewTimeFinished ? (setUpdate+" time_finished = "+time_finished+",") : setUpdate;
+    setUpdate = !isNewTimeFinished ? (setUpdate+" time_finished = '"+time_finished+"',") : setUpdate;
     setUpdate = !isImage ? (setUpdate+" image = "+image.toString()+",") : setUpdate;
     setUpdate = !isIndex ? (setUpdate+" mocks_index = "+index.toString()+",") : setUpdate;
     setUpdate = !isMocksTabs ? (setUpdate+" mocks_tabs = "+mocks_tabs.toString()+",") : setUpdate;
@@ -194,7 +194,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
   )
 }
 
-const FetchHistory =(setData, data)=>{
+const FetchHistory =(setData, data, dataChange)=>{
   
 
   let query = "SELECT * from " + history_tbl + " ORDER BY date DESC";
@@ -205,9 +205,10 @@ const FetchHistory =(setData, data)=>{
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          if(data.value != results.rows._array.length){
+          if((data.value != results.rows._array.length) || dataChange.value){
             data.value = results.rows._array.length;
             setData(results.rows._array);
+            dataChange.value = false;
           }
         }
       }, function(tx,err) {

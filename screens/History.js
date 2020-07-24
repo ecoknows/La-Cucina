@@ -16,6 +16,10 @@ const data_set = [
 
 let late_index = 0;
 
+    
+const data_length = { value : 0}
+const data_change = { value : true};
+
 
        
 function ListView(props){
@@ -23,7 +27,7 @@ function ListView(props){
     const {mocks_tabs, mocks_index, capacity, time_finished, date} = item;
     const index_plus = index+1;
     
-    const cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index];    
+    let cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index];    
     const item_date = new Date(date);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const display_date = monthsText[item_date.getMonth()] + ' / ' + item_date.getDate() + ' / ' + item_date.getFullYear();
@@ -130,7 +134,7 @@ function ListView(props){
                                 size={13}
                                 left={4}
                                 top={4}
-                                >31 min</Text>
+                                >{time_finished}</Text>
                                     
                             <Text
                                 color='#FDAC76'
@@ -308,7 +312,7 @@ function ListView(props){
                             size={13}
                             bottom={2}
                             end
-                            >31 min</Text>
+                            >{time_finished}</Text>
 
                         <Text
                             color='#FDAC76'
@@ -439,7 +443,9 @@ function ListView(props){
                             setLatestIndex(index); 
                             late_index = latestIndex;
                         }else{
-                            navigation.navigate('CuisineSelected', {item: cuisine})
+                            cuisine.mocks_tabs = mocks_tabs;
+                            cuisine.index = index;
+                            navigation.navigate('CuisineSelected', {item: cuisine, data_change})
                         }
                     }}>
                         <Pic
@@ -498,7 +504,9 @@ function ListView(props){
                             setLatestIndex(index); 
                             late_index = latestIndex;
                         }else{
-                            navigation.navigate('CuisineSelected', {item: cuisine})
+                            cuisine.mocks_tabs = mocks_tabs;
+                            cuisine.index = index;
+                            navigation.navigate('CuisineSelected', {item: cuisine,data_change})
                         }
                         }}>
 
@@ -553,20 +561,17 @@ function ListView(props){
 
 }
 
-    
-const data_length = { value : 0}
-
-function History({navigation}){
+function History({navigation,route}){
     const [latestIndex, setLatestIndex] = useState(0);
     const [data , setData] = useState([]);
 
     useEffect(() => {
-        data_length.value = 0;
         const unsubscribe = navigation.addListener('focus', () => {
-            FetchHistory(setData, data_length);
+            FetchHistory(setData, data_length, data_change);    
         });
           return unsubscribe;
       }, [navigation]);
+    
 
     return(
        <View white>

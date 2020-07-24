@@ -14,7 +14,8 @@ const breakfast = [
         image_scale: 230,
         cooking_time: '10 mins',
         prep_time: '15 mins',
-        capacity: 6,
+        capacity : 6,
+        capacity_cache : {value: null},
         burn: '460 calories',
         description: 'Mashed bananas combined with flour '+
         ' and other ingredients to make a batter and then'+
@@ -24,6 +25,26 @@ const breakfast = [
         direction: directions.maruya,
         ingridients: ingridients.maruya,
         nutrition: nutrition.maruya,
+    },
+    {
+        id: 'arroz-caldo',
+        index: 4,
+        name: 'Arroz Caldo',
+        favorite: false,
+        tags: ['rice','veggies'],
+        color: '#FFDFC4',
+        image: require('../assets/foods/arroz_caldo.png'),
+        image_scale: 220,
+        cooking_time: '10 mins',
+        prep_time: '15 mins',
+        capacity: 2,
+        capacity_cache : {value: null},
+        burn: '24 calories',
+        description: 'Arroz caldo is the Filipino variety of congee,'+
+        ' a thick rice porridge that is ubiquitous in many Asian countries.',
+        direction: directions.arroz_caldo,
+        ingridients: ingridients.arroz_caldo,
+        nutrition: nutrition.arroz_caldo,
     },
     {
         id: 'corned-beef-omelette', 
@@ -84,26 +105,6 @@ const breakfast = [
         ' and a fried egg.',
         direction: directions.lugaw,
         ingridients: null,
-    },
-    {
-        id: 'arroz-caldo',
-        index: 4,
-        name: 'Arroz Caldo',
-        favorite: false,
-        tags: ['rice','veggies'],
-        color: '#FFDFC4',
-        image: require('../assets/foods/arroz_caldo.png'),
-        image_scale: 220,
-        cooking_time: '10 mins',
-        prep_time: '15 mins',
-        capacity: 2,
-
-        burn: '24 calories',
-        description: 'Arroz caldo is the Filipino variety of congee,'+
-        ' a thick rice porridge that is ubiquitous in many Asian countries.',
-        direction: directions.arroz_caldo,
-        ingridients: ingridients.arroz_caldo,
-        nutrition: nutrition.arroz_caldo,
     },
     {
         id: 'tocino',

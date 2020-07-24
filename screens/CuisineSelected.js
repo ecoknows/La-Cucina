@@ -1,7 +1,7 @@
 import React,{useState, useRef, useEffect} from 'react';
 import { View, Text, Pic, Circle, List, Card  } from '../components';
 import { PanResponder,StyleSheet, Animated } from 'react-native';
-import { theme, directions, } from '../constants';
+import { theme, directions, ingridients, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Easing, set } from 'react-native-reanimated';
@@ -66,7 +66,6 @@ function SheetText(props){
         isDataFetch.value = false;
         _ingredients_changer.array = [];
         _copy_ingridients = null;
-        original_capacity.value = 0;
         original_direction.value = 0;
         original_ingridients.value = 0;
         
@@ -123,7 +122,11 @@ function SheetText(props){
         const [checked, setChecked] = useState(item.checked);
         
         const CheckBoxClick =()=>{
-            latest_check_ingridients.add(index)
+            if(!latest_check_ingridients.has(index.toString()))
+                latest_check_ingridients.add(index.toString());
+            else if (latest_check_ingridients.has(index.toString()))
+                latest_check_ingridients.delete(index.toString());
+
             ingridents_finish_counter.value = !checked ? ingridents_finish_counter.value+1 : ingridents_finish_counter.value-1;
             setChecked(checked ? false : true);
             item.checked = checked ? false : true;
@@ -299,7 +302,7 @@ function SheetText(props){
 
 function PeopleView(props){
     const {item, mainCapacity} = props;
-    const [capacity, setCapacity] = useState(item.capacity);
+    const [capacity, setCapacity] = useState(props.capacity);
 
     useEffect(()=>{
         GetHistroyCapacity(item.id, setCapacity, original_capacity);
@@ -346,8 +349,9 @@ function CuisineSelected({navigation, route}){
 
     const { item } = route.params;
     const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index} = item;
-    const [capacity, setCapacity] = useState(item.capacity);
+    const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     
+
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
@@ -371,6 +375,7 @@ function CuisineSelected({navigation, route}){
           }
         }
       })).current;
+
 
     const NutritionPanResponder = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: (_,{dx}) => true,
@@ -435,12 +440,13 @@ function CuisineSelected({navigation, route}){
     useEffect(()=> {
         open_nutrition = false;
         latest_check_ingridients = new Set();
+        original_capacity.value = item.capacity;
         nutrition_pan.x.addListener(({value}) => nutrition_latestoffset = value);
         pan.y.addListener(({value}) => sheet_latestoffset = value);
-        original_capacity.value = item.capacity;
         return () => {
             nutrition_pan.x.removeAllListeners();
             pan.y.removeAllListeners();
+            item.capacity_cache.value = original_capacity.value;
             for (let i of latest_check_ingridients){
                 item.ingridients[parseInt(i)].checked = item.ingridients[parseInt(i)].checked ? false : true;
             }
@@ -454,20 +460,27 @@ function CuisineSelected({navigation, route}){
                 case SAVE:
                     
                     const newDate = new Date().toISOString();
+                    const sum_of_dir_ing = ingridents_finish_counter.value + direction_finish_counter.value;
+                    let percentage_finish = sum_of_dir_ing != 0? sum_of_dir_ing / (length_ingredients+length_directions) : 0;
+                    let percent = Math.round((percentage_finish.toFixed(2) * 100)).toString() + '%'
+            
                     const data = {
                         parent_id: id,
                         favorite,
                         capacity,
                         newDate,
-                        time_finished: '~',
+                        time_finished: percent,
                         image: image,
                         index,
                         mocks_tabs,
                         directions: current_step.value,
                         ingredients: _ingredients_changer.array.toString(),
                     }
-                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value, newDate == last_save_date.value,'~' == last_time_finished.value, last_image.value == image, last_index == index, last_mocks_tabs == mocks_tabs);
+                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value, newDate == last_save_date.value,percent == last_time_finished.value, last_image.value == image, last_index == index, last_mocks_tabs == mocks_tabs);
                     _copy_ingridients = null;
+                    if(route.params?.data_change){
+                        route.params.data_change.value = true;
+                    }
                     navigation.goBack();
                     break;
                 case BACK:
@@ -538,7 +551,7 @@ function CuisineSelected({navigation, route}){
                             <Text gray3 end family='semi-bold' size={12} thirdary left={0}> cooking</Text>
                         </View>
                         
-                        <PeopleView item={item} mainCapacity={setCapacity} />
+                        <PeopleView item={item} mainCapacity={setCapacity} capacity={capacity} />
                         
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
