@@ -194,7 +194,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
   )
 }
 
-const FetchHistory =(setData, data, dataChange)=>{
+const FetchHistory =(setData, data, dataChange,setLatestIndex)=>{
   
 
   let query = "SELECT * from " + history_tbl + " ORDER BY date DESC";
@@ -209,6 +209,7 @@ const FetchHistory =(setData, data, dataChange)=>{
             data.value = results.rows._array.length;
             setData(results.rows._array);
             dataChange.value = false;
+            setLatestIndex(0);
           }
         }
       }, function(tx,err) {

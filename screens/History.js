@@ -444,7 +444,7 @@ function ListView(props){
                             late_index = latestIndex;
                         }else{
                             cuisine.mocks_tabs = mocks_tabs;
-                            cuisine.index = index;
+                            cuisine.index = mocks_index;
                             navigation.navigate('CuisineSelected', {item: cuisine, data_change})
                         }
                     }}>
@@ -505,7 +505,7 @@ function ListView(props){
                             late_index = latestIndex;
                         }else{
                             cuisine.mocks_tabs = mocks_tabs;
-                            cuisine.index = index;
+                            cuisine.index = mocks_index;
                             navigation.navigate('CuisineSelected', {item: cuisine,data_change})
                         }
                         }}>
@@ -567,10 +567,15 @@ function History({navigation,route}){
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            FetchHistory(setData, data_length, data_change);    
+            late_index = 0;
+            FetchHistory(setData, data_length, data_change,setLatestIndex);    
         });
           return unsubscribe;
       }, [navigation]);
+
+    
+    
+      
     
 
     return(

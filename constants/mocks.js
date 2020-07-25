@@ -28,7 +28,7 @@ const breakfast = [
     },
     {
         id: 'arroz-caldo',
-        index: 4,
+        index: 1,
         name: 'Arroz Caldo',
         favorite: false,
         tags: ['rice','veggies'],
@@ -42,13 +42,14 @@ const breakfast = [
         burn: '24 calories',
         description: 'Arroz caldo is the Filipino variety of congee,'+
         ' a thick rice porridge that is ubiquitous in many Asian countries.',
+        author: 'Vanjo Merano',
         direction: directions.arroz_caldo,
         ingridients: ingridients.arroz_caldo,
         nutrition: nutrition.arroz_caldo,
     },
     {
         id: 'corned-beef-omelette', 
-        index: 1,
+        index: 2,
         name: 'Corned Beef Omelet',
         favorite: false,
         tags: ['rice', 'seafood','fried'],
@@ -69,7 +70,7 @@ const breakfast = [
     },
     {
         id: 'chicken-adobo-fried-rice-and-tortang-corned-beef',
-        index: 2,
+        index: 3,
         name: 'Chicken Adobo Fried Rice and Tortang Corned Beef',
         favorite: false,
         tags: ['breakfast', 'rice', 'choco'],
@@ -89,7 +90,7 @@ const breakfast = [
     },
     {
         id: 'tapsilog',
-        index: 3,
+        index: 4,
         name: 'Tapsilog',
         favorite: false,
         tags: [,'rice','fried', 'egg'],
