@@ -25,6 +25,12 @@ const breakfast = [
         direction: directions.maruya,
         ingridients: ingridients.maruya,
         nutrition: nutrition.maruya,
+        history_cache: {
+            time_finished : null,
+            persons : null,
+            date : null,
+            isChange : false,
+        }
     },
     {
         id: 'arroz-caldo',
@@ -46,6 +52,12 @@ const breakfast = [
         direction: directions.arroz_caldo,
         ingridients: ingridients.arroz_caldo,
         nutrition: nutrition.arroz_caldo,
+        history_cache: {
+            time_finished : null,
+            persons : null,
+            date : null,
+            isChange : false,
+        }
     },
     {
         id: 'corned-beef-omelette', 
@@ -179,6 +191,7 @@ const lunch = [
 const tea = [
 
 ];
+
 
 
 

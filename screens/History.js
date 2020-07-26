@@ -1,25 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, ScrollView,TouchableOpacity, Animated } from 'react-native';
+import { StyleSheet, ScrollView,TouchableOpacity, Animated, Easing } from 'react-native';
 import { View, Pic,List,Text } from '../components';
 import { FetchHistory } from '../database/database';
-import { Easing } from 'react-native-reanimated';
+import { Cache } from '../database/cache';
 import { tabs } from '../constants';
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
-const data_set = [
-    { random: 'red'},
-    { random: 'yellow'},
-    { random: 'yellow'},
-    { random: 'yellow'},
-    { random: 'yellow'},
-    { random: 'yellow'},
-    ];
-
 let late_index = 0;
-
-    
-const data_length = { value : 0}
 const data_change = { value : true};
-
 
        
 function ListView(props){
@@ -561,19 +548,44 @@ function ListView(props){
 
 }
 
-function History({navigation,route}){
+function History({navigation}){
     const [latestIndex, setLatestIndex] = useState(0);
     const [data , setData] = useState([]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            late_index = 0;
-            FetchHistory(setData, data_length, data_change,setLatestIndex);    
+            CheckIfDataChange(setData);
         });
           return unsubscribe;
       }, [navigation]);
 
+    useEffect(()=> {
+        FetchHistory(setData,Cache);
+    },[]);
     
+
+function CheckIfDataChange(setData) {
+    let isChange = false;
+    for(let i = 0; i < Cache.history.length; i++){
+        const {mocks_tabs, mocks_index} = Cache.history[i];
+        const cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index];  
+        const { history_cache } = cuisine;
+        if(history_cache.isChange){
+            Cache.history[i].time_finished = history_cache.time_finished;
+            Cache.history[i].date = history_cache.date;
+            Cache.history[i].capacity = history_cache.persons;
+            history_cache.isChange = false;
+            isChange = true;
+        }
+
+    }
+    console.log(Cache.history);
+    if(isChange){
+
+        setData([...Cache.history])
+    }
+
+}
     
       
     

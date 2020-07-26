@@ -1,7 +1,7 @@
 import React,{useState, useRef, useEffect} from 'react';
 import { View, Text, Pic, Circle, List, Card  } from '../components';
 import { PanResponder,StyleSheet, Animated } from 'react-native';
-import { theme, directions, ingridients, } from '../constants';
+import { theme, directions, ingridients, mocks, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Easing, set } from 'react-native-reanimated';
@@ -348,9 +348,8 @@ function CuisineSelected({navigation, route}){
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index} = item;
+    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index, history_cache} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
-    
 
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
@@ -463,7 +462,10 @@ function CuisineSelected({navigation, route}){
                     const sum_of_dir_ing = ingridents_finish_counter.value + direction_finish_counter.value;
                     let percentage_finish = sum_of_dir_ing != 0? sum_of_dir_ing / (length_ingredients+length_directions) : 0;
                     let percent = Math.round((percentage_finish.toFixed(2) * 100)).toString() + '%'
-            
+                    history_cache.time_finished = percent;
+                    history_cache.persons = capacity;
+                    history_cache.date = newDate;
+                    history_cache.isChange = true;
                     const data = {
                         parent_id: id,
                         favorite,

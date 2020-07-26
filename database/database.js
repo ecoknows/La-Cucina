@@ -194,7 +194,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
   )
 }
 
-const FetchHistory =(setData, data, dataChange,setLatestIndex)=>{
+const FetchHistory =(setData,Cache)=>{
   
 
   let query = "SELECT * from " + history_tbl + " ORDER BY date DESC";
@@ -205,12 +205,8 @@ const FetchHistory =(setData, data, dataChange,setLatestIndex)=>{
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0){
-          if((data.value != results.rows._array.length) || dataChange.value){
-            data.value = results.rows._array.length;
-            setData(results.rows._array);
-            dataChange.value = false;
-            setLatestIndex(0);
-          }
+          setData(results.rows._array);
+          Cache.history = results.rows._array;
         }
       }, function(tx,err) {
         console.log(err.message);

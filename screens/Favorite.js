@@ -7,9 +7,10 @@ let isWidth = 0;
 
 
 function Favorite({navigation}){
+    
+    console.log(mocks.breakfast[0]);
     return(
         <View white middle row>
-           
         </View>
     )
 }
