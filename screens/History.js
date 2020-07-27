@@ -7,7 +7,7 @@ import { tabs } from '../constants';
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
 let late_index = 0;
 const data_change = { value : true};
-
+const isAnim = { value : true};
        
 function ListView(props){
     const {item, index, size, latestIndex, setLatestIndex, navigation} = props;
@@ -100,10 +100,10 @@ function ListView(props){
 
         ]).start();
     }    
-    if(late_index == index)
+    if(late_index == index && isAnim.value)
         animation_out();
 
-    if(latestIndex == index)
+    if(latestIndex == index && isAnim.value)
         animation_in(); 
 
     const EvenInfo =()=>{
@@ -555,13 +555,14 @@ function History({navigation}){
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             CheckIfDataChange(setData);
+            FetchHistory(setData,Cache,isAnim);
         });
           return unsubscribe;
       }, [navigation]);
-
-    useEffect(()=> {
-        FetchHistory(setData,Cache);
-    },[]);
+      
+    useEffect(() => {
+        isAnim.value = true;
+      }, [data]);
     
 
 function CheckIfDataChange(setData) {
@@ -577,11 +578,10 @@ function CheckIfDataChange(setData) {
             history_cache.isChange = false;
             isChange = true;
         }
-
     }
     console.log(Cache.history);
     if(isChange){
-
+        isAnim.value = false;
         setData([...Cache.history])
     }
 
