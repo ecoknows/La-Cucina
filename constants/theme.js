@@ -93,7 +93,7 @@ const initial_note_data = [
     {
         title: 'Things To do',
         note: '',
-        color: '#24a19c',
+        color: '#ba7967',
         date: '16 July',
         checkList: [
             {
@@ -116,7 +116,7 @@ const initial_note_data = [
     {
         title: 'Plan for Today',
         note: '',
-        color: '#24a19c',
+        color: '#e79c2a',
         date: '16 July',
         checkList: [
             {
@@ -143,7 +143,7 @@ const initial_note_data = [
     {
         title: 'Availabe Ingridients',
         note: '1. 1 bottle of Vinigar \n2. 1/2 dozen of eggs \n3. 45 pcs of fresh tomatoes ',
-        color: '#24a19c',
+        color: '#5a3d55',
         date: '16 July',
         checkList: [{_text:'', status: false}],
         isCheckList: 0,

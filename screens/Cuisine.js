@@ -84,7 +84,7 @@ function Middle (props){
 
             </View>
 
-            <View paddingX={[theme.sizes.padding * 2,theme.sizes.padding * 2]} flex={1.1} >
+            <View paddingX={[theme.sizes.padding * 2,theme.sizes.padding * 2]} flex={1.1} paddingBottom={10}>
                 
                 <View flex={false}  marginX={[10, 0]}>
                     
@@ -101,8 +101,8 @@ function Middle (props){
                 </View>
 
                 
-                <Text size={13} thirdary top={10}>
-                    {item.description}
+                <Text size={13} thirdary top={10} style={{flex: 1}}>
+                    {item.description} 
                 </Text>
 
             </View>

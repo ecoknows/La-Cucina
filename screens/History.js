@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, ScrollView,TouchableOpacity, Animated, Easing } from 'react-native';
 import { View, Pic,List,Text } from '../components';
 import { FetchHistory } from '../database/database';
-import { Cache } from '../database/cache';
 import { tabs } from '../constants';
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
 let late_index = 0;
@@ -554,17 +553,20 @@ function History({navigation}){
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            CheckIfDataChange(setData);
-            FetchHistory(setData,Cache,isAnim);
+            //CheckIfDataChange(setData);
+            FetchHistory(setData,isAnim);
         });
           return unsubscribe;
       }, [navigation]);
       
     useEffect(() => {
         isAnim.value = true;
+        late_index = latestIndex;
+        setLatestIndex(0);
+        
       }, [data]);
     
-
+/*
 function CheckIfDataChange(setData) {
     let isChange = false;
     for(let i = 0; i < Cache.history.length; i++){
@@ -579,13 +581,13 @@ function CheckIfDataChange(setData) {
             isChange = true;
         }
     }
-    console.log(Cache.history);
     if(isChange){
         isAnim.value = false;
+        Cache.history.sort((a, b) => (a.date > b.date) ? 1 : -1);
         setData([...Cache.history])
     }
 
-}
+}*/
     
       
     

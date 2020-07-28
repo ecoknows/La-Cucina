@@ -21,6 +21,11 @@ const PAGING_LIMIT = "4";
 
 let isInitial = true;
 
+
+const SnapShotListiner = {
+  history: true,
+}
+
 const InitialData =(dataState)=> {
   const {setStateData1, setStateData2, setIsFirstRow, id_latest} = dataState;
   if(isInitial){
@@ -194,7 +199,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
   )
 }
 
-const FetchHistory =(setData,Cache, isAnim)=>{
+const FetchHistory =(setData, isAnim)=>{
   
 
   let query = "SELECT * from " + history_tbl + " ORDER BY date DESC";
@@ -204,10 +209,10 @@ const FetchHistory =(setData,Cache, isAnim)=>{
   db.transaction(
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0 && Cache.history.length != results.rows._array.length ){
+        if(results.rows._array.length > 0 && SnapShotListiner.history){
           isAnim.value = false;
           setData(results.rows._array);
-          Cache.history = results.rows._array;
+          SnapShotListiner.history = false;
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -461,7 +466,7 @@ const SelectCheckList =(array,stateData,setStateData,index)=>{
 const SeeData =()=>{
   //let query = "SELECT r.*, l._text from " + note_table + " r INNER JOIN " + note_check_tbl+ " l ON r.id = l.parent_id";
   //let query = "SELECT * FROM " + note_table + " WHERE id = 1 = ( SELECT * FROM "+note_check_tbl+" )"
-  let query = "SELECT * FROM "+ history_tbl;
+  let query = "SELECT * FROM "+ note_check_tbl;
   let params = [];
 
   db.transaction(
@@ -556,26 +561,27 @@ const QueryChanges =(data)=>{
 
 const QueryChangesList =(data)=>{
   const { save, post } = data;
-  let addQuery = ' ';
   let saveCheckList = save.checkList;
   let postCheckList = post.checkList;
+  console.log(' post check list ' , postCheckList);
+  console.log(' save check list ' , saveCheckList);
   if(saveCheckList[0].id != null)
     for(let i = 0; i < saveCheckList.length; i++){
       if(postCheckList[i] == undefined){continue;}
+      let addQuery = ' ';
+      postCheckList[i].status = postCheckList[i].status ? 1 : 0; 
       addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
       addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
-  
+     
       if(addQuery != ' '){
-        
-        postCheckList[i].id = postCheckList[i].id == undefined ? postCheckList[i-1].id : postCheckList[i].id;
-        if(i != 0)
-          postCheckList[i].id = ((postCheckList[i-1].id+1) ==  postCheckList[i].id)? postCheckList[i].id : (postCheckList[i-1].id+1);
-        let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + postCheckList[i].id.toString();
+        let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + saveCheckList[i].id.toString();
+        console.log(query);
         let params = [];
         db.transaction(
           (tx)=> {
             tx.executeSql(query, params,(tx, results) =>{
-              console.log("Success");
+
+              console.log("Success ");
             }, function(tx,err) {
               console.log(err.message);
               return;
@@ -591,7 +597,7 @@ const QueryChangesList =(data)=>{
     let i = saveCheckList[0].id == null ? 0 : saveCheckList.length;
     for( ; i < postCheckList.length; i++){
       let query = "INSERT INTO "+ note_check_tbl +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
-      let params = [post.id, postCheckList[i]._text, postCheckList[i].status];
+      let params = [post.id, postCheckList[i]._text, postCheckList[i].status ? 1 : 0];
 
       db.transaction(
           (tx)=> {
@@ -606,7 +612,6 @@ const QueryChangesList =(data)=>{
 
     }
   }
-
   if(postCheckList.length < saveCheckList.length ){
     let i = postCheckList.length;
     for( ; i < saveCheckList.length; i++){
@@ -649,4 +654,5 @@ export {
     NextDataSelect,
     RemoveNote,
     FetchHistory,
+    SnapShotListiner,
 }
