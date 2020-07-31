@@ -226,12 +226,14 @@ function SheetText(props){
             SideTextIndicator =  <CheckBox checked={checked} checkedColor='green' uncheckedColor='green' size={18} containerStyle={{height: 10 ,width:30, paddingEnd: 10, marginLeft: -25, marginTop: 1,}} onPress={CheckBoxClick}/>
             textLeft = -5;
             itemColor = checked ? '#18A623' : theme.colors.thirdary;
-            let value = Math.round( ((item.value/ people)*(capacity-people) + item.value) * 100) / 100;
-            value =( ( (value % 1) == 0.5  ) && value - 0.5 != 0)? ( (value - 0.5).toString() +' 1/2' ): value;
-            value =( ( (value % 1) == 0.75  ) && value - 0.75 != 0)? ( (value - 0.75).toString() +' 3/4' ): value;
-            value = value == 0.75 ? '3/4' : value;
-            value = value == 0.5 ? '1/2' : value;
-            ValueText =  <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{value} </Text>
+            if(value != -1){
+                let value = Math.round( ((item.value/ people)*(capacity-people) + item.value) * 100) / 100;
+                value =( ( (value % 1) == 0.5  ) && value - 0.5 != 0)? ( (value - 0.5).toString() +' 1/2' ): value;
+                value =( ( (value % 1) == 0.75  ) && value - 0.75 != 0)? ( (value - 0.75).toString() +' 3/4' ): value;
+                value = value == 0.75 ? '3/4' : value;
+                value = value == 0.5 ? '1/2' : value;
+                ValueText =  <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{value} </Text>    
+            }
             textLeft = 0;
             FloatingCongrats = (checked && ingridents_finish_counter.value == length_ingredients && popUpIsDone) ? 
             <PopUpMessage/>

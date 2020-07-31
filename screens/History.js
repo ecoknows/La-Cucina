@@ -553,7 +553,6 @@ function History({navigation}){
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            //CheckIfDataChange(setData);
             FetchHistory(setData,isAnim);
         });
           return unsubscribe;
@@ -561,9 +560,6 @@ function History({navigation}){
       
     useEffect(() => {
         isAnim.value = true;
-        late_index = latestIndex;
-        setLatestIndex(0);
-        
       }, [data]);
     
 /*
@@ -583,7 +579,9 @@ function CheckIfDataChange(setData) {
     }
     if(isChange){
         isAnim.value = false;
-        Cache.history.sort((a, b) => (a.date > b.date) ? 1 : -1);
+        const sortedData = Cache.history.sort(function(a,b){
+            return parseInt(a.date) - parseInt()
+        })
         setData([...Cache.history])
     }
 

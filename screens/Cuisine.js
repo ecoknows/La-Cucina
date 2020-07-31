@@ -20,7 +20,6 @@ function Middle (props){
     const [cColor, setCColor] = useState(theme.colors.accent); 
     const { item, index, navigation, middleListRef, mocks_tabs} = props;
         
-    const margin = index == 0 ? 10 : 0;
     let x = 30;
     
     if(index == 0){
@@ -45,11 +44,11 @@ function Middle (props){
         width: width - (width * .35) ,
         height: height - (height * .45),
         color:"#000",
-        border:40,
+        border:20,
         radius:30,
-        opacity:0.15,
-        x,
-        y:40,
+        opacity:0.10,
+        x:35,
+        y:50,
     }
 
     return(

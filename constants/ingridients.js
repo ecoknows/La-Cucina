@@ -125,25 +125,39 @@ const arroz_caldo = [
 
 const corned_beef_omelet = [
     {
-        step: '12 ounces corned beef',
+        value: 12,
+        step: 'ounces corned beef',
+        checked: false,
     },
     {
-        step: '3 pieces eggs',
+        value: 3,
+        step: 'pieces eggs',
+        checked: false,
     },
     {
-        step: '1 piece onion',
+        value: 1,
+        step: 'piece onion',
+        checked: false,
     },
     {
-        step: '4 cloves garlic',
+        value: 4,
+        step: 'cloves garlic',
+        checked: false,
     },
     {
-        step: '3/4 cup green onion chopped',
+        value: 0.75,
+        step: 'cup green onion chopped',
+        checked: false,
     },
     {
-        step: '3 tablespoons Cooking oil',
+        value: 3,
+        step: 'tablespoons Cooking oil',
+        checked: false,
     },
     {
+        value: -1,
         step: 'Salt and ground black pepper to taste',
+        checked: false,
     },
 ];
 
