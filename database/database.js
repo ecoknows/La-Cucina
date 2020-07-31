@@ -563,8 +563,6 @@ const QueryChangesList =(data)=>{
   const { save, post } = data;
   let saveCheckList = save.checkList;
   let postCheckList = post.checkList;
-  console.log(' post check list ' , postCheckList);
-  console.log(' save check list ' , saveCheckList);
   if(saveCheckList[0].id != null)
     for(let i = 0; i < saveCheckList.length; i++){
       if(postCheckList[i] == undefined){continue;}
