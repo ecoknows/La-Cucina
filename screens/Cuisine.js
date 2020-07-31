@@ -77,7 +77,7 @@ function Middle (props){
                     end
                     right={-30}
                     marginY={[10,0]}
-
+                    resizeMode='contain'
                     size={[item.image_scale,item.image_scale]}
                     src={item.image} />
 
