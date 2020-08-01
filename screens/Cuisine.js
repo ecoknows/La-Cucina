@@ -288,9 +288,25 @@ function Cuisine({navigation}){
 
     const [ leftActive, setLeftActive] = useState('Rice');
     const [ bottomActive, setBottomActive] = useState(causineTabs[0].bottomTabs[0].name);
+    
+    const CurrentCausine = () => {
+        const cuisine = causineTabs[isCurrent].mocks;
 
+        let filtered = cuisine.filter( 
+            cuisine => cuisine.tags.includes(leftActive.toLowerCase())
+        )
+
+        filtered = filtered.filter( 
+            cuisine => cuisine.tags.includes(bottomActive.toLowerCase())
+        )
+        
+        return filtered;
+    }
+    
+    const middleCuisine = CurrentCausine();
     useEffect(()=>{
-        middleListRef.current.scrollToIndex({index : 0, animated: true });
+        if(middleCuisine.length != 0)
+            middleListRef.current.scrollToIndex({index : 0, animated: true });
     },[bottomActive]);
 
     const leftOpacity = midScrollX.interpolate({
@@ -319,19 +335,6 @@ function Cuisine({navigation}){
         return  { length: 10, width: size, offset: size * index, index }
     }
 
-    const CurrentCausine = () => {
-        const cuisine = causineTabs[isCurrent].mocks;
-
-        let filtered = cuisine.filter( 
-            cuisine => cuisine.tags.includes(leftActive.toLowerCase())
-        )
-
-        filtered = filtered.filter( 
-            cuisine => cuisine.tags.includes(bottomActive.toLowerCase())
-        )
-        
-        return filtered;
-    }
     
     return(
         <View animated white style={styles.container}>
@@ -395,7 +398,7 @@ function Cuisine({navigation}){
                         horizontal
                         initialNumToRender={2}
                         ref={middleListRef}
-                        data={CurrentCausine()}
+                        data={middleCuisine}
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item, index }) =>  <Middle middleListRef={middleListRef} item={item} index={index} navigation={navigation} mocks_tabs={isCurrent}/>}
                         keyExtractor={item => item.id}

@@ -228,8 +228,18 @@ const corned_beef_omelet = [
 ];
 
 
+const hot_silog = [
+    {
+        weight : '1g',
+        type : 'Serving',
+        icon : require('../assets/nutrition/serving.png'),
+    },
+];
+
+
 export {
     maruya,
     arroz_caldo,
-    corned_beef_omelet
+    corned_beef_omelet,
+    hot_silog
 }

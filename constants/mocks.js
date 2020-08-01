@@ -8,7 +8,7 @@ const breakfast = [
         index: 0,
         name: 'Maruya',
         favorite: false,
-        tags: ['fruits', 'egg','milk'],
+        tags: ['rice','fruits', 'egg','milk'],
         color: '#FFDFC4',
         image: require('../assets/foods/maruya.png'),
         image_scale: 230,
@@ -149,6 +149,31 @@ const breakfast = [
          
         direction: directions.lugaw,
         ingridients: null,
+    }, 
+    {
+        id: 'hot-silog',
+        index: 7,
+        name: 'Hot Silog',
+        favorite: false,
+        tags: ['rice', 'egg','meat', 'fried'],
+        color: '#FFDFC4',
+        image: require('../assets/foods/hot_silog.png'),
+        image_scale: 210,
+        cooking_time: '20 mins',
+        prep_time: '5 mins',
+        capacity : 1,
+        capacity_cache : {value: null},
+        burn: '707 calories',
+        description: 'Hotsilog is a meal composed of hotdogs,'+
+        ' garlic fried rice, and fried egg. '+
+        'In a Filipino household, this is'+
+        ' commonly eaten for breakfast with '+
+        'a condiment of banana ketchup and some '+
+        'pickled shredded papaya (atchara) on the side.',
+        author: 'Vanjo Merano',
+        direction: directions.hot_silog,
+        ingridients: ingridients.hot_silog,
+        nutrition: nutrition.hot_silog,
     },
 ];
 

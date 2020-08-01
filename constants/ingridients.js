@@ -192,9 +192,54 @@ const chicken_adobo_fried_rice_and_tortang_corned_beef = [
     },
 ];
 
+
+const hot_silog = [
+    {
+        value: 3,
+        step: 'pieces red hotdogs',
+        checked: false,
+    },
+    {
+        value: 2,
+        step: 'eggs',
+        checked: false,
+    },
+    {
+        value: 1,
+        step: 'cups leftover white rice',
+        checked: false,
+    },
+    {
+        value: 1,
+        step: 'head garlic crushed',
+        checked: false,
+    },
+    {
+        value: 1,
+        step: 'tablespoons salt',
+        checked: false,
+    },
+    {
+        value: 1,
+        step: 'medium tomato',
+        checked: false,
+    },
+    {
+        value: 0.75,
+        step: 'cup water',
+        checked: false,
+    },
+    {
+        value: 12,
+        step: 'tablespoons cooking oil',
+        checked: false,
+    },
+];
+
 export {
     maruya,
     corned_beef_omelet,
     chicken_adobo_fried_rice_and_tortang_corned_beef,
     arroz_caldo,
+    hot_silog
 }

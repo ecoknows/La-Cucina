@@ -435,6 +435,7 @@ function ListView(props){
                         }
                     }}>
                         <Pic
+
                                 size={[170,170]}
                                 src={item.image} />
 
@@ -485,7 +486,7 @@ function ListView(props){
                 <View flex={false}  style={{position:'absolute'}} row>
                     
 
-                    <TouchableOpacity style={{zIndex: 5}} activeOpacity={1} onPress={()=>{
+                    <TouchableOpacity style={{zIndex: 5, paddingLeft: 10}} activeOpacity={1} onPress={()=>{
                         if(latestIndex != index){
                             setLatestIndex(index); 
                             late_index = latestIndex;
@@ -497,6 +498,7 @@ function ListView(props){
                         }}>
 
                         <Pic
+                                resizeMode='contain'
                                 size={[170,170]}
                                 src={item.image} />
 

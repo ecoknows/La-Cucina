@@ -25,7 +25,6 @@ const maruya = [
     }
 ];
 
-
 const corned_beef_omelet = [
     {
         step: 'Prepare the corned beef by '+
@@ -65,7 +64,6 @@ const corned_beef_omelet = [
         step: 'Share and enjoy!',
     },
 ];
-
 
 
 const chicken_adobo_fried_rice_and_tortang_corned_beef = [
@@ -142,9 +140,53 @@ const arroz_caldo = [
 
 ];
 
+const hot_silog = [
+    
+    {
+        step: 'Combine rice and salt. Gently mix until well blended.',
+    },
+    {
+        step: 'Heat oil in a pan.',
+    },
+    {
+        step: 'Add garlic. Cook until light to medium brown.',
+    },
+    {
+        step: 'Put half of the rice in the pan. Stir-fry for 1 minute.',
+    },
+    {
+        step: 'Add the remaining rice. Continue to stir-fry for 5 to 6 minutes.',
+    },
+    {
+        step: 'Transfer to a serving plate.',
+    },
+    {
+        step: 'Pour water in a small cooking pot. Let boil.',
+    },
+    {
+        step: 'Add hotdogs and then pour 2 tablespoons cooking oil. Continue to cook until the water evaporates.',
+    },
+    {
+        step: 'Once the water is gone, fry the hotdogs in the remaining oil for 1 to 2 minutes while slowly rolling it back and forth to prevent it from getting burnt. Set aside.',
+    },
+    {
+        step: 'Prepare the eggs by heating 4 tablespoons of cooking oil in a pan.',
+    },
+    {
+        step: 'Once the oil gets hot, crack a piece of egg and start to fry it. As the egg is frying, grab a spoon and scoop the oil from the bottom of the pot. Pour the oil over the egg. Do this until the yolk gets a white covering. Remove the egg and set aside. Do the same step on the other piece of egg.',
+    },
+    {
+        step: 'Arrange the garlic fried rice, hotdogs, and fried eggs in a plate. Put the slices of tomato on the side.',
+    },
+    {
+        step: 'Serve with ketchup. Share and enjoy!',
+    },
+];
+
 export{
     maruya,
     corned_beef_omelet,
     chicken_adobo_fried_rice_and_tortang_corned_beef,
-    arroz_caldo
+    arroz_caldo,
+    hot_silog
 }
