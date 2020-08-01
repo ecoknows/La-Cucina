@@ -289,6 +289,10 @@ function Cuisine({navigation}){
     const [ leftActive, setLeftActive] = useState('Rice');
     const [ bottomActive, setBottomActive] = useState(causineTabs[0].bottomTabs[0].name);
 
+    useEffect(()=>{
+        middleListRef.current.scrollToIndex({index : 0, animated: true });
+    },[bottomActive]);
+
     const leftOpacity = midScrollX.interpolate({
         inputRange: [0, 80],
         outputRange: [1,0],
