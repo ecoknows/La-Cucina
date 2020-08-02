@@ -498,7 +498,6 @@ function ListView(props){
                         }}>
 
                         <Pic
-                                resizeMode='contain'
                                 size={[170,170]}
                                 src={item.image} />
 

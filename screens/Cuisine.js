@@ -76,7 +76,6 @@ function Middle (props){
                     absolute
                     end
                     right={-30}
-                    resizeMode='contain'
                     size={[item.image_scale,item.image_scale]}
                     src={item.image} />
 
