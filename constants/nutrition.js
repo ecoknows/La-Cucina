@@ -236,10 +236,228 @@ const hot_silog = [
     },
 ];
 
+const chicken_adobo_fried_rice_and_tortang_corned_beef = [
+    {
+        weight : '721kcal',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '62g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '17g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '45g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '6g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '85mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '1870mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '391mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '3g',
+        type : 'Fiber',
+        icon : require('../assets/nutrition/fiber.png'),
+    },
+    {
+        weight : '3g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '2079IU',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '18mg',
+        type : 'Vitamin C',
+        icon : require('../assets/nutrition/vitamin_c.png'),
+    },
+    {
+        weight : '46mg',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '2mg',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
+
+const tap_silog = [
+    {
+        weight : '883kcal',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '93g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '43g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '36g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '4g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '86mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '2841mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '877mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '3g',
+        type : 'Fiber',
+        icon : require('../assets/nutrition/fiber.png'),
+    },
+    {
+        weight : '17g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '2500IU',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '10.1mg',
+        type : 'Vitamin C',
+        icon : require('../assets/nutrition/vitamin_c.png'),
+    },
+    {
+        weight : '94mg',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '4mg',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
+
+
+const filipino_omellete = [
+    {
+        weight : '113kcal',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '6g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '1g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '9g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '3mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '200mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '247mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '1g',
+        type : 'Fiber',
+        icon : require('../assets/nutrition/fiber.png'),
+    },
+    {
+        weight : '3g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '685IU',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '10.13.9mg',
+        type : 'Vitamin C',
+        icon : require('../assets/nutrition/vitamin_c.png'),
+    },
+    {
+        weight : '13.9mg',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '0.3mg',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
+
 
 export {
     maruya,
     arroz_caldo,
     corned_beef_omelet,
-    hot_silog
+    chicken_adobo_fried_rice_and_tortang_corned_beef,
+    hot_silog,
+    tap_silog,
+    filipino_omellete,
 }

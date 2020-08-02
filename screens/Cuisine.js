@@ -76,7 +76,6 @@ function Middle (props){
                     absolute
                     end
                     right={-30}
-                    marginY={[10,0]}
                     resizeMode='contain'
                     size={[item.image_scale,item.image_scale]}
                     src={item.image} />
@@ -90,7 +89,7 @@ function Middle (props){
                     <View flex={false} row marginY={[12]}>
                         <Circle size={10} primary marginY={[12]}/>
 
-                        <Text h3 family='semi-bold' left={8}>
+                        <Text size={item.title_size} family='semi-bold' left={8}>
                             {item.name}
                         </Text>
 

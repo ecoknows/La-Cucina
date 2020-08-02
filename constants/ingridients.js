@@ -50,6 +50,7 @@ const maruya = [
     }
 ];
 
+
 const arroz_caldo = [
     {
         value: 1.5,
@@ -164,31 +165,49 @@ const corned_beef_omelet = [
 
 const chicken_adobo_fried_rice_and_tortang_corned_beef = [
     {
-        step: '1 cup chicken adobo shredded and chopped',
+        value: 1,
+        step: 'cup chicken adobo shredded and chopped',
+        checked: false,
     },
     {
-        step: '4 cups leftover rice',
+        value: 4,
+        step: 'cups leftover rice',
+        checked: false,
     },
     {
-        step: '1/2 teaspoon salt',
+        value: 0.5,
+        step: 'teaspoon salt',
+        checked: false,
     },
     {
-        step: '4 cloves garlic crushed',
+        value: 4,
+        step: 'cloves garlic crushed',
+        checked: false,
     },
     {
-        step: '3 tablespoons cooking oil',
+        value: 3,
+        step: 'tablespoons cooking oil',
+        checked: false,
     },
     {
-        step: '1 1/2 cups corned beef sauteed',
+        value: 1.5,
+        step: 'cups corned beef sauteed',
+        checked: false,
     },
     {
-        step: '1 piece egg',
+        value: 1,
+        step: 'piece egg',
+        checked: false,
     },
     {
-        step: '1/8 teaspoon ground black pepper',
+        value: 0.125,
+        step: 'teaspoon ground black pepper',
+        checked: false,
     },
     {
-        step: '4 tablespoons cooking oil',
+        value: 4,
+        step: 'tablespoons cooking oil',
+        checked: false,
     },
 ];
 
@@ -236,10 +255,101 @@ const hot_silog = [
     },
 ];
 
+
+const tap_silog = [
+    {
+        value: 1,
+        step: 'lb. beef sirloin sliced thinly',
+        checked: false,
+    },
+    {
+        value: 3,
+        step: 'pieces eggs',
+        checked: false,
+    },
+    {
+        value: 6,
+        step: 'tablespoons cooking oil',
+        checked: false,
+    },
+    {
+        value: 3,
+        step: 'tablespoons Knorr Liquid Seasoning',
+        checked: false,
+    },
+    {
+        value: 6,
+        step: 'cloves crushed garlic',
+        checked: false,
+    },
+    {
+        value: 2,
+        step: 'tablespoons brown sugar',
+        checked: false,
+    },
+    {
+        value: 0.25,
+        step: 'teaspoon ground white pepper',
+        checked: false,
+    },
+    {
+        value: 5,
+        step: 'cups leftover rice',
+        checked: false,
+    },
+    {
+        value: 1,
+        step: 'teaspoon salt',
+        checked: false,
+    },
+    {
+        value: 5,
+        step: 'cloves garlic crushed',
+        checked: false,
+    },
+];
+
+const filipino_omellete = [
+    {
+        value: 3,
+        step: 'pieces large eggs',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'piece tomatoes diced',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'piece red onion diced',
+        checked : false,
+    },
+    {
+        value: 0.25,
+        step: 'teaspoon ground black pepper',
+        checked : false,
+    },
+    {
+        value: 0.25,
+        step: 'teaspoon sea salt',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'tablespoons cooking oil',
+        checked : false,
+    },
+];
+
+
+
 export {
     maruya,
     corned_beef_omelet,
     chicken_adobo_fried_rice_and_tortang_corned_beef,
     arroz_caldo,
-    hot_silog
+    hot_silog,
+    tap_silog,
+    filipino_omellete
 }

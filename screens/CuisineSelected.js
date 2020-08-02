@@ -230,6 +230,10 @@ function SheetText(props){
                 let value = Math.round( ((item.value/ people)*(capacity-people) + item.value) * 100) / 100;
                 value =( ( (value % 1) == 0.5  ) && value - 0.5 != 0)? ( (value - 0.5).toString() +' 1/2' ): value;
                 value =( ( (value % 1) == 0.75  ) && value - 0.75 != 0)? ( (value - 0.75).toString() +' 3/4' ): value;
+                value =( ( (value % 1) == 0.125  ) && value - 0.125 != 0)? ( (value - 0.125).toString() +' 1/8' ): value;
+                value =( ( (value % 1) == 0.25  ) && value - 0.25 != 0)? ( (value - 0.25).toString() +' 1/4' ): value;
+                value = value == 0.25 ? '1/4' : value;
+                value = value == 0.125 ? '1/8' : value;
                 value = value == 0.75 ? '3/4' : value;
                 value = value == 0.5 ? '1/2' : value;
                 ValueText =  <Text size={14} color={itemColor} left={textLeft} family='semi-bold'>{value} </Text>    
@@ -350,7 +354,7 @@ function CuisineSelected({navigation, route}){
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item } = route.params;
-    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index} = item;
+    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index,title_size} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
 
     const panResponderTwo = useRef( PanResponder.create({
@@ -526,7 +530,7 @@ function CuisineSelected({navigation, route}){
             <View flex={1} paddingX={[theme.sizes.padding]} >
                 
                 <View flex={false}>
-                    <Text h2 family='bold'> {name} </Text>
+                    <Text size={title_size + 6} family='bold'> {name} </Text>
                 </View>
 
                 <View row>

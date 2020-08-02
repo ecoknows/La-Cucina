@@ -183,10 +183,87 @@ const hot_silog = [
     },
 ];
 
+
+const tap_silog = [
+    {
+        step: 'Prepare the tapa by placing the beef in a large bowl.'+
+        ' Combine with all the tapa marinade ingredients. Mix well '+
+        'and cover the bowl. Place inside the fridge and marinate overnight.',
+    },
+    {
+        step: 'Cook the garlic fried rice (sinangag na kanin) by heating 3'+
+        ' tablespoons cooking oil in a pan. Add crushed garlic. Cook until'+
+        ' garlic turns light brown. Add the leftover rice. Stir-fry for 3 minutes.',
+    },
+    {
+        step: 'Season with salt. Continue to stir-fry for 3 to 5 minutes. Set aside.',
+    },
+    {
+        step: 'Start to cook the tapa. Heat a pan and pour the marinated beef into'+
+        ' it, including the marinade. Add ¾ cups water. Let the mixture boil.'+
+        ' Cover the pan and continue to cook until the liquid reduces to half.'+
+        ' Add 3 tablespoons cooking oil into the mixture. Continue to cook until'+
+        ' the liquid completely evaporates. Fry the beef tapa in remaining oil'+
+        ' until medium brown. Set aside.',
+    },
+    {
+        step: 'Fry the egg by pouring 1 tablespoon oil on a pan. '+
+        'Crack a piece of egg and sprinkle enough salt on top.'+
+        ' Cook for 30 seconds. Pour 2 tablespoons water on the'+
+        ' side of the pan. Cover and let the water boil. Continue'+
+        ' to cook until the egg yolks gets completely cooked by the steam.',
+    },
+    {
+        step: 'Arrange the beef tapa, sinangag, and fried egg on a large'+
+        ' plate to form Tapsilog. Serve with vinegar as dipping sauce for tapa.',
+    },
+
+];
+
+
+const filipino_omellete = [
+    {
+        step: 'Crack the eggs and then place in '+
+        'a medium bowl. Add the salt and pepper and '+
+        'then beat using a wire whisk or fork. Set aside.',
+    },
+    {
+        step: 'Heat the cooking oil in a pan.',
+    },
+    {
+        step: 'Saute the onion and tomatoes for 2 minutes.',
+    },
+    {
+        step: 'Pour-in the beaten egg mixture. '+
+        'Spread the mixture by tilting the pan sideways. '+
+        'Continue to cook in medium heat for 3 to 4 minutes.',
+    },
+    {
+        step: 'Flip the omelet with the aid of a wide spatula '+
+        'and then cook the other side for 3 minutes. Note: If'+
+        ' you are having a hard time flipping the omelet, try '+
+        'to first place the egg on a wide plate (the cooked side'+
+        ' should be facing down). Quickly flip the plate on top of'+
+        ' the pan so that the omelet will slide to the pan with the'+
+        ' uncooked side facing down.',
+    },
+    {
+        step: 'Turn off the heat and then transfer'+
+        ' the omelet to a serving plate. Enjoy with pandesal'+
+        ' or garlic rice. Serve with banana ketchup.',
+    },
+    {
+        step: 'Share and enjoy!',
+    },
+];
+
+
 export{
     maruya,
     corned_beef_omelet,
     chicken_adobo_fried_rice_and_tortang_corned_beef,
     arroz_caldo,
-    hot_silog
+    hot_silog,
+    tap_silog,
+    filipino_omellete,
 }
