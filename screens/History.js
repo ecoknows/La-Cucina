@@ -18,9 +18,11 @@ function ListView(props){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const display_date = monthsText[item_date.getMonth()] + ' / ' + item_date.getDate() + ' / ' + item_date.getFullYear();
     let hour = item_date.getHours();
+    let minutes = item_date.getMinutes();
+    minutes = minutes < 10 ?  '0' + minutes : minutes;
     const std = (hour >= 12 )? 'PM': 'AM';
     hour = (hour >= 13 ) ? (hour - 12) : hour;
-    let time = hour + ':' + item_date.getMinutes()+' '+ std;
+    let time = hour + ':' + item_date.getMinutes() +' '+ std;
 
     let item_state = (index_plus % 2) == 0 ? EVEN : ODD;
     item_state = (index_plus == 1) ? FIRST : item_state;
@@ -563,33 +565,6 @@ function History({navigation}){
     useEffect(() => {
         isAnim.value = true;
       }, [data]);
-    
-/*
-function CheckIfDataChange(setData) {
-    let isChange = false;
-    for(let i = 0; i < Cache.history.length; i++){
-        const {mocks_tabs, mocks_index} = Cache.history[i];
-        const cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index];  
-        const { history_cache } = cuisine;
-        if(history_cache.isChange){
-            Cache.history[i].time_finished = history_cache.time_finished;
-            Cache.history[i].date = history_cache.date;
-            Cache.history[i].capacity = history_cache.persons;
-            history_cache.isChange = false;
-            isChange = true;
-        }
-    }
-    if(isChange){
-        isAnim.value = false;
-        const sortedData = Cache.history.sort(function(a,b){
-            return parseInt(a.date) - parseInt()
-        })
-        setData([...Cache.history])
-    }
-
-}*/
-    
-      
     
 
     return(

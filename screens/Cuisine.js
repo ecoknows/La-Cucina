@@ -1,8 +1,6 @@
 import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../components';
-import { StyleSheet, Animated, Dimensions,ActivityIndicator  } from 'react-native';
-
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Animated, Dimensions,TouchableOpacity  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
 
 
@@ -71,14 +69,15 @@ function Middle (props){
                 size={[width - (width * .30),height - (height * .40)]}>
                     
             <View flex={1}>
-                
-                <Pic 
-                    absolute
-                    end
-                    right={-30}
-                    resizeMode='contain'
-                    size={[item.image_scale,item.image_scale]}
-                    src={item.image} />
+                <TouchableOpacity activeOpacity={1} style={{position: 'absolute',alignSelf: 'flex-end'}}
+                    onPress={()=> navigation.navigate('ImageModal',{image: item.image})}
+                >    
+                    <Pic 
+                        right={-30}
+                        resizeMode='contain'
+                        size={[item.image_scale,item.image_scale]}
+                        src={item.image} />
+                </TouchableOpacity>
 
             </View>
 
