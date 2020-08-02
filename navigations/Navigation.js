@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, Pic } from '../components'
 import { Cuisine, Ingridients, Favorite, History,CuisineSelected, NoteEditor } from '../screens';
-import InfoModal from '../modal/InfoModal';
+import {InfoModal, ImageModal} from '../modal';
 
 const Tab = createBottomTabNavigator();
 const Stack  = createStackNavigator();
@@ -134,6 +134,14 @@ function Navigation({navigation}){
                 }}
                 />
                 <Stack.Screen name="InfoModal" component={InfoModal}
+                options={{                
+                    animationEnabled: false,
+                    headerShown: false,
+                    cardStyle: {backgroundColor: 'rgba(226,67,9,0.25)'},
+                    cardOverlayEnabled: true,
+                }}/>
+                
+                <Stack.Screen name="ImageModal" component={ImageModal}
                 options={{                
                     animationEnabled: false,
                     headerShown: false,

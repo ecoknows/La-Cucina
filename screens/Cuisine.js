@@ -1,8 +1,6 @@
 import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../components';
-import { StyleSheet, Animated, Dimensions,ActivityIndicator  } from 'react-native';
-
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Animated, Dimensions,TouchableOpacity  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
 
 
