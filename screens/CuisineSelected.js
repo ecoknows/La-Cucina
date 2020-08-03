@@ -178,7 +178,7 @@ function SheetText(props){
                 }}
                 >
                     <Card borderWidth={2} borderColor={theme.colors.accent} borderRadius={7} white size={[70,25]} justifyContent='center' alignItems='center'>
-                            <Text accent size={12} family='semi-bold'>Done! ^.^</Text>
+                            <Text accent size={12} asemi_bold>Done! ^.^</Text>
                     </Card>
 
                 </View> 
@@ -268,19 +268,22 @@ function SheetText(props){
 
     return(
         <View marginY={[50]} marginX={[theme.sizes.margin * 2,theme.sizes.margin * 2]} >
-            <View flex={false} row center marginY={[0,theme.sizes.margin*2]}>
+            <View flex={false} row center marginY={[10,theme.sizes.margin*2]}>
                 
                <Text 
                 touchable
                 tFlex={1}
                 press={()=>setDirection(false)}
-                size={18} family='bold'
+                size={19} 
+                abold
                 accent={!isDirection}
                 secondary={isDirection}
                 center
                 >Ingredients</Text>
 
-                <Text size={18} family='bold' 
+                <Text 
+                size={19} 
+                abold
                 touchable
                 tFlex={1}
                 press={()=>setDirection(true)}
@@ -334,8 +337,8 @@ function PeopleView(props){
                 size={[25,25]}
                 accent
             />
-            <Text end family='semi-bold' size={13} thirdary left={7}>{capacity}</Text>
-            <Text end family='semi-bold' size={13} thirdary> people</Text>
+            <Text end asemi_bold size={14} thirdary left={7}>{capacity}</Text>
+            <Text end asemi_bold size={14} thirdary> people</Text>
             <TouchableOpacity onPress={()=>{
                     setCapacity(capacity-1);
             }}>
@@ -530,7 +533,7 @@ function CuisineSelected({navigation, route}){
             <View flex={1} paddingX={[theme.sizes.padding]} >
                 
                 <View flex={false}>
-                    <Text size={title_size + 6} family='bold'> {name} </Text>
+                    <Text size={title_size + 6} abold >{name}</Text>
                 </View>
 
                 <View row>
@@ -542,8 +545,8 @@ function CuisineSelected({navigation, route}){
                                 marginLeft={25}
                                 accent
                             />
-                            <Text end family='semi-bold' size={13} thirdary left={0}>{prep_time}</Text>
-                            <Text gray3 end family='semi-bold' size={12} thirdary left={0}> preparation</Text>
+                            <Text end asemi_bold size={14} thirdary left={0}>{prep_time}</Text>
+                            <Text gray3 end asemi_bold size={13} thirdary left={0}> preparation</Text>
                         </View>
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
@@ -552,8 +555,8 @@ function CuisineSelected({navigation, route}){
                                 marginLeft={25}
                                 accent
                             />
-                            <Text end family='semi-bold' size={13} thirdary left={7}>{cooking_time}</Text>
-                            <Text gray3 end family='semi-bold' size={12} thirdary left={0}> cooking</Text>
+                            <Text end asemi_bold size={14} thirdary left={7}>{cooking_time}</Text>
+                            <Text gray3 end asemi_bold size={13} thirdary left={0}> cooking</Text>
                         </View>
                         
                         <PeopleView item={item} mainCapacity={setCapacity} capacity={capacity} />
@@ -565,7 +568,7 @@ function CuisineSelected({navigation, route}){
                                 size={[25,25]}
                                 accent
                             />
-                          <Text end family='semi-bold' size={13} thirdary left={7}>{burn}</Text>
+                          <Text end asemi_bold size={14} thirdary left={7}>{burn}</Text>
                         </View>
 
                         
@@ -573,7 +576,7 @@ function CuisineSelected({navigation, route}){
                     </View>
 
 
-                    <View >
+                    <View touchable activeOpacity={1} press={()=> navigation.navigate('ImageModal',{image})} >
                         <Pic src={image}
                             resizeMode='contain'
                             size={[250,250]}

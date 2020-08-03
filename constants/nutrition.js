@@ -435,7 +435,7 @@ const filipino_omellete = [
         icon : require('../assets/nutrition/vitamin_a.png'),
     },
     {
-        weight : '10.13.9mg',
+        weight : '10.13mg',
         type : 'Vitamin C',
         icon : require('../assets/nutrition/vitamin_c.png'),
     },
@@ -451,6 +451,75 @@ const filipino_omellete = [
     },
 ];
 
+const skinless_longganisa = [
+    {
+        weight : '114kcal',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '4g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '5g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '8g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '3g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '21mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '354mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '107mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '4g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '135IU',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '0.9mg ',
+        type : 'Vitamin C',
+        icon : require('../assets/nutrition/vitamin_c.png'),
+    },
+    {
+        weight : '12mg ',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '0.4mg',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
+
+
 
 export {
     maruya,
@@ -460,4 +529,5 @@ export {
     hot_silog,
     tap_silog,
     filipino_omellete,
+    skinless_longganisa
 }

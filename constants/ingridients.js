@@ -343,6 +343,45 @@ const filipino_omellete = [
 ];
 
 
+const skinless_longganisa = [
+    {
+        value: 1.75,
+        step: 'lbs. ground pork',
+        checked : false,
+    },
+    {
+        value: 9,
+        step: 'tablespoons dark brown sugar',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'tablespoon smoked paprika',
+        checked : false,
+    },
+    {
+        value: 3,
+        step: 'tablespoons vegetable oil',
+        checked : false,
+    },
+    {
+        value: 1.25,
+        step: 'tablespoons coarse salt',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'teaspoon ground black pepper',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'head garlic',
+        checked : false,
+    },
+];
+
+
 
 export {
     maruya,
@@ -351,5 +390,6 @@ export {
     arroz_caldo,
     hot_silog,
     tap_silog,
-    filipino_omellete
+    filipino_omellete,
+    skinless_longganisa
 }

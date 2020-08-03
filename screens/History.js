@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView,TouchableOpacity, Animated, Easing } from 'react
 import { View, Pic,List,Text } from '../components';
 import { FetchHistory } from '../database/database';
 import { tabs } from '../constants';
+import { parse } from 'react-native-svg';
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
 let late_index = 0;
 const data_change = { value : true};
@@ -22,7 +23,7 @@ function ListView(props){
     minutes = minutes < 10 ?  '0' + minutes : minutes;
     const std = (hour >= 12 )? 'PM': 'AM';
     hour = (hour >= 13 ) ? (hour - 12) : hour;
-    let time = hour + ':' + item_date.getMinutes() +' '+ std;
+    let time = hour + ':' + minutes +' '+ std;
 
     let item_state = (index_plus % 2) == 0 ? EVEN : ODD;
     item_state = (index_plus == 1) ? FIRST : item_state;
@@ -93,13 +94,14 @@ function ListView(props){
             
         }),
         
+        ]).start();
+        
         Animated.timing(title_anim,{
             toValue: 0,
-            duration: 500,
+            duration: 1500,
             easing: Easing.linear,
-        }),
+        }).start();
 
-        ]).start();
     }    
     if(late_index == index && isAnim.value)
         animation_out();
@@ -405,8 +407,7 @@ function ListView(props){
             <View flex={false} white size={['100%', 240]} center>
                 {(latestIndex == index || late_index == index) ? <View animated flex={false} middle style={{position:'absolute', top: -18, right: 15, width: 170, height: 30, opacity: title_anim}}>
                         <Text 
-
-                            family='bold'
+                            abold
                             style={{position:'absolute', bottom: 0,textAlign:'center'}}
                             size={24}
                             accent
@@ -468,7 +469,7 @@ function ListView(props){
             <View flex={false} size={['100%', 240]} center>
                     {(latestIndex == index || late_index == index) ? <View animated flex={false} middle style={{position:'absolute', top: -20, left: 0, width: 170, height: 30,opacity: title_anim}}>
                         <Text 
-                            family='bold'
+                            abold
                             style={{position:'absolute', bottom: 0,textAlign:'center'}}
                             size={24}
                             accent
@@ -484,7 +485,6 @@ function ListView(props){
                         
                         
                 </View>
-
                 <View flex={false}  style={{position:'absolute'}} row>
                     
 
@@ -507,13 +507,11 @@ function ListView(props){
                     
 
                     {(latestIndex == index || late_index == index) ? <View flex={false} paddingTop='2%' row>
-
                         <OddInfo/>
                     </View> : null }
 
                 </View>
-
-                    <View flex={false} style={{position:'absolute',bottom:0, left: 0, width: '43%',}} middle>
+                <View flex={false} style={{position:'absolute',bottom:0, left: 0, width: '43%',}} middle>
                             
                             <Text
                                 accent
@@ -586,16 +584,16 @@ export default History;
 const styles = StyleSheet.create({
     diagonal_left : {
         width: 3,
-        height: 160,
-        left:100,
-        bottom: 12.53,
+        height: 173,
+        left:107,
+        bottom: 26,
         backgroundColor: '#FFBE93'
     },
     diagonal_right : {
         width: 3,
-        left:100,
-        height: 160,
-        bottom: -12.53,
+        left:107,
+        height: 173,
+        bottom: -26,
         backgroundColor: '#FFBE93'
     },
 })

@@ -258,6 +258,41 @@ const filipino_omellete = [
 ];
 
 
+const skinless_longganisa = [
+    {
+        step: 'Peel the skin off the garlic cloves.'+
+        ' Crush thoroughly using mortar and pestle.'+
+        ' Mince the crushed garlic. Set aside.',
+    },
+    {
+        step: 'In a large mixing bowl, combine ground '+
+        'pork along with all of the ingredients. Mix well.',
+    },
+    {
+        step: 'Cover the bowl. Refrigerate for 2 hours.',
+    },
+    {
+        step: 'Shape the longganisa by laying a sheet of '+
+        'wax paper on a flat surface. Scoop around 3 tablespoons '+
+        'of mixture and put over the wax paper. Fold the wax paper '+
+        'from top to down until the mixture covered. Hold the edge '+
+        'of the paper with your fingers and then slide the card towards '+
+        'the mixture. Push a bit more until a sausage shape is formed. Do '+
+        'this step until the entire mixture is consumed.',
+    },
+    {
+        step: 'Refrigerate overnight.',
+    },
+    {
+        step: 'Cook and serve for breakfast.',
+    },
+    {
+        step: 'Share and enjoy!',
+    },
+
+];
+
+
 export{
     maruya,
     corned_beef_omelet,
@@ -266,4 +301,5 @@ export{
     hot_silog,
     tap_silog,
     filipino_omellete,
+    skinless_longganisa,
 }

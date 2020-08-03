@@ -9,6 +9,10 @@ const  getFonts =()=> Font.loadAsync({
   'OpenSans-semi-bold' : require('./fonts/open-sans/OpenSans-SemiBold.ttf'),
   'OpenSans-light' : require('./fonts/open-sans/OpenSans-Light.ttf'),
   'OpenSans-regular' : require('./fonts/open-sans/OpenSans-Regular.ttf'),
+  'Ambit-bold' : require('./fonts/ambit/Ambit-Bold.otf'),
+  'Ambit-light' : require('./fonts/ambit/Ambit-Light.otf'),
+  'Ambit-regular' : require('./fonts/ambit/Ambit-Regular.otf'),
+  'Ambit-semi-bold' : require('./fonts/ambit/Ambit-SemiBold.ttf'),
 })
 
 export default function App() {

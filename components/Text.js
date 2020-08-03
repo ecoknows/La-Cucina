@@ -25,6 +25,11 @@ const TextEdited = props => {
 
         // font family
         family,
+        // font style
+        abold,
+        alight,
+        aregular,
+        asemi_bold,
 
         // font style
         bold,
@@ -102,6 +107,10 @@ const TextEdited = props => {
         // font style
         bold && styles.bold,
         light && styles.light,
+        abold && styles.abold,
+        alight && styles.alight,
+        aregular && styles.aregular,
+        asemi_bold && styles.asemi_bold,
 
         // positions
         absolute && styles.absolute,
@@ -192,6 +201,12 @@ const styles = StyleSheet.create({
     thirdary: {color: theme.colors.thirdary},
     gray:  {color: theme.colors.gray},
     gray3: {color: theme.colors.gray3},
+
+    // font style 
+    abold : {fontFamily: 'Ambit-bold'},
+    alight : {fontFamily: 'Ambit-light'},
+    aregular : {fontFamily: 'Ambit-regular'},
+    asemi_bold : {fontFamily: 'Ambit-semi-bold'},
 
     // font size
     h1: {fontSize: theme.fonts.h1},

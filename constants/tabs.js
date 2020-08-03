@@ -93,7 +93,7 @@ const cuisine = {
         breakfast: [
             {
                 name: 'Drinks',
-                width: 65,
+                width: 60,
                 margin: -20,
             },
             {
@@ -102,7 +102,7 @@ const cuisine = {
                 margin: -20,
             },
             {
-                name: 'Noodles',
+                name: 'Nonrice',
                 width: 65,
                 margin: -20,
             },
@@ -111,7 +111,6 @@ const cuisine = {
                 width: 60,
                 margin: 0,
             },
-            
 
         ],
 

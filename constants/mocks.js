@@ -9,7 +9,7 @@ const breakfast = [
         name: 'Maruya',
         title_size: 24,
         favorite: false,
-        tags: ['rice','fruits', 'egg','milk'],
+        tags: ['nonrice','fruits', 'egg','milk'],
         color: '#FFDFC4',
         image: require('../assets/foods/maruya.png'),
         image_scale: 230,
@@ -55,7 +55,7 @@ const breakfast = [
         name: 'Corned Beef Omelet',
         title_size: 24,
         favorite: false,
-        tags: ['rice', 'seafood','fried', 'egg'],
+        tags: ['nonrice', 'seafood','fried', 'egg'],
         color: '#FFDFC4',
         image: require('../assets/foods/corned-beef-omelette.png'),
         image_scale: 230,
@@ -67,8 +67,7 @@ const breakfast = [
         description:'I consider Corned Beef Omelet (or Tortang Corned Beef) '+
         'as a power breakfast food. It is a complete meal which gives me'+
         ' enough energy that lasts until lunchtime. In addition, it tastes '+
-        'great and it is easy to make. Sometimes I enjoy it with toast'+
-        ' or with a cup of rice.',
+        'great and it is easy to make.',
         author: 'Vanjo Merano',
         direction: directions.corned_beef_omelet,
         ingridients: ingridients.corned_beef_omelet,
@@ -92,9 +91,7 @@ const breakfast = [
         description:'Chicken Adobo Fried Rice and Tortang Corned Beef is simple and delicious.'+
         'I think that it is worth to mention that'+
         ' it is economical. It saved me money because'+
-        ' leftovers were used in the recipe.' +'  I am referring to leftover chicken adobo and saute'+
-        ' corned beef that we had from the previous day.',
-        author: 'Vanjo Merano',
+        ' leftovers food were used in the recipe.',
         direction: directions.chicken_adobo_fried_rice_and_tortang_corned_beef,
         ingridients: ingridients.chicken_adobo_fried_rice_and_tortang_corned_beef,
         nutrition: nutrition.chicken_adobo_fried_rice_and_tortang_corned_beef,
@@ -128,7 +125,7 @@ const breakfast = [
         name: 'Filipino Omellete',
         title_size: 24,
         favorite: false,
-        tags: [ 'rice', 'meat', 'fried','egg'],
+        tags: [ 'nonrice', 'meat', 'fried','egg'],
         color: '#FFDFC4',
         image: require('../assets/foods/filipino_omellete.png'),
         image_scale: 230,
@@ -139,39 +136,15 @@ const breakfast = [
         burn: '113 kilo calories',
         description: 'Making Filipino Omelet is quick and easy.'+
         ' The procedure is so simple to the point that newbies'+
-        ' can easily understand and apply. Tomato, onion, and'+
-        ' eggs are the basic components of this recipe. More '+
+        ' can easily understand and apply. More '+
         'vegetables can be added according to your preference. ',
         direction: directions.filipino_omellete,
         ingridients: ingridients.filipino_omellete,
         nutrition: nutrition.filipino_omellete,
     },
     {
-        id: 'torta',
-        index: 6,
-        name: 'Torta',
-        title_size: 24,
-        favorite: false,
-        tags: ['egg'],
-        color: '#FFDFC4',
-        image: require('../assets/images/test.png'),
-        image_scale: 230,
-        time: '32 Minutes',
-        capacity: '2 Persons',
-        burn: '24 calories',
-        description: 'Lugaw is a Filipino rice ' +
-         'porridge that is traditionally thought '+
-         'of as soft food for sick people, due to the '+
-         'fact that it doesn\'t require much chewing. Warm, '+
-         'filling, and mushy, the dish acts as an ideal base '+
-         'for any type of meat and seasonings, just like a congee.',
-         
-        direction: directions.lugaw,
-        ingridients: null,
-    }, 
-    {
         id: 'hot-silog',
-        index: 7,
+        index: 6,
         name: 'Hot Silog',
         title_size: 24,
         favorite: false,
@@ -187,14 +160,37 @@ const breakfast = [
         description: 'Hotsilog is a meal composed of hotdogs,'+
         ' garlic fried rice, and fried egg. '+
         'In a Filipino household, this is'+
-        ' commonly eaten for breakfast with '+
-        'a condiment of banana ketchup and some '+
-        'pickled shredded papaya (atchara) on the side.',
+        ' commonly eaten for breakfast',
         author: 'Vanjo Merano',
         direction: directions.hot_silog,
         ingridients: ingridients.hot_silog,
         nutrition: nutrition.hot_silog,
     },
+    {
+        id: 'skinless-longganisa',
+        index: 7,
+        name: 'Skinless Longganisa',
+        title_size: 24,
+        favorite: false,
+        tags: ['nonrice','meat', 'fried'],
+        color: '#FFDFC4',
+        image: require('../assets/foods/skinless_longganisa.png'),
+        image_scale: 220,
+        cooking_time: '10 mins',
+        prep_time: '15 mins',
+        capacity : 1,
+        capacity_cache : {value: null},
+        burn: '707 calories',
+        description: 'Skinless longganisa refers'+
+        ' to a type of Filipino sausage without the'+
+        ' casing. It is also known as naked sausage.'+
+        ' Filipino Longganisa can either be sweet or garlicky.',
+        author: 'Vanjo Merano',
+        direction: directions.skinless_longganisa,
+        ingridients: ingridients.skinless_longganisa,
+        nutrition: nutrition.skinless_longganisa,
+    },
+    
 ];
 
 const meal = [

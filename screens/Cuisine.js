@@ -1,7 +1,8 @@
 import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../components';
-import { StyleSheet, Animated, Dimensions,TouchableOpacity  } from 'react-native';
+import { StyleSheet, Animated, Dimensions  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 const { height, width} = Dimensions.get('window');
@@ -69,13 +70,20 @@ function Middle (props){
                 size={[width - (width * .30),height - (height * .40)]}>
                     
             <View flex={1}>
-                
+                <View touchable activeOpacity={1} flex={false} absolute end
+                    press={()=>{
+                        if(currentMiddle == index)
+                            navigation.navigate('ImageModal',{image: item.image});
+                        else
+                            middleClick();
+                    }}
+                >
                 <Pic 
-                    absolute
-                    end
                     right={-30}
                     size={[item.image_scale,item.image_scale]}
                     src={item.image} />
+
+                </View>
 
             </View>
 
@@ -86,7 +94,7 @@ function Middle (props){
                     <View flex={false} row marginY={[12]}>
                         <Circle size={10} primary marginY={[12]}/>
 
-                        <Text size={item.title_size} family='semi-bold' left={8}>
+                        <Text size={item.title_size} asemi_bold left={8}>
                             {item.name}
                         </Text>
 
@@ -161,7 +169,7 @@ function Left (props){
                         onPress={()=> setIsActive(tab.name)}
                         style={{flexDirection: 'column-reverse'}}>
 
-                      <Text secondary={!active} right={30} rotate={180} family='semi-bold' size={16} style={{width: tab.width}} >{tab.name}</Text>
+                      <Text secondary={!active} right={30} rotate={180} asemi_bold size={16} style={{width: tab.width}} >{tab.name}</Text>
                       {isIndi}
 
                     </TouchableOpacity>
@@ -216,14 +224,14 @@ function Top(props){
             <Text
             animated
             size={textSize}
-            light={light}
+            alight
             end
             onPress={() => topClick(item, index)}
             left={theme.sizes.padding * 2}
             opacity={opacity}
             bottom={5}>
             {first}
-                <Text bold>{second}</Text>
+                <Text abold>{second}</Text>
             </Text>
         
     );
@@ -247,7 +255,7 @@ function Bottom(props){
                     touchable showOpacity={1} 
                     press={()=> setIsActive(item.name)}
                     >
-                <Text white={active} size={14} family='bold' gray={!active} >{item.name}</Text>
+                <Text white={active} size={14} abold gray={!active} >{item.name}</Text>
             </Card>
         );
     }
