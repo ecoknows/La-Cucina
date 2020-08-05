@@ -190,6 +190,31 @@ const breakfast = [
         ingridients: ingridients.skinless_longganisa,
         nutrition: nutrition.skinless_longganisa,
     },
+    {
+        id: 'skinless-longganisa',
+        index: 8,
+        name: 'Skinless Longganisa',
+        title_size: 24,
+        favorite: false,
+        tags: ['nonrice','meat', 'fried'],
+        color: '#FFDFC4',
+        image: require('../assets/foods/skinless_longganisa.png'),
+        image_scale: 220,
+        cooking_time: '10 mins',
+        prep_time: '15 mins',
+        capacity : 1,
+        capacity_cache : {value: null},
+        burn: '707 calories',
+        description: 'Skinless longganisa refers'+
+        ' to a type of Filipino sausage without the'+
+        ' casing. It is also known as naked sausage.'+
+        ' Filipino Longganisa can either be sweet or garlicky.',
+        author: 'Vanjo Merano',
+        direction: directions.skinless_longganisa,
+        ingridients: ingridients.skinless_longganisa,
+        nutrition: nutrition.skinless_longganisa,
+    },
+
     
 ];
 
