@@ -191,28 +191,55 @@ const breakfast = [
         nutrition: nutrition.skinless_longganisa,
     },
     {
-        id: 'skinless-longganisa',
+        id: 't-bone-steak-with-fried-eggs',
         index: 8,
-        name: 'Skinless Longganisa',
+        name: 'T-Bone Steak with Fried Eggs',
         title_size: 24,
         favorite: false,
-        tags: ['nonrice','meat', 'fried'],
+        tags: ['nonrice','meat', 'egg'],
         color: '#FFDFC4',
-        image: require('../assets/foods/skinless_longganisa.png'),
+        image: require('../assets/foods/t-bone-steak-with-fried-eggs.png'),
+        image_scale: 220,
+        cooking_time: '8 mins',
+        prep_time: '15 mins',
+        capacity : 2,
+        capacity_cache : {value: null},
+        burn: '360 calories',
+        description: 'Note that this recipe calls for '+
+        'T-bone steak, but you can also use Porterhouse'+
+        ' or any steak cuts that you like. Both T-bone and Porterhouse steaks can'+
+        ' be distinguished by the “T” shaped bone. However, each '+
+        'has its own properties that make it unique.',
+        author: 'Vanjo Merano',
+        direction: directions.t_bone_steak_with_fried_egg,
+        ingridients: ingridients.t_bone_steak_with_fried_egg,
+        nutrition: nutrition.t_bone_steak_with_fried_egg,
+    }, 
+    {
+        id: 'tortang-tuna-with-spinach',
+        index: 9,
+        name: 'Tortang Tuna with Spinach',
+        title_size: 24,
+        favorite: false,
+        tags: ['nonrice','meat', 'egg'],
+        color: '#FFDFC4',
+        image: require('../assets/foods/tortang_tuna_with_spinach.png'),
         image_scale: 220,
         cooking_time: '10 mins',
-        prep_time: '15 mins',
-        capacity : 1,
+        prep_time: '5 mins',
+        capacity : 3,
         capacity_cache : {value: null},
-        burn: '707 calories',
-        description: 'Skinless longganisa refers'+
-        ' to a type of Filipino sausage without the'+
-        ' casing. It is also known as naked sausage.'+
-        ' Filipino Longganisa can either be sweet or garlicky.',
+        burn: '462 calories',
+        description: 'Tortang Tuna with Spinach is a'+
+        ' type of omelet wherein sautéed tuna and '+
+        'spinach are added to the beaten egg mixture'+
+        ' before cooking. This is a practical way to'+
+        ' make stuffed omelet. It is easy to prepare'+
+        ' and the result is yummy.',
         author: 'Vanjo Merano',
-        direction: directions.skinless_longganisa,
-        ingridients: ingridients.skinless_longganisa,
-        nutrition: nutrition.skinless_longganisa,
+        direction: directions.tortang_tuna_with_spinach,
+        ingridients: ingridients.tortang_tuna_with_spinach,
+        nutrition: nutrition.tortang_tuna_with_spinach,
     },
 
     

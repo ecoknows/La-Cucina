@@ -382,6 +382,81 @@ const skinless_longganisa = [
 ];
 
 
+const t_bone_steak_with_fried_egg = [
+    {
+        value: 1,
+        step: '12 oz. T-bone steak',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'teaspoon salt',
+        checked : false,
+    },
+    {
+        value: 0.125,
+        step: 'teaspoon ground black pepper optional',
+        checked : false,
+    },
+    {
+        value: 5,
+        step: 'tablespoons butter',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'tablespoons olive oil',
+        checked : false,
+    },
+    {
+        value: 3,
+        step: 'cloves garlic',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'fried eggs',
+        checked : false,
+    },
+];
+
+
+const tortang_tuna_with_spinach = [
+    {
+        value: 5,
+        step: 'eggs',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: '5 ounce can chunk tuna in water, drained',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: '1/2 cup fresh baby spinach',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'medium yellow onion chopped',
+        checked : false,
+    },
+    {
+        value: 5,
+        step: 'tablespoons cooking oil',
+        checked : false,
+    },
+    {
+        value: -1,
+        step: 'Salt and ground black pepper to taste',
+        checked : false,
+    },
+];
+
+
+
+
 
 export {
     maruya,
@@ -391,5 +466,8 @@ export {
     hot_silog,
     tap_silog,
     filipino_omellete,
-    skinless_longganisa
+    skinless_longganisa,
+    t_bone_steak_with_fried_egg,
+    tortang_tuna_with_spinach,
+
 }

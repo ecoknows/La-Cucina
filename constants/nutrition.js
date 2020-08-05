@@ -503,12 +503,12 @@ const skinless_longganisa = [
         icon : require('../assets/nutrition/vitamin_a.png'),
     },
     {
-        weight : '0.9mg ',
+        weight : '0.9mg',
         type : 'Vitamin C',
         icon : require('../assets/nutrition/vitamin_c.png'),
     },
     {
-        weight : '12mg ',
+        weight : '12mg',
         type : 'Calcium',
         icon : require('../assets/nutrition/calcium.png'),
     },
@@ -520,6 +520,122 @@ const skinless_longganisa = [
 ];
 
 
+const t_bone_steak_with_fried_egg = [
+    {
+        weight : '360cal',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '0.12g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '36.3g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '22.8g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '5.6g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '356.6mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '247mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '367.5mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '12%',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '3%',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '5%',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
+
+const tortang_tuna_with_spinach = [
+    {
+        weight : '462cal',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '5.9g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '31.4g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '33.9g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '12.3g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '855mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '465mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '572.4mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '2813IU',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '29.7mg',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '81mg',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
+
 
 export {
     maruya,
@@ -529,5 +645,7 @@ export {
     hot_silog,
     tap_silog,
     filipino_omellete,
-    skinless_longganisa
+    skinless_longganisa,
+    t_bone_steak_with_fried_egg,
+    tortang_tuna_with_spinach,
 }

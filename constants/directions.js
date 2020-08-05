@@ -293,6 +293,76 @@ const skinless_longganisa = [
 ];
 
 
+const t_bone_steak_with_fried_egg = [
+    {
+        step: 'Rub salt all over the steak. Let it stay for 15 minutes.',
+    },
+    {
+        step: 'Melt butter in a pan. Add olive oil.',
+    },
+    {
+        step: 'Gently pound the garlic until it cracks and then put it into the pan.'+
+        ' Do not remove the skin. Note: this will give the steak a garlicky taste.',
+    },
+    {
+        step: 'Put the T-bone steak into the pan. Cook for 4 to 5 minutes between low to medium heat.',
+    },
+    {
+        step: 'Turn the steak over to cook the opposite side. Continue to cook for 3 minutes.'+
+        ' You can also scoop some butter using a spoon and pour it on top of the steak while frying.',
+    },
+    {
+        step: 'Arrange on a serving plate. Season with ground black pepper',
+    },
+    {
+        step: 'Serve with fried eggs. Share and enjoy!',
+    },
+];
+
+
+
+const tortang_tuna_with_spinach = [
+    {
+        step: 'Heat 3 tablespoons of cooking oil in a pan',
+    },
+    {
+        step: 'Saute onion until soft',
+    },
+    {
+        step: 'Add tuna. Continue to cook for 2 minutes.',
+    },
+    {
+        step: 'Put the spinach into the pan. Cook for 1 minute.',
+    },
+    {
+        step: 'Season with salt and ground black pepper. Remove from the pan and let it cool down.',
+    },
+    {
+        step: 'Crack the eggs and place in a large mixing bowl. Beat until yellow and white parts are well blended.',
+    },
+    {
+        step: 'Add the sautéed tuna and spinach to beaten eggs. Make sure that the temperature cools first. Mix well.',
+    },
+    {
+        step: 'Heat remaining oil in an omelet pan or small frying pan',
+    },
+    {
+        step: 'Pour the egg and tuna mixture. Gently'+
+        ' push the cooked portion of the omelet towards'+
+        ' the center to be able to heat the uncooked mixture.'+
+        ' Continue to cook between low to medium heat for 2 minutes'+
+        ' or until completely cooked. Turn over the omelet to cook the opposite side.',
+    },
+    {
+        step: 'Transfer to a serving plate. Serve.',
+    },
+    {
+        step: 'Share and enjoy!',
+    },
+];
+
+
+
 export{
     maruya,
     corned_beef_omelet,
@@ -302,4 +372,6 @@ export{
     tap_silog,
     filipino_omellete,
     skinless_longganisa,
+    t_bone_steak_with_fried_egg,
+    tortang_tuna_with_spinach,
 }
