@@ -154,6 +154,7 @@ function NoteEditor({navigation, route}){
                 />
                 <Text touchable white family='bold' size={20} left={10} 
                     press={()=>{
+                        console.log(item.id);
                         const toRemove = [stateCheckedData[index]];
                         changesCnt = item.id == undefined ? changesCnt-1 : changesCnt+1;
                         const modified = stateCheckedData.filter(value=> !toRemove.includes(value));   

@@ -321,6 +321,7 @@ const AddNote = (data) =>{
           db.transaction(
               (tx)=> {
               tx.executeSql(query, params,(tx, results) =>{
+                  checkList.id = results.insertId;
                   console.log('Success CheckList!');
               }, function(tx,err) {
                   console.log(err.message);
@@ -578,7 +579,7 @@ const QueryChangesList =(data)=>{
         db.transaction(
           (tx)=> {
             tx.executeSql(query, params,(tx, results) =>{
-
+              
               console.log("Success ");
             }, function(tx,err) {
               console.log(err.message);
