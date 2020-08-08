@@ -637,6 +637,54 @@ const tortang_tuna_with_spinach = [
 ];
 
 
+const spinach_tomato_and_cheese_omelette = [
+    {
+        weight : '649.6g',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '30.1g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '37.2g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '42.2g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '16.4g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '429.9mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '560.2mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '4.3g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '4.5g',
+        type : 'Fiber',
+        icon : require('../assets/nutrition/fiber.png'),
+    },
+];
+
 export {
     maruya,
     arroz_caldo,
@@ -648,4 +696,5 @@ export {
     skinless_longganisa,
     t_bone_steak_with_fried_egg,
     tortang_tuna_with_spinach,
+    spinach_tomato_and_cheese_omelette,
 }

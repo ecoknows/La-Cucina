@@ -241,6 +241,33 @@ const breakfast = [
         ingridients: ingridients.tortang_tuna_with_spinach,
         nutrition: nutrition.tortang_tuna_with_spinach,
     },
+    {
+        id: 'spinach-tomato-and-cheese-omelette',
+        index: 9,
+        name: 'Spinach Tomato and Cheese Omelette',
+        title_size: 20,
+        favorite: false,
+        tags: ['nonrice','veggies', 'egg'],
+        color: '#FFDFC4',
+        image: require('../assets/foods/spinach_tomato_cheese.png'),
+        image_scale: 220,
+        cooking_time: '7 mins',
+        prep_time: '5 mins',
+        capacity : 3,
+        capacity_cache : {value: null},
+        burn: '462 calories',
+        description: 'Spinach Tomato and Cheese '+
+        'Omelette is an easy and healthy dish that'+
+        ' you can make for breakfast. Instead of just'+
+        ' frying eggs, you can make your breakfast meal'+
+        ' more exciting and tastier. Make an omelette out'+
+        ' of it and add more ingredients such as spinach,'+
+        ' tomato, and cheese. ',
+        author: 'Vanjo Merano',
+        direction: directions.spinach_tomato_and_cheese_omelette,
+        ingridients: ingridients.spinach_tomato_and_cheese_omelette,
+        nutrition: nutrition.spinach_tomato_and_cheese_omelette,
+    },
 
     
 ];

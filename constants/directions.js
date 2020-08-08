@@ -362,6 +362,41 @@ const tortang_tuna_with_spinach = [
 ];
 
 
+const spinach_tomato_and_cheese_omelette = [
+    {
+        step: 'Melt half of the butter in a pan.',
+    },
+    {
+        step: 'Once the butter starts to bubble, add tomato. Saute for 1 minute.',
+    },
+    {
+        step: 'Put the spinach in the pan. Cook for 30 seconds. Transfer everything in a clean plate.',
+    },
+    {
+        step: 'Wipe the pan clean using a paper towel. Heat the pan in a stovetop using '+
+        'low to medium heat. Melt the remaining butter in the pan.',
+    },
+    {
+        step: 'Beat the eggs in a bowl. Pour into the pan. Tilt the pan to distribute the beaten eggs equally.',
+    },
+    {
+        step: 'Once the eggs starts to form, pour the cooke tomato and spinach over the egg.'+
+        ' Top with shredded cheese. Continue to cook until the eggs are done.',
+    },
+    {
+        step: 'Fold the omelet halfway to secure the filling. You can top the omelet with more cheese.',
+    },
+    {
+        step: 'Transfer to a serving plate. Serve.',
+    },
+    {
+        step: 'Share and enjoy!',
+    },
+
+];
+
+
+
 
 export{
     maruya,
@@ -374,4 +409,5 @@ export{
     skinless_longganisa,
     t_bone_steak_with_fried_egg,
     tortang_tuna_with_spinach,
+    spinach_tomato_and_cheese_omelette,
 }

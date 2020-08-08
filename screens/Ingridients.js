@@ -62,8 +62,8 @@ function Ingridients({navigation, route}){
                 const setData = isFirstRow ? setStateData1 : setStateData2;
                 id_latest.value++;
                 setData(items=>[post,...items])
-                setIsFirstRow(isFirstRow ? false : true); 
-                DataPos(isFirstRow);
+                DataPos(isFirstRow ? '0': '1');
+                setIsFirstRow(!isFirstRow); 
                 AddNote(post);
             }else{
                 let updateData = null, save = null;
@@ -172,9 +172,14 @@ function Ingridients({navigation, route}){
                 if(dx < 100 && dx > -100)
                     animationOut();
                 else{
-                    let isGreater = data[index] > data2[index] ? 0 : 1;
+                    let isGreater = data.length > data2.length ? 0 : 1;
                     const data2_toSwap = data2.slice(index+isGreater, data2.length);
-                   if(data2_toSwap.length == 0){
+                    let firstRow = false;
+                    if(type == 1){
+                        firstRow = true;
+                    }
+                    
+                    if(data2_toSwap.length == 0 ){
                         RemoveNote(data[index].id);
                         const dataTochange = [data[index]];
                         const modified = data.filter(value=> !dataTochange.includes(value));    

@@ -455,6 +455,35 @@ const tortang_tuna_with_spinach = [
 ];
 
 
+const spinach_tomato_and_cheese_omelette = [
+    {
+        value: 2,
+        step: 'eggs',
+        checked : false,
+    },
+    {
+        value: 0.75,
+        step: 'cups fresh baby spinach',
+        checked : false,
+    },
+    {
+        value: 1,
+        step: 'small ripe roma tomato chopped',
+        checked : false,
+    },
+    {
+        value: 0.5,
+        step: 'cup shredded cheddar cheese',
+        checked : false,
+    },
+    {
+        value: 0.25,
+        step: 'cup salted butter',
+        checked : false,
+    },
+];
+
+
 
 
 
@@ -469,5 +498,6 @@ export {
     skinless_longganisa,
     t_bone_steak_with_fried_egg,
     tortang_tuna_with_spinach,
+    spinach_tomato_and_cheese_omelette,
 
 }

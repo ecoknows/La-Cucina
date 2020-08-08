@@ -38,7 +38,7 @@ const InitialData =(dataState)=> {
 
 const DataPos = async pos => {
   try{
-    await AsyncStorage.setItem(userId,pos.toString())
+    await AsyncStorage.setItem(userId,pos.toString());
   }catch (error){
     console.log(TAG, error);
   }
