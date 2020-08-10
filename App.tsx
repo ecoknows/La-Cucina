@@ -6,6 +6,7 @@ import * as Font from 'expo-font';
 
 const  getFonts =()=> Font.loadAsync({
   'OpenSans-bold' : require('./fonts/open-sans/OpenSans-Bold.ttf'),
+  'OpenSans-extra-bold' : require('./fonts/open-sans/OpenSans-ExtraBold.ttf'),
   'OpenSans-semi-bold' : require('./fonts/open-sans/OpenSans-SemiBold.ttf'),
   'OpenSans-light' : require('./fonts/open-sans/OpenSans-Light.ttf'),
   'OpenSans-regular' : require('./fonts/open-sans/OpenSans-Regular.ttf'),

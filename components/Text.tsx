@@ -34,6 +34,7 @@ const TextEdited = props => {
         // font style
         bold,
         light,
+        extra_bold,
 
         // size
         size,
@@ -106,6 +107,7 @@ const TextEdited = props => {
 
         // font style
         bold && styles.bold,
+        extra_bold && styles.extra_bold,
         light && styles.light,
         abold && styles.abold,
         alight && styles.alight,
@@ -188,6 +190,7 @@ const styles = StyleSheet.create({
     // font style
     bold: {fontFamily: 'OpenSans-bold' },
     light: {fontFamily: 'OpenSans-light' },
+    extra_bold :{fontFamily:'OpenSans-extra-bold'},
 
     // position
     absolute: { position: 'absolute'},
