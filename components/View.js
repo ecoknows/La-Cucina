@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Animated} from 'react-native';
-
+import { View, StyleSheet, TouchableOpacity, Animated, Easing} from 'react-native';
 import { theme } from '../constants';
 
 
@@ -10,6 +9,7 @@ function ViewSheet(props){
         animated,
         children,
         style,
+        rotate,
     
         // behavour
         touchable,
@@ -26,7 +26,6 @@ function ViewSheet(props){
         columVerse,
 
         // rotation
-        rotate,
         //size 
         flex,
         size,
