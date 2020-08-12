@@ -25,7 +25,7 @@ const CirclePercent = ({ size, name, rotate, percent, textSize, gradient,textCol
   };
 
   const circle = {
-    size: width - 250 + size,
+    size: width - (width * 0.65) + size,
     strokeWidth: 10,
     hintWidth: 5,
     name,

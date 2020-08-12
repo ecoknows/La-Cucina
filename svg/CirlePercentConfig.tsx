@@ -27,7 +27,7 @@ const TextIncrimenting =(props)=>{
       clearInterval(interval);
     };
   }, []);
-  if(counter == percentage){
+  if(counter > percentage){
     clearInterval(text);
   }
 
@@ -51,6 +51,8 @@ const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
   });
   
   const strokeDashoffset = multiply(α, r);
+  const strokeShadowOffset = multiply(α, (r+4));
+  const circumferenceShadow = (r+4) * 2 * PI;
   
   return (
     <AnimatedView style={{flex: 0, alignItems: 'center', justifyContent:'center'}}>
@@ -86,17 +88,17 @@ const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
           <AnimatedCircle
             stroke="#000"
             fill="none"
-            strokeOpacity={0.05}
+            strokeOpacity={0.03}
             strokeLinecap='round'
-            strokeDasharray={`${circumference}, ${circumference}`}
+            strokeDasharray={`${circumferenceShadow}, ${circumferenceShadow}`}
             r={interpolate(progress, {
               inputRange: [0, 0],
-              outputRange:[0,r],
+              outputRange:[0,r+4],
             })}
             cx={cx+10}
             cy={cy+10}
             {...{
-              strokeDashoffset, strokeWidth: 20,
+              strokeDashoffset:strokeShadowOffset, strokeWidth,
             }}
           >
             
