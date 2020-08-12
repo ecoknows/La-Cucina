@@ -546,7 +546,7 @@ function CuisineSelected({navigation, route}){
                                 accent
                             />
                             <Text end asemi_bold size={14} thirdary left={0}>{prep_time}</Text>
-                            <Text gray3 end asemi_bold size={13} thirdary left={0}> preparation</Text>
+                            <Text gray3 end asemi_bold size={13} left={0}> preparation</Text>
                         </View>
                         <View flex={false} row paddingY={[20]}>
                             <Pic 

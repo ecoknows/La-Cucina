@@ -27,7 +27,7 @@ const TextIncrimenting =(props)=>{
       clearInterval(interval);
     };
   }, []);
-  if(counter > percentage){
+  if(counter == percentage){
     clearInterval(text);
   }
 
