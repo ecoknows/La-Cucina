@@ -375,7 +375,7 @@ function Cuisine({navigation}){
                                         
                                     if(offsetX != isCurrent ){
                                         timeOut = setTimeout(() => {
-                                            setIsCurrent(offsetX);
+                                            setIsCurrent(offsetX == -1 ? 0 : offsetX);
                                         }, 1);
                                     }
                                 }

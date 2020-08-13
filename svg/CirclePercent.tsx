@@ -1,7 +1,8 @@
   
 import React from "react";
-import { StyleSheet, Dimensions, Easing } from "react-native";
+import { Dimensions } from "react-native";
 import { timing } from 'react-native-redash';
+import {Easing} from 'react-native-reanimated';
 
 import CirlePercentConfig from "./CirlePercentConfig";
 import { View } from "../components";
@@ -20,7 +21,8 @@ interface CircleProps{
 const CirclePercent = ({ size, name, rotate, percent, textSize, gradient,textColor} : CircleProps ) => {
   const default_config = {
     duration: 2500,
-    toValue: 1,
+    from: 0,
+    to: percent,
     easing: Easing.linear,
   };
 

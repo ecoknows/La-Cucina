@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet,View } from "react-native";
 import Svg, {
   Defs, LinearGradient, Stop, Circle,
 } from "react-native-svg";
-import Animated from "react-native-reanimated";
+import Animated, { call, useCode } from "react-native-reanimated";
 import {Text} from '../components';
 
 const { interpolate, multiply } = Animated;
@@ -13,23 +13,14 @@ interface CircularPogressProps {
   config: any;
 }
 const TextIncrimenting =(props)=>{
-  const {textSize, percentage } = props;
-  const [text,setText] = React.useState(0);
+  const {textSize, progress } = props;
   const [counter,setCounter] = React.useState(0);
   
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCounter(counter => counter + 1);
-    }, 0);
-    setText(interval);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-  if(counter == percentage){
-    clearInterval(text);
-  }
+  useCode(() => {
+    return call([progress], (progress) => {
+      setCounter(Math.floor(progress*100));
+    })
+  }, [progress])
 
   return(
   <Text bold center gray size={textSize}>{counter}%</Text>
@@ -46,20 +37,19 @@ const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
   const cy = size / 2;
   const circumference = r * 2 * PI;
   const α = interpolate(progress, {
-    inputRange: [0, 1],
-    outputRange:[PI*2,(PI*2)*(1-percent)],
+    inputRange: [0, percent],
+    outputRange:[PI*2,PI*2*(1-percent)],
   });
   
   const strokeDashoffset = multiply(α, r);
   const strokeShadowOffset = multiply(α, (r+4));
   const circumferenceShadow = (r+4) * 2 * PI;
-  
   return (
     <AnimatedView style={{flex: 0, alignItems: 'center', justifyContent:'center'}}>
-      
+           
       <AnimatedView style={{flex:0, position:'absolute'}} >
         <Text size={textSize} extra_bold color={textColor}>{name}</Text>
-        <TextIncrimenting textSize={textSize} percentage={(+((Math.round(percent * 100) / 100)).toFixed(2)*100)} />
+        <TextIncrimenting textSize={textSize} progress={progress} />
       </AnimatedView>
       <AnimatedView flex={0} style={{flex: 0, 
        transform:[{rotate: circRotate}]
@@ -128,7 +118,7 @@ const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
                 ,position: 'absolute'
                 ,transform: [{
                     rotate: interpolate(progress, {
-                      inputRange: [0, 1],
+                      inputRange: [0, percent],
                       outputRange:[0,(PI*2)*(percent)],
                     })
                 }]}]}>

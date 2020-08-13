@@ -7,6 +7,7 @@ import { theme } from '../constants';
 let swipeTO = null;
 let timeOut = null;
 let isSwipe = false;
+let currentTop = 0;
 
 const orange ={
     start : '#FF7B36',
@@ -32,9 +33,9 @@ const dataTest = [
         preparation: '20 mins',
         cooking: '5 mins',
         people: '1 people',
-        kCal: 32,
-        iron: 21,
-        fats: 43,
+        kCal: 50,
+        iron: 50,
+        fats: 50,
         info: 'Hotsilog is a meal composed of hotdogs,'+
         ' garlic fried rice, and fried egg. '+
         'In a Filipino household, this is'+
@@ -76,7 +77,6 @@ const { width } = Dimensions.get('window');
 function FavoriteList(props){
     const {current,setCurrent} = props;
     const scrollX = useRef(new Animated.Value(0)).current;
-    console.log(current);
     const getMiddleItemLayout =(data, index) =>{
         let size = width-(width*0.6);
     
@@ -117,25 +117,30 @@ function FavoriteList(props){
                     [{nativeEvent: {contentOffset: {x: scrollX}}}],
                     {
                         listener: event => {
-                            const offsetX = Math.floor(event.nativeEvent.contentOffset.x /( width-(width*0.6)));
-                            isSwipe = true;
-                            
-                            if(swipeTO != null)
-                                clearTimeout(swipeTO);
-                                
-                            swipeTO = setTimeout(() => {
-                                isSwipe = false;
-                            }, 10);
-                            
-                            if(timeOut != null)
-                            clearTimeout(timeOut);
-                            
-                            if(offsetX != current ){
-                                timeOut = setTimeout(() => {
-                                    setCurrent(offsetX);
-                                }, 1);
-                            }
 
+                            const x = event.nativeEvent.contentOffset.x / (width - (width * .60));
+                            const offsetX = Math.floor(x);
+
+                            if(!((x % 1 > 0.05 && x % 1 < 0.5 ) || (x % 1 > 0.60))){
+                                
+                                isSwipe = true;
+                                
+                                if(swipeTO != null)
+                                    clearTimeout(swipeTO);
+                                    
+                                swipeTO = setTimeout(() => {
+                                    isSwipe = false;
+                                }, 10);
+                                
+                                if(timeOut != null)
+                                clearTimeout(timeOut);
+                                
+                                if(offsetX != current ){
+                                    timeOut = setTimeout(() => {
+                                        setCurrent(offsetX == -1 ? 0 : offsetX);
+                                    }, 1);
+                                }
+                            }
                         }
                     }
                 )
@@ -195,24 +200,24 @@ function Favorite({navigation}){
     }
     return(
         <View white paddingTop={theme.sizes.padding*2}>
-            <View flex={false}>
+            <View flex={1.2}>
                 <FavoriteList current={current} setCurrent={setCurrent}/>
             </View>
             <View flex={false}>
                 <CuisineInfo />
             </View>
-            <View flex={false} paddingHorizontal={20}paddingBottom={20}>
+            <View flex={1} paddingHorizontal={20}paddingBottom={20}>
                 <QuickInfo current={current}/>
             </View>
             <View flex={false} paddingHorizontal={16} >
                 <View flex={false} row>
-                    <CirclePercent size={-30} name='KCal' rotate='0deg' percent={dataTest[current].kCal/100} textSize={18} textColor='#FF6600' gradient={orange} />
+                    <CirclePercent size={-30} name='KCal' rotate='-120deg' percent={dataTest[current].kCal/100} textSize={18} textColor='#FF6600' gradient={orange} />
                     <View flex={false} absolute right={5}>
-                         <CirclePercent size={-30} name='Fats' rotate='-140deg' percent={dataTest[current].fats/100} textSize={18} textColor='#1BAA09' gradient={green} />
+                         <CirclePercent size={-30} name='Fats' rotate='0deg' percent={dataTest[current].fats/100} textSize={18} textColor='#1BAA09' gradient={green} />
                     </View>
                 </View>
                 <View flex={false} marginTop={-40}>
-                    <CirclePercent size={-30} name='Iron' rotate='90deg' percent={dataTest[current].iron/100} textSize={18} textColor='#0269FF' gradient={blue} />
+                    <CirclePercent size={-30} name='Iron' rotate='120deg' percent={dataTest[current].iron/100} textSize={18} textColor='#0269FF' gradient={blue} />
                 </View>
             </View>
             
