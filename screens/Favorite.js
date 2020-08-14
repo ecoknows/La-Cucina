@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { View,Text, Pic, List } from '../components';
 import CirclePercent from '../svg/CirclePercent';
-import {Animated,Easing, Dimensions} from 'react-native';
+import {Animated,Easing, Dimensions, PanResponder} from 'react-native';
 import { theme } from '../constants';
 
 let swipeTO = null;
@@ -77,11 +77,19 @@ const { width } = Dimensions.get('window');
 function FavoriteList(props){
     const {current,setCurrent} = props;
     const scrollX = useRef(new Animated.Value(0)).current;
+    const listRef = useRef();
     const getMiddleItemLayout =(data, index) =>{
         let size = width-(width*0.6);
     
         return  { length: 10, width: size, offset: size * index, index }
     }
+    
+    const listResponder = useRef( PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderRelease: () => {
+            listRef.current.scrollToIndex({index : current, animated: true });
+        }
+      })).current
 
     const ListView = (props) =>{
         const {item, index} = props;
@@ -105,7 +113,9 @@ function FavoriteList(props){
 
     return(
         <List 
+            {...listResponder.panHandlers}
             horizontal
+            ref={listRef}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{paddingHorizontal: 100}}
             renderItem={({item, index})=> <ListView item={item} index={index}/>}
@@ -120,9 +130,8 @@ function FavoriteList(props){
 
                             const x = event.nativeEvent.contentOffset.x / (width - (width * .60));
                             const offsetX = Math.floor(x);
-
-                            if(!((x % 1 > 0.05 && x % 1 < 0.5 ) || (x % 1 > 0.60))){
-                                
+                            //console.log(x);
+                            if(x%1 > 0.0 &&  x%1 < 0.1){
                                 isSwipe = true;
                                 
                                 if(swipeTO != null)

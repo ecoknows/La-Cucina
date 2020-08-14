@@ -20,7 +20,7 @@ interface CircleProps{
 
 const CirclePercent = ({ size, name, rotate, percent, textSize, gradient,textColor} : CircleProps ) => {
   const default_config = {
-    duration: 2500,
+    duration: 1000,
     from: 0,
     to: percent,
     easing: Easing.linear,
