@@ -2,80 +2,42 @@ import React, {useState, useEffect, useRef} from 'react';
 import { View,Text, Pic, List } from '../components';
 import CirclePercent from '../svg/CirclePercent';
 import {Animated,Easing, Dimensions, PanResponder} from 'react-native';
-import { theme } from '../constants';
+import { theme, tabs } from '../constants';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 let swipeTO = null;
 let timeOut = null;
 let isSwipe = false;
 let currentTop = 0;
-
-const orange ={
-    start : '#FF7B36',
-    middle : '#FFAD63',
-    end : '#FF7B36',
-}
-
-const green ={
-    start : '#1BAA09',
-    middle : '#78F032',
-    end : '#1BAA09',
-}
-const blue ={
-    start : '#005EE8',
-    middle : '#AAC0FF',
-    end : '#005EE8',
-}
-
+let offsetX = 0;
 
 const dataTest = [
     {
-        name: 'Hot Silog',
-        preparation: '20 mins',
-        cooking: '5 mins',
-        people: '1 people',
-        kCal: 50,
-        iron: 50,
-        fats: 50,
-        info: 'Hotsilog is a meal composed of hotdogs,'+
-        ' garlic fried rice, and fried egg. '+
-        'In a Filipino household, this is'+
-        ' commonly eaten for breakfast',
-        image: require('../assets/foods/hot_silog.png'),
+        tabsIndex: 0,
+        mocksIndex: 6,
+    }, 
+    
+    {
+        tabsIndex: 0,
+        mocksIndex: 8,
     }, 
     {
-        name: 'T-Bone Steak With Fried Egg',
-        preparation: '8 mins',
-        cooking: '15 mins',
-        kCal: 32,
-        iron: 21,
-        fats: 43,
-        info:'Note that this recipe calls for '+
-        'T-bone steak, but you can also use Porterhouse'+
-        ' or any steak cuts that you like. Both T-bone and Porterhouse steaks can'+
-        ' be distinguished by the “T” shaped bone. However, each '+
-        'has its own properties that make it unique.',
-        people: '2 people',
-        image: require('../assets/foods/t-bone-steak-with-fried-eggs.png'),
-    },
-     {
-        name: 'Tap Silog',
-        preparation: '30 mins',
-        cooking: '10 mins',
-        kCal: 32,
-        iron: 5,
-        fats: 75,
-        info: 'One of the most common breakfast staples in'+
-        ' the Philippines is tapsilog, a plate which consists of'+
-        ' sliced beef jerky, known as tapa, a heap of garlic rice,'+
-        ' and a fried egg.',
-        people: '1 people',
-        image: require('../assets/foods/tapsilog.png'),
-    },
+        tabsIndex: 0,
+        mocksIndex: 4,
+    }, 
+    {
+        tabsIndex: 0,
+        mocksIndex: 5,
+    }, 
+    {
+        tabsIndex: 0,
+        mocksIndex: 7,
+    }, 
 ]
 const { width } = Dimensions.get('window');
 
 function FavoriteList(props){
-    const {current,setCurrent} = props;
+    const {current,setCurrent, navigation} = props;
     const scrollX = useRef(new Animated.Value(0)).current;
     const listRef = useRef();
     const getMiddleItemLayout =(data, index) =>{
@@ -83,17 +45,16 @@ function FavoriteList(props){
     
         return  { length: 10, width: size, offset: size * index, index }
     }
-    
-    const listResponder = useRef( PanResponder.create({
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderRelease: () => {
-            listRef.current.scrollToIndex({index : current, animated: true });
-        }
-      })).current
 
     const ListView = (props) =>{
         const {item, index} = props;
-        const {image} = item;
+        
+        const tabsIndex = item.tabsIndex;
+        const mocksIndex = item.mocksIndex;
+        const mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
+        const {image} = mocksData;
+
+
         const stepPosition = Animated.divide(scrollX,width - (width * .6));
         const sizeChange = stepPosition.interpolate({
             inputRange: [index-1,index,index+1],
@@ -101,11 +62,18 @@ function FavoriteList(props){
             extrapolate: 'clamp',
         })
         return(
-            <View flex={false} >
+            <View flex={false} touchable activeOpacity={1} onPress={()=>{
+                if(offsetX != index){
+                    listRef.current.scrollToIndex({index, animated: true });
+                }else{
+                    navigation.navigate('CuisineSelected', {item: mocksData});
+                }
+                }}
+                > 
                 <Pic
-                    animated
-                    src={image}
-                    size={[sizeChange,sizeChange]}
+                        animated
+                        src={image}
+                        size={[sizeChange,sizeChange]}
                 />
             </View>
         );
@@ -113,7 +81,6 @@ function FavoriteList(props){
 
     return(
         <List 
-            {...listResponder.panHandlers}
             horizontal
             ref={listRef}
             showsHorizontalScrollIndicator={false}
@@ -129,11 +96,10 @@ function FavoriteList(props){
                         listener: event => {
 
                             const x = event.nativeEvent.contentOffset.x / (width - (width * .60));
-                            const offsetX = Math.floor(x);
+                            offsetX =Math.floor(x);
                             //console.log(x);
                             if(x%1 > 0.0 &&  x%1 < 0.1){
                                 isSwipe = true;
-                                
                                 if(swipeTO != null)
                                     clearTimeout(swipeTO);
                                     
@@ -147,7 +113,7 @@ function FavoriteList(props){
                                 if(offsetX != current ){
                                     timeOut = setTimeout(() => {
                                         setCurrent(offsetX == -1 ? 0 : offsetX);
-                                    }, 1);
+                                    }, 500);
                                 }
                             }
                         }
@@ -162,19 +128,22 @@ function FavoriteList(props){
 function Favorite({navigation}){
     const animated = useRef(new Animated.Value(0)).current;
     const [current, setCurrent] = useState(0);
+    const tabsIndex = dataTest[current].tabsIndex;
+    const mocksIndex = dataTest[current].mocksIndex;
+    const mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
 
     const CuisineInfo =props=>{
         return(
             <View middle flex={false}>
 
-                <Text family='semi-bold' color='#8F8F8F' size={16} marginBottom={5}>{dataTest[current].name}</Text>
+                <Text family='semi-bold' color='#8F8F8F' size={16} bottom={5}>{mocksData.name}</Text>
                 <View flex={false} row>
                     <Pic
                         src={require('../assets/images/chopping-knife.png')}
                         size={[25,25]}
                         marginRight={5}
                     />
-                    <Text end asemi_bold size={14} thirdary>{dataTest[current].preparation}</Text>
+                    <Text end asemi_bold size={14} thirdary>{mocksData.prep_time}</Text>
                     <Text end asemi_bold size={13} gray3> preparation</Text>
                     <Pic
                         accent
@@ -183,7 +152,7 @@ function Favorite({navigation}){
                         marginRight={5}
                         marginLeft={5}
                     />
-                    <Text end asemi_bold size={14} thirdary>{dataTest[current].cooking}</Text>
+                    <Text end asemi_bold size={14} thirdary>{mocksData.cooking_time}</Text>
                     <Text end asemi_bold size={13} gray3> cooking</Text>
                 </View> 
                 <View row flex={false}>
@@ -193,7 +162,7 @@ function Favorite({navigation}){
                             size={[25,25]}
                             marginRight={5}
                         />
-                    <Text end asemi_bold size={14} thirdary>{dataTest[current].people}</Text>
+                    <Text end asemi_bold size={14} thirdary>{mocksData.capacity} people</Text>
                 </View>
             </View>
         )
@@ -203,14 +172,14 @@ function Favorite({navigation}){
         return(
             <View flex={false}>
                 <Text color='#FF6600' family='extra-bold' size={25} bottom={10} top={10}>Quick Info</Text>
-        <Text color='#727272' size={14}>{dataTest[current].info}</Text>
+        <Text color='#727272' size={14}>{mocksData.description}</Text>
             </View>
         );
     }
     return(
         <View white paddingTop={theme.sizes.padding*2}>
             <View flex={1.2}>
-                <FavoriteList current={current} setCurrent={setCurrent}/>
+                <FavoriteList current={current} setCurrent={setCurrent} navigation={navigation}/>
             </View>
             <View flex={false}>
                 <CuisineInfo />
@@ -220,13 +189,13 @@ function Favorite({navigation}){
             </View>
             <View flex={false} paddingHorizontal={16} >
                 <View flex={false} row>
-                    <CirclePercent size={-30} name='KCal' rotate='-120deg' percent={dataTest[current].kCal/100} textSize={18} textColor='#FF6600' gradient={orange} />
+                    <CirclePercent size={-30} name={mocksData.circle_1.name} rotate={mocksData.circle_1.degree} percent={mocksData.circle_1.percent/100} textSize={18} textColor={mocksData.circle_1.textColor} gradient={mocksData.circle_1.gradient} />
                     <View flex={false} absolute right={5}>
-                         <CirclePercent size={-30} name='Fats' rotate='0deg' percent={dataTest[current].fats/100} textSize={18} textColor='#1BAA09' gradient={green} />
+                         <CirclePercent size={-30} name={mocksData.circle_3.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_3.percent/100} textSize={18} textColor={mocksData.circle_2.textColor} gradient={mocksData.circle_3.gradient} />
                     </View>
                 </View>
                 <View flex={false} marginTop={-40}>
-                    <CirclePercent size={-30} name='Iron' rotate='120deg' percent={dataTest[current].iron/100} textSize={18} textColor='#0269FF' gradient={blue} />
+                    <CirclePercent size={-30} name={mocksData.circle_2.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_2.percent/100} textSize={18} textColor={mocksData.circle_3.textColor} gradient={mocksData.circle_2.gradient} />
                 </View>
             </View>
             

@@ -6,6 +6,7 @@ const sizes = {
     radius: 4,
 };
 
+
 const colors = {
     accent: '#E24300',
     semi_accent: '#ff5f40',
@@ -36,6 +37,25 @@ const colors = {
         '#8685FF' ,
     ],
 
+};
+
+const gradients = {
+    orange: {
+        start : '#FF7B36',
+        middle : '#FFAD63',
+        end : '#FF7B36',
+    },
+    green: {
+        start : '#1BAA09',
+        middle : '#78F032',
+        end : '#1BAA09',
+    },
+    blue: {
+        start : '#005EE8',
+        middle : '#AAC0FF',
+        end : '#005EE8',
+    }
+    
 };
 
 const fonts = {
@@ -156,4 +176,5 @@ export {
     colors,
     fonts,
     initial_note_data,
+    gradients
 }

@@ -533,7 +533,7 @@ function CuisineSelected({navigation, route}){
             <View flex={1} paddingX={[theme.sizes.padding]} >
                 
                 <View flex={false}>
-                    <Text size={title_size + 6} abold >{name}</Text>
+                    <Text size={title_size + 6} abold color='#322C2C' >{name}</Text>
                 </View>
 
                 <View row>

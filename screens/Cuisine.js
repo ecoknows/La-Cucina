@@ -187,6 +187,7 @@ function Top(props){
 
     
     const topClick =(item,index)=>{
+        console.log('was');
         if(!isSwipe){
             listRef.current.scrollToIndex({index , animated: true });
         }
