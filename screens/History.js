@@ -5,7 +5,7 @@ import { FetchHistory } from '../database/database';
 import { tabs } from '../constants';
 import { parse } from 'react-native-svg';
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
-let late_index = 0;
+let late_index = -1;
 const data_change = { value : true};
 const isAnim = { value : true};
        
@@ -105,7 +105,7 @@ function ListView(props){
     }    
     if(late_index == index && isAnim.value)
         animation_out();
-
+    //console.log(latestIndex, late_index +' asd ', index , ' d ', isAnim);
     if(latestIndex == index && isAnim.value)
         animation_in(); 
 
@@ -554,7 +554,7 @@ function History({navigation}){
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            FetchHistory(setData,isAnim);
+            FetchHistory(setData,isAnim,data);
         });
           return unsubscribe;
       }, [navigation]);

@@ -210,7 +210,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
   )
 }
 
-const FetchHistory =(setData, isAnim)=>{
+const FetchHistory =(setData, isAnim, data)=>{
   
 
   let query = "SELECT * from " + history_tbl + " ORDER BY date DESC";
@@ -221,7 +221,8 @@ const FetchHistory =(setData, isAnim)=>{
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
         if(results.rows._array.length > 0 && SnapShotListiner.history){
-          isAnim.value = false;
+          if(data.length != 0)
+            isAnim.value = false;
           setData(results.rows._array);
           SnapShotListiner.history = false;
         }

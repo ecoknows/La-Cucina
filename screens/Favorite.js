@@ -79,7 +79,7 @@ function FavoriteList(props){
                             const x = event.nativeEvent.contentOffset.x / (width - (width * .60));
                             offsetX =Math.floor(x);
                             //console.log(x);
-                            if(x%1 > 0.0 &&  x%1 < 0.1){
+                            if(x%1 >= 0.0 &&  x%1 <= 0.1){
                                 isSwipe = true;
                                 if(swipeTO != null)
                                     clearTimeout(swipeTO);
