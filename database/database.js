@@ -1,7 +1,7 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import * as SQLite from 'expo-sqlite';
-import { theme } from '../constants';
+import { theme, tabs } from '../constants';
 
 const db = SQLite.openDatabase('chevy');
 
@@ -9,6 +9,7 @@ const note_table = 'note_table';
 const note_check_tbl = 'note_check_table';
 
 const history_tbl = 'histroy_table';
+const favorite_tbl = 'favorite_table';
 
 const userId = 'Amber';
 const first_data = 'Eco';
@@ -24,6 +25,7 @@ let isInitial = true;
 
 const SnapShotListiner = {
   history: true,
+  favorite: true,
 }
 
 const InitialData =(dataState)=> {
@@ -158,6 +160,15 @@ const CheckNote =()=>{
           tx.executeSql(
               `create table if not exists ${history_tbl} `+
               `(id integer primary key not null, parent_id text, favorite integer, capacity integer, ingredients text, directions integer, date text, time_finished text, image integer, mocks_index integer, mocks_tabs integer)`
+          );
+      }
+    );
+    
+    db.transaction(
+      tx => {
+          tx.executeSql(
+              `create table if not exists ${favorite_tbl} `+
+              `(id integer primary key not null, tabsIndex integer, mocksIndex integer)`
           );
       }
     );
@@ -467,7 +478,7 @@ const SelectCheckList =(array,stateData,setStateData,index)=>{
 const SeeData =()=>{
   //let query = "SELECT r.*, l._text from " + note_table + " r INNER JOIN " + note_check_tbl+ " l ON r.id = l.parent_id";
   //let query = "SELECT * FROM " + note_table + " WHERE id = 1 = ( SELECT * FROM "+note_check_tbl+" )"
-  let query = "SELECT * FROM "+ note_check_tbl;
+  let query = "SELECT * FROM "+ history_tbl;
   let params = [];
 
   db.transaction(
@@ -633,6 +644,85 @@ const QueryChangesList =(data)=>{
 
 }
 
+const FavoriteData= (data, isAdd) => {
+  const { tabsIndex, mocksIndex } = data;
+  if(isAdd){
+    let query = "INSERT INTO "+ favorite_tbl +" (id,tabsIndex,mocksIndex) VALUES (null,?,?)";
+    let params = [tabsIndex, mocksIndex];
+
+    db.transaction(
+        (tx)=> {
+        tx.executeSql(query, params,(tx, results) =>{
+            console.log('Success Favorite Add!');
+        }, function(tx,err) {
+            console.log(err.message);
+            return;
+        })
+        }
+    )
+  }else{
+    let query = "DELETE FROM "+ favorite_tbl +" WHERE tabsIndex = "+tabsIndex.toString()+" AND mocksIndex = "+mocksIndex.toString();
+    let params = [];
+
+    db.transaction(
+        (tx)=> {
+        tx.executeSql(query, params,(tx, results) =>{
+            console.log('Success Favorite Delete!');
+        }, function(tx,err) {
+            console.log(err.message);
+            return;
+        })
+        }
+    )
+  }
+}
+
+const FavoriteUpdate =(setRefresh, refresh)=> {
+  
+  let query = "SELECT * from " + favorite_tbl;
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          for(let i = 0; i < results.rows._array.length; i++){
+            const { tabsIndex, mocksIndex} = results.rows._array[i];
+            tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex].favorite = true;
+          }
+          setRefresh(!refresh);
+        }
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
+  );
+}
+
+const FavoriteGet =(setData)=> {
+  
+  let query = "SELECT * from " + favorite_tbl;
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0 && SnapShotListiner.favorite){
+          for(let i = 0; i < results.rows._array.length; i++){
+            setData(results.rows._array);
+          }
+          SnapShotListiner.favorite = false;
+        }
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
+  );
+}
+
+
 export {
     CheckNote,
     AddNote,
@@ -654,4 +744,7 @@ export {
     RemoveNote,
     FetchHistory,
     SnapShotListiner,
+    FavoriteData,
+    FavoriteUpdate,
+    FavoriteGet,
 }

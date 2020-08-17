@@ -280,7 +280,7 @@ const breakfast = [
     },
     {
         id: 'spinach-tomato-and-cheese-omelette',
-        index: 9,
+        index: 10,
         name: 'Spinach Tomato and Cheese Omelette',
         title_size: 20,
         favorite: false,

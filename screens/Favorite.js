@@ -4,6 +4,7 @@ import CirclePercent from '../svg/CirclePercent';
 import {Animated,Easing, Dimensions, PanResponder} from 'react-native';
 import { theme, tabs } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FavoriteGet } from '../database/database';
 
 let swipeTO = null;
 let timeOut = null;
@@ -11,35 +12,14 @@ let isSwipe = false;
 let currentTop = 0;
 let offsetX = 0;
 
-const dataTest = [
-    {
-        tabsIndex: 0,
-        mocksIndex: 6,
-    }, 
-    
-    {
-        tabsIndex: 0,
-        mocksIndex: 8,
-    }, 
-    {
-        tabsIndex: 0,
-        mocksIndex: 4,
-    }, 
-    {
-        tabsIndex: 0,
-        mocksIndex: 5,
-    }, 
-    {
-        tabsIndex: 0,
-        mocksIndex: 7,
-    }, 
-]
 const { width } = Dimensions.get('window');
 
 function FavoriteList(props){
-    const {current,setCurrent, navigation} = props;
+    const {current,setCurrent, navigation,data} = props;
     const scrollX = useRef(new Animated.Value(0)).current;
     const listRef = useRef();
+
+
     const getMiddleItemLayout =(data, index) =>{
         let size = width-(width*0.6);
     
@@ -66,6 +46,7 @@ function FavoriteList(props){
                 if(offsetX != index){
                     listRef.current.scrollToIndex({index, animated: true });
                 }else{
+                    mocksData.mocks_tabs = tabsIndex;
                     navigation.navigate('CuisineSelected', {item: mocksData});
                 }
                 }}
@@ -87,7 +68,7 @@ function FavoriteList(props){
             contentContainerStyle={{paddingHorizontal: 100}}
             renderItem={({item, index})=> <ListView item={item} index={index}/>}
             keyExtractor={(item,index)=> index.toString()}
-            data={dataTest}
+            data={data}
             getItemLayout={getMiddleItemLayout}
             onScroll={
                 Animated.event(
@@ -128,8 +109,23 @@ function FavoriteList(props){
 function Favorite({navigation}){
     const animated = useRef(new Animated.Value(0)).current;
     const [current, setCurrent] = useState(0);
-    const tabsIndex = dataTest[current].tabsIndex;
-    const mocksIndex = dataTest[current].mocksIndex;
+    const [data, setData] = useState([]);
+    
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+        FavoriteGet(setData);
+        });
+          return unsubscribe;
+      }, [navigation]);
+
+    
+    if(data.length == 0)
+        return (
+            <View white></View>
+        );
+        
+    const tabsIndex = data[current].tabsIndex;
+    const mocksIndex = data[current].mocksIndex;
     const mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
 
     const CuisineInfo =props=>{
@@ -179,7 +175,7 @@ function Favorite({navigation}){
     return(
         <View white paddingTop={theme.sizes.padding*2}>
             <View flex={1.2}>
-                <FavoriteList current={current} setCurrent={setCurrent} navigation={navigation}/>
+                <FavoriteList current={current} setCurrent={setCurrent} navigation={navigation} data={data}/>
             </View>
             <View flex={false}>
                 <CuisineInfo />

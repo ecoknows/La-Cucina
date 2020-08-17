@@ -51,7 +51,7 @@ function Ingridients({navigation, route}){
   //DeleteAll();
   //DropTable();
   //RemovePos();
-    //SeeData();
+   // SeeData();
     useEffect(() => {
        GetFirstNote(setFirstItem);
        InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2, id_latest });

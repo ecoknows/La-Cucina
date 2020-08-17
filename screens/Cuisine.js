@@ -3,6 +3,7 @@ import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../
 import { StyleSheet, Animated, Dimensions  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FavoriteData, FavoriteUpdate, SnapShotListiner } from '../database/database';
 
 
 const { height, width} = Dimensions.get('window');
@@ -14,12 +15,21 @@ let currentMiddle = 0;
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
 
-function Middle (props){
-    const [hColor, setHColor] = useState('white'); 
-    const [cColor, setCColor] = useState(theme.colors.accent); 
+function Middle (props){ 
     const { item, index, navigation, middleListRef, mocks_tabs} = props;
-        
+    let hColor = null;
+    let cColor = null;
+    const [refresh, setRefresh] = useState(true);
     let x = 30;
+    console.log(item.favorite);
+
+    if(!item.favorite){
+        hColor = 'white';
+        cColor = theme.colors.accent;
+    }else{
+        hColor = 'red';
+        cColor = '#FFEF8D';
+    }
     
     if(index == 0){
         x = 35;
@@ -130,12 +140,20 @@ function Middle (props){
                 <Circle center touchable middle color={cColor} size={50}
                     press={()=>{
                         if(!item.favorite){
-                            setHColor('red'); setCColor('#FFEF8D') 
+                            FavoriteData({
+                                tabsIndex: mocks_tabs,
+                                mocksIndex: item.index,
+                            },true);
                             item.favorite = true;
                         }else{
-                            setHColor('white'); setCColor(theme.colors.accent) 
+                            FavoriteData({
+                                tabsIndex: mocks_tabs,
+                                mocksIndex: item.index,
+                            },false);
                             item.favorite = false;
                         }
+                        setRefresh(!refresh);
+                        SnapShotListiner.favorite = true;
                     }}
                     >
                     <Heart size={2} color={hColor} />
@@ -289,7 +307,7 @@ function Cuisine({navigation}){
     const midScrollX = new Animated.Value(0);
 
     const [ isCurrent, setIsCurrent] = useState(0); // index of current mocks data
-
+    const [refresh, setRefresh] = useState(false);
 
     const [ leftActive, setLeftActive] = useState('Rice');
     const [ bottomActive, setBottomActive] = useState(causineTabs[0].bottomTabs[0].name);
@@ -313,6 +331,9 @@ function Cuisine({navigation}){
         if(middleCuisine.length != 0)
             middleListRef.current.scrollToIndex({index : 0, animated: true });
     },[bottomActive]);
+    useEffect(()=>{
+        FavoriteUpdate(setRefresh, refresh);
+    },[]);
 
     const leftOpacity = midScrollX.interpolate({
         inputRange: [0, 80],
@@ -409,8 +430,6 @@ function Cuisine({navigation}){
                         keyExtractor={item => item.id}
                         contentContainerStyle={{paddingStart : 40, paddingEnd: 40}}
                         getItemLayout={getMiddleItemLayout}
-                        
-                        
                         onScroll={
                             Animated.event(
                                 [{nativeEvent: {contentOffset: {x: midScrollX}}}],
