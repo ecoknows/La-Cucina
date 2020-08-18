@@ -254,7 +254,8 @@ const GetHistory =(arg)=>{
     last_time_finished,
     last_image,
     last_index,
-    last_mocks_tabs
+    last_mocks_tabs,
+    setRestart
   } = arg;
 
   let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
@@ -288,6 +289,7 @@ const GetHistory =(arg)=>{
 
           }
           isDataFetch.value = true;
+          setRestart(true);
         }
       }, function(tx,err) {
         console.log(err.message);

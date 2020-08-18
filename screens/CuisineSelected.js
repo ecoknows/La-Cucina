@@ -3,9 +3,9 @@ import { View, Text, Pic, Circle, List, Card  } from '../components';
 import { PanResponder,StyleSheet, Animated } from 'react-native';
 import { theme, directions, ingridients, mocks, } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Easing, set } from 'react-native-reanimated';
 import { AddHistory, GetHistory,GetHistroyCapacity, SnapShotListiner } from '../database/database'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const DONE = 0;
 const START = 1;
@@ -47,7 +47,7 @@ function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
     const [isIndicator, setIsIndicator] = useState(true);
     const [isCurrentStepState, setIsCurrentStepState] = useState(START);
-    const { item,capacity, people, navigation, setCapacity } = props 
+    const { item,capacity, people, navigation, setCapacity,setRestart,reset } = props 
     const { direction, ingridients } = item;
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -86,7 +86,8 @@ function SheetText(props){
             last_time_finished,
             last_image,
             last_index,
-            last_mocks_tabs
+            last_mocks_tabs,
+            setRestart,
         }
 
         GetHistory(getHistory_Params);
@@ -97,7 +98,7 @@ function SheetText(props){
         popUpIsDone = length_ingredients == ingridents_finish_counter.value ? false : true; 
         
         typea().then((value)=> _copy_ingridients = value);
-    },[]);
+    },[reset]);
 
     
     if(isDirection && oneTimeOnly){
@@ -310,12 +311,12 @@ function SheetText(props){
 }
 
 function PeopleView(props){
-    const {item, mainCapacity} = props;
+    const {item, mainCapacity,reset} = props;
     const [capacity, setCapacity] = useState(props.capacity);
 
     useEffect(()=>{
         GetHistroyCapacity(item.id, setCapacity, original_capacity);
-    },[])
+    },[reset])
 
     useEffect(()=>{
         mainCapacity(capacity);
@@ -359,7 +360,31 @@ function CuisineSelected({navigation, route}){
     const { item } = route.params;
     const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index,title_size} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
-
+    const [restart, setRestart] = useState(false);
+    const [reset, setReset] = useState(false);
+   
+    const RestartCuisine = () =>{
+        current_step.value = 0;
+        oneTimeOnly = true
+        ingridents_finish_counter.value = 0;
+        direction_finish_counter.value = 0;
+        length_ingredients
+        popUpIsDone = length_ingredients == ingridents_finish_counter.value ? false : true; 
+        original_direction.value = 0;
+        original_ingridients.value = 0;
+        original_capacity.value = item.capacity;
+        isDataFetch.value = false;
+        _ingredients_changer.array = [];
+        last_save_date.value = ' ';
+        last_time_finished.value = ' ';
+        last_image.value = 0;
+        last_index.value = 0;
+        last_mocks_tabs.value = 0;
+        latest_check_ingridients = new Set();
+        open_nutrition = false;
+        setCapacity(item.capacity);
+        setReset(!reset);
+    }
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
@@ -383,7 +408,7 @@ function CuisineSelected({navigation, route}){
           }
         }
       })).current;
-
+      
 
     const NutritionPanResponder = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: (_,{dx}) => true,
@@ -459,7 +484,7 @@ function CuisineSelected({navigation, route}){
                 item.ingridients[parseInt(i)].checked = item.ingridients[parseInt(i)].checked ? false : true;
             }
         }
-    }, [])
+    }, [reset])
 
     useEffect(()=>
     {
@@ -526,10 +551,24 @@ function CuisineSelected({navigation, route}){
       
     return(
         <View color={color}  >
+        <View flex={false} row style={{alignSelf: 'flex-end', marginTop: 25, marginRight: 15}}>
+            {restart ?<View touchable flex={false}
+             press={RestartCuisine}>
+                <Pic 
+                size={[30,30]}
+                src={require('../assets/icons/restart.png')} 
+                />
+            </View> : null}
             
-        <Text touchable end size={30} top={20} right={20}  accent
-            press={BackButtonClick}
-         >x</Text>
+            <View touchable flex={false}
+            press={BackButtonClick}>
+                <Pic 
+                size={[30,30]}
+                src={require('../assets/icons/x.png')} 
+                />
+            </View>
+
+        </View>
             <View flex={1} paddingX={[theme.sizes.padding]} >
                 
                 <View flex={false}>
@@ -559,7 +598,7 @@ function CuisineSelected({navigation, route}){
                             <Text gray3 end asemi_bold size={13} thirdary left={0}> cooking</Text>
                         </View>
                         
-                        <PeopleView item={item} mainCapacity={setCapacity} capacity={capacity} />
+                        <PeopleView item={item} mainCapacity={setCapacity} capacity={capacity} reset={reset} />
                         
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
@@ -637,7 +676,7 @@ function CuisineSelected({navigation, route}){
                             color={color}
                             style={styles.indicator}/>
                          </View>
-                    <SheetText item={item} capacity={capacity} setCapacity={setCapacity} people={item.capacity} navigation={navigation} />
+                    <SheetText item={item} capacity={capacity} setCapacity={setCapacity} people={item.capacity} navigation={navigation} setRestart={setRestart} reset={reset}/>
             </View>
 
 
