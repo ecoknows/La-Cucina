@@ -4,7 +4,7 @@ import { PanResponder,StyleSheet, Animated } from 'react-native';
 import { theme, directions, ingridients, mocks, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { Easing, set } from 'react-native-reanimated';
-import { AddHistory, GetHistory,GetHistroyCapacity, SnapShotListiner } from '../database/database'
+import { AddHistory, GetHistory,GetHistroyCapacity, SnapShotListiner,DeleteHistory } from '../database/database'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const DONE = 0;
@@ -20,6 +20,7 @@ let length_directions;
 let nutrition_latestoffset = 0;
 let sheet_latestoffset = 0;
 let popUpIsDone;
+let isSaving = false;
 
 let original_capacity = {value: 0};
 let original_direction = {value: 0};
@@ -40,7 +41,6 @@ let latest_check_ingridients;
 const SAVE = 1;
 const BACK = 2;
 
-let _copy_ingridients;
 let open_nutrition;
 
 function SheetText(props){
@@ -49,13 +49,9 @@ function SheetText(props){
     const [isCurrentStepState, setIsCurrentStepState] = useState(START);
     const { item,capacity, people, navigation, setCapacity,setRestart,reset } = props 
     const { direction, ingridients } = item;
-
+    //console.log(ingridients);
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const moveAnim = useRef(new Animated.Value(0)).current;
-    const typea = async() => {
-        return ingridients.map((a)=>({...a}));
-    }
-
     
     
     useEffect(()=> {
@@ -65,7 +61,6 @@ function SheetText(props){
         direction_finish_counter.value = 0;
         isDataFetch.value = false;
         _ingredients_changer.array = [];
-        _copy_ingridients = null;
         original_direction.value = 0;
         original_ingridients.value = 0;
         
@@ -97,7 +92,6 @@ function SheetText(props){
         
         popUpIsDone = length_ingredients == ingridents_finish_counter.value ? false : true; 
         
-        typea().then((value)=> _copy_ingridients = value);
     },[reset]);
 
     
@@ -313,8 +307,9 @@ function SheetText(props){
 function PeopleView(props){
     const {item, mainCapacity,reset} = props;
     const [capacity, setCapacity] = useState(props.capacity);
-
+    
     useEffect(()=>{
+        setCapacity(props.capacity)
         GetHistroyCapacity(item.id, setCapacity, original_capacity);
     },[reset])
 
@@ -362,7 +357,6 @@ function CuisineSelected({navigation, route}){
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     const [restart, setRestart] = useState(false);
     const [reset, setReset] = useState(false);
-   
     const RestartCuisine = () =>{
         current_step.value = 0;
         oneTimeOnly = true
@@ -383,7 +377,11 @@ function CuisineSelected({navigation, route}){
         latest_check_ingridients = new Set();
         open_nutrition = false;
         setCapacity(item.capacity);
-        setReset(!reset);
+        for(let i = 0; i < item.ingridients.length; i++){
+            item.ingridients[i].checked = false;
+        }
+        SnapShotListiner.history = true;
+        DeleteHistory(item.id,setReset,reset);
     }
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
@@ -480,9 +478,11 @@ function CuisineSelected({navigation, route}){
             nutrition_pan.x.removeAllListeners();
             pan.y.removeAllListeners();
             item.capacity_cache.value = original_capacity.value;
-            for (let i of latest_check_ingridients){
-                item.ingridients[parseInt(i)].checked = item.ingridients[parseInt(i)].checked ? false : true;
-            }
+            if(!isSaving)
+                for (let i of latest_check_ingridients){
+                    item.ingridients[parseInt(i)].checked = item.ingridients[parseInt(i)].checked ? false : true;
+                }
+            isSaving = false;
         }
     }, [reset])
 
@@ -491,7 +491,6 @@ function CuisineSelected({navigation, route}){
         if(route.params?.modal){
             switch(route.params.modal){
                 case SAVE:
-                    
                     const newDate = new Date().toISOString();
                     const sum_of_dir_ing = ingridents_finish_counter.value + direction_finish_counter.value;
                     let percentage_finish = sum_of_dir_ing != 0? sum_of_dir_ing / (length_ingredients+length_directions) : 0;
@@ -514,6 +513,7 @@ function CuisineSelected({navigation, route}){
                     if(route.params?.data_change){
                         route.params.data_change.value = true;
                     }
+                    isSaving = true;
                     navigation.goBack();
                     break;
                 case BACK:
@@ -527,7 +527,6 @@ function CuisineSelected({navigation, route}){
     },[route.params?.modal])
 
     const BackButtonClick =()=>{
-        console.log(direction_finish_counter.value);
         if(ingridents_finish_counter.value != original_ingridients.value
             || direction_finish_counter.value != original_direction.value || capacity != original_capacity.value ){
             navigation.navigate('InfoModal',{info: {text: 'Do you want to save it? ^_^'}, 

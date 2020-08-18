@@ -220,10 +220,12 @@ const FetchHistory =(setData, isAnim, data)=>{
   db.transaction(
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0 && SnapShotListiner.history){
+        console.log(SnapShotListiner.history);
+        if(SnapShotListiner.history){
           if(data.length != 0)
             isAnim.value = false;
-          setData(results.rows._array);
+            console.log('asddd');
+          setData(results.rows._array.length == 0 ? [] : results.rows._array );
           SnapShotListiner.history = false;
         }
       }, function(tx,err) {
@@ -297,6 +299,28 @@ const GetHistory =(arg)=>{
       })
     }
   );
+
+
+}
+
+const DeleteHistory =(id, setReset, reset)=>{
+  
+  let query = "DELETE from " + history_tbl + " WHERE parent_id = '" + id+"'";
+  let params = []; 
+
+  
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        console.log('Success');
+        setReset(!reset);
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
+  );
+
 
 
 }
@@ -750,4 +774,5 @@ export {
     FavoriteData,
     FavoriteUpdate,
     FavoriteGet,
+    DeleteHistory
 }
