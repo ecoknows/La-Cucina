@@ -21,8 +21,8 @@ function ListView(props){
     let hour = item_date.getHours();
     let minutes = item_date.getMinutes();
     minutes = minutes < 10 ?  '0' + minutes : minutes;
-    const std = (hour >= 12 )? 'PM': 'AM';
     hour = (hour >= 13 ) ? (hour - 12) : hour;
+    const std = (hour >= 12 )? 'PM': 'AM';
     let time = hour + ':' + minutes +' '+ std;
 
     let item_state = (index_plus % 2) == 0 ? EVEN : ODD;
@@ -567,7 +567,6 @@ function History({navigation}){
     return(
        <View white>
             <List 
-                    marginTop={50}
                     data={data}
                     renderItem={({item,index})=> <ListView item={item} index={index} size={data.length}  latestIndex={latestIndex} setLatestIndex={setLatestIndex} navigation={navigation}/> }
                     keyExtractor={(item,index)=> index.toString()}

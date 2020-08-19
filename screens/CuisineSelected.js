@@ -1,15 +1,17 @@
 import React,{useState, useRef, useEffect} from 'react';
 import { View, Text, Pic, Circle, List, Card  } from '../components';
-import { PanResponder,StyleSheet, Animated } from 'react-native';
+import { PanResponder,StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import { theme, directions, ingridients, mocks, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { Easing, set } from 'react-native-reanimated';
 import { AddHistory, GetHistory,GetHistroyCapacity, SnapShotListiner,DeleteHistory } from '../database/database'
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const DONE = 0;
 const START = 1;
+const CONTINUE = 2;
+const RESTART = 3;
 
+let histor_id = {value: -1};
 let current_step = {value: 0};
 let oneTimeOnly; 
 let ingridents_finish_counter = {value: 0};
@@ -47,7 +49,7 @@ function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
     const [isIndicator, setIsIndicator] = useState(true);
     const [isCurrentStepState, setIsCurrentStepState] = useState(START);
-    const { item,capacity, people, navigation, setCapacity,setRestart,reset } = props 
+    const { item,capacity, people, navigation, setCapacity,setRestart,reset,ExistHistory } = props 
     const { direction, ingridients } = item;
     //console.log(ingridients);
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -63,6 +65,10 @@ function SheetText(props){
         _ingredients_changer.array = [];
         original_direction.value = 0;
         original_ingridients.value = 0;
+        histor_id.value = -1;
+        
+        length_ingredients = ingridients.length;
+        length_directions = direction.length;
         
         const getHistory_Params = {
             id: item.id,
@@ -82,13 +88,12 @@ function SheetText(props){
             last_image,
             last_index,
             last_mocks_tabs,
-            setRestart,
+            ExistHistory,
+            histor_id
         }
 
         GetHistory(getHistory_Params);
 
-        length_ingredients = ingridients.length;
-        length_directions = direction.length;
         
         popUpIsDone = length_ingredients == ingridents_finish_counter.value ? false : true; 
         
@@ -355,8 +360,42 @@ function CuisineSelected({navigation, route}){
     const { item } = route.params;
     const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index,title_size} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
-    const [restart, setRestart] = useState(false);
     const [reset, setReset] = useState(false);
+
+    const ExistHistory =()=> {
+        const sum_of_dir_ing = ingridents_finish_counter.value + direction_finish_counter.value;
+        let percentage_finish = sum_of_dir_ing != 0? sum_of_dir_ing / (length_ingredients+length_directions) : 0;
+        let percent = Math.round((percentage_finish.toFixed(2) * 100));
+        const item_date = new Date(last_save_date.value);
+        const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
+        const display_date = monthsText[item_date.getMonth()] + ' ' + item_date.getDate() + ', ' + item_date.getFullYear();
+        let hour = item_date.getHours();
+        let minutes = item_date.getMinutes();
+        minutes = minutes < 10 ?  '0' + minutes : minutes;
+        hour = (hour >= 13 ) ? (hour - 12) : hour;
+        const std = (hour >= 12 )? 'PM': 'AM';
+        let time = hour + ':' + minutes +' '+ std;
+        console.log(' wat ' , hour);
+        if(percent > 0 && percent < 100 ){
+            navigation.navigate('InfoModal',{info: 
+            {text: 'Hello there!\nYou have unfinish work!\n'+display_date+' at ' +time+'\nremember? ^_^'}, 
+            button: [
+                {
+                    title: 'Start Over',
+                    navigate: 'CuisineSelected',
+                    purpose: RESTART,
+                },
+                {
+                    title: 'Continue',
+                    purpose: CONTINUE,
+                }
+                ],
+            exit: false,
+            })
+        }
+
+    }
+    
     const RestartCuisine = () =>{
         current_step.value = 0;
         oneTimeOnly = true
@@ -381,7 +420,7 @@ function CuisineSelected({navigation, route}){
             item.ingridients[i].checked = false;
         }
         SnapShotListiner.history = true;
-        DeleteHistory(item.id,setReset,reset);
+        DeleteHistory(histor_id.value,setReset,reset);
     }
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
@@ -497,6 +536,7 @@ function CuisineSelected({navigation, route}){
                     let percent = Math.round((percentage_finish.toFixed(2) * 100)).toString() + '%';
                     SnapShotListiner.history = true;
                     const data = {
+                        id: histor_id.value,
                         parent_id: id,
                         favorite,
                         capacity,
@@ -509,15 +549,23 @@ function CuisineSelected({navigation, route}){
                         ingredients: _ingredients_changer.array.toString(),
                     }
                     AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value, newDate == last_save_date.value,percent == last_time_finished.value, last_image.value == image, last_index == index, last_mocks_tabs == mocks_tabs);
-                    _copy_ingridients = null;
+                    
                     if(route.params?.data_change){
                         route.params.data_change.value = true;
                     }
                     isSaving = true;
+                    if(percent == '100%'){  
+                        for(let i = 0; i < item.ingridients.length; i++){
+                            item.ingridients[i].checked = false;
+                        }
+                    }
                     navigation.goBack();
                     break;
+                
+                case RESTART:
+                    RestartCuisine();
+                    break;
                 case BACK:
-                    _copy_ingridients = null;
                     navigation.goBack();
                     break;
 
@@ -551,13 +599,7 @@ function CuisineSelected({navigation, route}){
     return(
         <View color={color}  >
         <View flex={false} row style={{alignSelf: 'flex-end', marginTop: 25, marginRight: 15}}>
-            {restart ?<View touchable flex={false}
-             press={RestartCuisine}>
-                <Pic 
-                size={[30,30]}
-                src={require('../assets/icons/restart.png')} 
-                />
-            </View> : null}
+            
             
             <View touchable flex={false}
             press={BackButtonClick}>
@@ -675,7 +717,7 @@ function CuisineSelected({navigation, route}){
                             color={color}
                             style={styles.indicator}/>
                          </View>
-                    <SheetText item={item} capacity={capacity} setCapacity={setCapacity} people={item.capacity} navigation={navigation} setRestart={setRestart} reset={reset}/>
+                    <SheetText ExistHistory={ExistHistory} item={item} capacity={capacity} setCapacity={setCapacity} people={item.capacity} navigation={navigation} reset={reset}/>
             </View>
 
 

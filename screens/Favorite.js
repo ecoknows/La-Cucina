@@ -12,11 +12,10 @@ let isSwipe = false;
 let currentTop = 0;
 let offsetX = 0;
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 function FavoriteList(props){
-    const {current,setCurrent, navigation,data} = props;
-    const scrollX = useRef(new Animated.Value(0)).current;
+    const {current,setCurrent, navigation,data, scrollX} = props;
     const listRef = useRef();
 
 
@@ -61,11 +60,21 @@ function FavoriteList(props){
     }
 
     return(
-        <List 
+        <View 
+        animated
+        style={{zIndex: scrollX.interpolate(
+            {
+                inputRange:[0,10],
+                outputRange: [0,2],
+                extrapolate: 'clamp',
+            }
+        )}}
+        >
+            <List 
             horizontal
             ref={listRef}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{paddingHorizontal: 100}}
+            contentContainerStyle={{paddingStart: 100,paddingEnd: 100}}
             renderItem={({item, index})=> <ListView item={item} index={index}/>}
             keyExtractor={(item,index)=> index.toString()}
             data={data}
@@ -78,7 +87,7 @@ function FavoriteList(props){
 
                             const x = event.nativeEvent.contentOffset.x / (width - (width * .60));
                             offsetX =Math.floor(x);
-                            //console.log(x);
+                            //console.log(event.nativeEvent.contentOffset.x );
                             if(x%1 >= 0.0 &&  x%1 <= 0.1){
                                 isSwipe = true;
                                 if(swipeTO != null)
@@ -102,12 +111,81 @@ function FavoriteList(props){
                 )
             }
         />
+
+        </View>
+        
     );
 }
 
+function DistinctionList(props){
+    
+    const {scrollX} = props;
+    const distScroll = useRef(new Animated.Value(0)).current;
+    const ListView =(props)=> {
+        const {item, index} = props;
+        const selectAnimated = Animated.divide(distScroll, 23);
+        return(
+            <Text animated center size={16} style={{
+                color:selectAnimated.interpolate({
+                    inputRange: [index-1, index, index+1],
+                    outputRange: ['#C7C6C6','#FF6600','#C7C6C6'],
+                    extrapolate: 'clamp',
+                })
+            }} family='semi-bold'>{item}</Text>
+        )
+    }
+    return(
+        <View flex={false} animated
+        absolute
+        bottom={height * 0.09}
+        left={20}
+        style={{height: height * 0.09,zIndex:1, 
+            opacity: scrollX.interpolate({
+                inputRange: [0,150],
+                outputRange: [1,0],
+                extrapolate: 'clamp',
+            })
+        }}>
+            <List
+            data={[
+                'Recent',
+                'Oldest',
+                'Breakfast',
+                'Brunch',
+                'Elevenses',
+                'Lunch',
+                'Tea',
+                'Supper',
+                'Dinner',
+                'Dessert',
+                'Appetizers',
+            ]}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{paddingTop: 25,paddingBottom: 50}}
+            renderItem={({item, index}) => <ListView item={item} index={index}/>}
+            keyExtractor={(item,index)=> index.toString()}
+            onScroll={
+                Animated.event(
+                    [{nativeEvent: {contentOffset: {y: distScroll}}}],
+                    {
+                        listener: event => {
+                            const y = event.nativeEvent.contentOffset.y /25
+                            //console.log(y);
+                        }
+                    }
+                )
+            }
+        />
+
+        </View>
+        
+
+    );
+}
 
 function Favorite({navigation}){
     const animated = useRef(new Animated.Value(0)).current;
+    const scrollX = useRef(new Animated.Value(0)).current;
     const [current, setCurrent] = useState(0);
     const [data, setData] = useState([]);
     
@@ -174,8 +252,9 @@ function Favorite({navigation}){
     }
     return(
         <View white paddingTop={theme.sizes.padding*2}>
-            <View flex={1.2}>
-                <FavoriteList current={current} setCurrent={setCurrent} navigation={navigation} data={data}/>
+            <View flex={1.2} row>
+                <DistinctionList scrollX={scrollX}/>
+                <FavoriteList scrollX={scrollX} current={current} setCurrent={setCurrent} navigation={navigation} data={data}/>
             </View>
             <View flex={false}>
                 <CuisineInfo />

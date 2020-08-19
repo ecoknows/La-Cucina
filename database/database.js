@@ -175,7 +175,7 @@ const CheckNote =()=>{
 }
 
 const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewDate, isNewTimeFinished, isImage, isIndex, isMocksTabs)=>{
-  const {parent_id,favorite,capacity,ingredients, directions, newDate, time_finished, image, index, mocks_tabs} = data;
+  const {id,parent_id,favorite,capacity,ingredients, directions, newDate, time_finished, image, index, mocks_tabs} = data;
   let query = null;
   let params = null;
   let ingredientsMod = (ingredients=='') ? ' ' : ingredients;
@@ -194,7 +194,7 @@ const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewD
     setUpdate = !isIndex ? (setUpdate+" mocks_index = "+index.toString()+",") : setUpdate;
     setUpdate = !isMocksTabs ? (setUpdate+" mocks_tabs = "+mocks_tabs.toString()+",") : setUpdate;
     setUpdate = setUpdate != '' ? setUpdate.slice(0, -1) : setUpdate;
-    query = "UPDATE "+ history_tbl +" SET"+setUpdate+" WHERE parent_id = '" +parent_id+"'";
+    query = "UPDATE "+ history_tbl +" SET"+setUpdate+" WHERE id = "+id.toString();
     console.log(query)
     params = [];
   }
@@ -257,7 +257,8 @@ const GetHistory =(arg)=>{
     last_image,
     last_index,
     last_mocks_tabs,
-    setRestart
+    ExistHistory,
+    histor_id
   } = arg;
 
   let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
@@ -266,32 +267,39 @@ const GetHistory =(arg)=>{
   db.transaction(
     (tx)=> {
       tx.executeSql(query, params,(tx, results) =>{
+        
         if(results.rows._array.length > 0){
-          current_step.value = results.rows._array[0].directions;
-          original_direction.value = results.rows._array[0].directions;
-          direction_finish_counter.value = results.rows._array[0].directions;
-          last_save_date.value = results.rows._array[0].date;
-          last_time_finished.value = results.rows._array[0].time_finished;
-          last_image.value = results.rows._array[0].image;
-          last_index.value = results.rows._array[0].mocks_index;
-          last_mocks_tabs.value =results.rows._array[0].mocks_tabs;
-          setCapacity(results.rows._array[0].capacity);
-          if(results.rows._array[0].ingredients != ' '){
+          const latest = results.rows._array.length-1 ;
+          //console.log(results.rows._array,'asd ', latest);
+          if(results.rows._array[ latest ].time_finished != '100%'){
+            histor_id.value = results.rows._array[ latest ].id;
+            current_step.value = results.rows._array[ latest ].directions;
+            original_direction.value = results.rows._array[ latest ].directions;
+            direction_finish_counter.value = results.rows._array[ latest ].directions;
+            last_save_date.value = results.rows._array[ latest ].date;
+            last_time_finished.value = results.rows._array[ latest ].time_finished;
+            last_image.value = results.rows._array[ latest ].image;
+            last_index.value = results.rows._array[ latest ].mocks_index;
+            last_mocks_tabs.value =results.rows._array[ latest ].mocks_tabs;
+            setCapacity(results.rows._array[ latest ].capacity);
+            if(results.rows._array[ latest ].ingredients != ' '){
 
-            let ing_arr = results.rows._array[0].ingredients.split(',').map(Number);
-            ingridents_finish_counter.value = ing_arr.length;
-            original_ingridients.value = ing_arr.length;
-            _ingredients_changer.array = _ingredients_changer.array.filter(value => !ing_arr.includes(value));
-            _ingredients_changer.array = [..._ingredients_changer.array,...ing_arr];
-            for(let i = 0; i < ing_arr.length; i++){
-              ingridients[ing_arr[i]].checked = true;
+              let ing_arr = results.rows._array[ latest ].ingredients.split(',').map(Number);
+              ingridents_finish_counter.value = ing_arr.length;
+              original_ingridients.value = ing_arr.length;
+              _ingredients_changer.array = _ingredients_changer.array.filter(value => !ing_arr.includes(value));
+              _ingredients_changer.array = [..._ingredients_changer.array,...ing_arr];
+              for(let i =  latest ; i < ing_arr.length; i++){
+                ingridients[ing_arr[i]].checked = true;
+              }
+              setIsCurrentStepState(-1);
+              setIsCurrentStepState(isCurrentStepState);
+
             }
-            setIsCurrentStepState(-1);
-            setIsCurrentStepState(isCurrentStepState);
-
+            //console.log(results.rows._array);
+            isDataFetch.value = true;
+            ExistHistory();
           }
-          isDataFetch.value = true;
-          setRestart(true);
         }
       }, function(tx,err) {
         console.log(err.message);
@@ -305,7 +313,7 @@ const GetHistory =(arg)=>{
 
 const DeleteHistory =(id, setReset, reset)=>{
   
-  let query = "DELETE from " + history_tbl + " WHERE parent_id = '" + id+"'";
+  let query = "DELETE from " + history_tbl + " WHERE id = " + id.toString();
   let params = []; 
 
   

@@ -419,7 +419,7 @@ function Cuisine({navigation}){
                 </View>
 
 
-                <View flex={1} >
+                <View >
                     <List 
                         horizontal
                         initialNumToRender={2}
