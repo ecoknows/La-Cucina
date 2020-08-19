@@ -1,9 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { View,Text, Pic, List } from '../components';
 import CirclePercent from '../svg/CirclePercent';
-import {Animated,Easing, Dimensions, PanResponder} from 'react-native';
+import {Animated,Easing, Dimensions, PanResponder, TouchableOpacity} from 'react-native';
 import { theme, tabs } from '../constants';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FavoriteGet } from '../database/database';
 
 let swipeTO = null;
@@ -121,19 +120,33 @@ function DistinctionList(props){
     
     const {scrollX} = props;
     const distScroll = useRef(new Animated.Value(0)).current;
+    const listRef = useRef();
+
     const ListView =(props)=> {
         const {item, index} = props;
         const selectAnimated = Animated.divide(distScroll, 23);
         return(
-            <Text animated center size={16} style={{
-                color:selectAnimated.interpolate({
-                    inputRange: [index-1, index, index+1],
-                    outputRange: ['#C7C6C6','#FF6600','#C7C6C6'],
-                    extrapolate: 'clamp',
-                })
-            }} family='semi-bold'>{item}</Text>
+            <TouchableOpacity activeOpacity={1} onPress={()=>{
+                 listRef.current.scrollToIndex({index, animated: true });
+            }}
+            >
+                <Text animated center size={16} style={{
+                    color:selectAnimated.interpolate({
+                        inputRange: [index-1, index, index+1],
+                        outputRange: ['#C7C6C6','#FF6600','#C7C6C6'],
+                        extrapolate: 'clamp',
+                    })
+                }} family='semi-bold'>{item}</Text>
+            </TouchableOpacity>
         )
     }
+    
+    const getItemLayout =(data, index) =>{
+        let size = 23;
+    
+        return  { length: size, height: size, offset: size * index, index }
+    }
+
     return(
         <View flex={false} animated
         absolute
@@ -147,6 +160,7 @@ function DistinctionList(props){
             })
         }}>
             <List
+            ref={listRef}
             data={[
                 'Recent',
                 'Oldest',
@@ -160,6 +174,7 @@ function DistinctionList(props){
                 'Dessert',
                 'Appetizers',
             ]}
+            getItemLayout={getItemLayout}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{paddingTop: 25,paddingBottom: 50}}
             renderItem={({item, index}) => <ListView item={item} index={index}/>}
