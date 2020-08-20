@@ -3,11 +3,19 @@ import { View,Text, Pic, List } from '../components';
 import CirclePercent from '../svg/CirclePercent';
 import {Animated,Easing, Dimensions, PanResponder, TouchableOpacity} from 'react-native';
 import { theme, tabs } from '../constants';
-import { FavoriteGet } from '../database/database';
+import { FavoriteGet, FetchFavorite } from '../database/database';
 
 let swipeTO = null;
 let timeOut = null;
 let isSwipe = false;
+
+
+let swipeTO_cat = null;
+let timeOut_cat = null;
+let isSwipe_cat = false;
+
+
+
 let currentTop = 0;
 let offsetX = 0;
 
@@ -118,7 +126,7 @@ function FavoriteList(props){
 
 function DistinctionList(props){
     
-    const {scrollX} = props;
+    const {scrollX, category, setCategory} = props;
     const distScroll = useRef(new Animated.Value(0)).current;
     const listRef = useRef();
 
@@ -184,8 +192,27 @@ function DistinctionList(props){
                     [{nativeEvent: {contentOffset: {y: distScroll}}}],
                     {
                         listener: event => {
-                            const y = event.nativeEvent.contentOffset.y /25
-                            //console.log(y);
+                            const y = event.nativeEvent.contentOffset.y /23;
+                            const offsetY =Math.round(y);
+                            //console.log(event.nativeEvent.contentOffset.x );
+                            
+                           // console.log(offsetY);
+                            isSwipe_cat = true;
+                            if(swipeTO_cat != null)
+                                clearTimeout(swipeTO_cat);
+                                
+                            swipeTO_cat = setTimeout(() => {
+                                isSwipe_cat = false;
+                            }, 10);
+                            
+                            if(timeOut_cat != null)
+                            clearTimeout(timeOut_cat);
+                            
+                            if(offsetY != category ){
+                                timeOut_cat = setTimeout(() => {
+                                    setCategory(offsetY == -1 ? 0 : offsetY);
+                                }, 500);
+                            }
                         }
                     }
                 )
@@ -201,17 +228,21 @@ function DistinctionList(props){
 function Favorite({navigation}){
     const animated = useRef(new Animated.Value(0)).current;
     const scrollX = useRef(new Animated.Value(0)).current;
+    const [category, setCategory] = useState(0);
     const [current, setCurrent] = useState(0);
     const [data, setData] = useState([]);
-    
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
         FavoriteGet(setData);
         });
           return unsubscribe;
       }, [navigation]);
-
     
+    
+    useEffect(() => {
+        FetchFavorite(setData, category);
+    }, [category]);
+
     if(data.length == 0)
         return (
             <View white></View>
@@ -268,7 +299,7 @@ function Favorite({navigation}){
     return(
         <View white paddingTop={theme.sizes.padding*2}>
             <View flex={1.2} row>
-                <DistinctionList scrollX={scrollX}/>
+                <DistinctionList scrollX={scrollX} category={category} setCategory={setCategory}/>
                 <FavoriteList scrollX={scrollX} current={current} setCurrent={setCurrent} navigation={navigation} data={data}/>
             </View>
             <View flex={false}>

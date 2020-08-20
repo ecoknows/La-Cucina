@@ -758,6 +758,30 @@ const FavoriteGet =(setData)=> {
 }
 
 
+const FetchFavorite =(setData,category)=> {
+  
+  let query = "SELECT * from " + favorite_tbl + " WHERE tabsIndex = " + category.toString();
+  let params = [];
+
+  db.transaction(
+    (tx)=> {
+      tx.executeSql(query, params,(tx, results) =>{
+        if(results.rows._array.length > 0){
+          for(let i = 0; i < results.rows._array.length; i++){
+            setData(results.rows._array);
+          }
+        }else{
+          setData([]);
+        }
+      }, function(tx,err) {
+        console.log(err.message);
+        return;
+      })
+    }
+  );
+}
+
+
 export {
     CheckNote,
     AddNote,
@@ -782,5 +806,6 @@ export {
     FavoriteData,
     FavoriteUpdate,
     FavoriteGet,
-    DeleteHistory
+    DeleteHistory,
+    FetchFavorite
 }
