@@ -562,8 +562,19 @@ function History({navigation}){
     useEffect(() => {
         isAnim.value = true;
       }, [data]);
-    
+    return(
+        <View white center middle>
 
+        <Pic
+                src={require('../assets/icons/empty.png')}
+                size={[200,145]}
+        />
+        <Text secondary aregular size={25} top={20}>We're in deep sleep</Text>
+        <Text secondary aregular size={15} top={3}>You have no <Text abold >history</Text>.</Text>
+        </View>
+    )
+
+    /*
     return(
        <View white>
             <List 
@@ -574,7 +585,7 @@ function History({navigation}){
                     contentContainerStyle={{paddingTop: 100,paddingBottom: 100}}
             />
        </View>
-    )
+    )*/
 }
 
 export default History;

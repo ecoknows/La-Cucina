@@ -119,8 +119,23 @@ const cuisine = {
 
 }
 
-
+const favorites = {
+    sideTabs : [
+        'Recent',
+        'Oldest',
+        'Breakfast',
+        'Brunch',
+        'Elevenses',
+        'Lunch',
+        'Tea',
+        'Supper',
+        'Dinner',
+        'Dessert',
+        'Appetizers',
+    ],
+}
 
 export {
-    cuisine
+    cuisine,
+    favorites
 }

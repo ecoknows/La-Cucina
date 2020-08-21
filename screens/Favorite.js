@@ -9,12 +9,9 @@ let swipeTO = null;
 let timeOut = null;
 let isSwipe = false;
 
-
 let swipeTO_cat = null;
 let timeOut_cat = null;
 let isSwipe_cat = false;
-
-
 
 let currentTop = 0;
 let offsetX = 0;
@@ -158,7 +155,7 @@ function DistinctionList(props){
     return(
         <View flex={false} animated
         absolute
-        bottom={height * 0.09}
+        top={height * 0.09}
         left={20}
         style={{height: height * 0.09,zIndex:1, 
             opacity: scrollX.interpolate({
@@ -169,19 +166,7 @@ function DistinctionList(props){
         }}>
             <List
             ref={listRef}
-            data={[
-                'Recent',
-                'Oldest',
-                'Breakfast',
-                'Brunch',
-                'Elevenses',
-                'Lunch',
-                'Tea',
-                'Supper',
-                'Dinner',
-                'Dessert',
-                'Appetizers',
-            ]}
+            data={tabs.favorites.sideTabs}
             getItemLayout={getItemLayout}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{paddingTop: 25,paddingBottom: 50}}
@@ -231,26 +216,39 @@ function Favorite({navigation}){
     const [category, setCategory] = useState(0);
     const [current, setCurrent] = useState(0);
     const [data, setData] = useState([]);
+    let onStart = false;
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-        FavoriteGet(setData);
+            FetchFavorite(setData, category);
         });
+        onStart = true;
           return unsubscribe;
       }, [navigation]);
     
     
     useEffect(() => {
-        FetchFavorite(setData, category);
+        if(!onStart){
+            console.log('test2');
+            FetchFavorite(setData, category);
+        }
     }, [category]);
 
+    /*
     if(data.length == 0)
         return (
             <View white></View>
         );
-        
-    const tabsIndex = data[current].tabsIndex;
-    const mocksIndex = data[current].mocksIndex;
-    const mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
+    */
+    let tabsIndex = null;
+    let mocksIndex = null;
+    let mocksData = null;
+    const isData = data.length != 0 ? true : false;
+    if(isData){
+
+        tabsIndex = data[current].tabsIndex;
+        mocksIndex = data[current].mocksIndex;
+        mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
+    }
 
     const CuisineInfo =props=>{
         return(
@@ -296,32 +294,46 @@ function Favorite({navigation}){
             </View>
         );
     }
+    
     return(
-        <View white paddingTop={theme.sizes.padding*2}>
-            <View flex={1.2} row>
-                <DistinctionList scrollX={scrollX} category={category} setCategory={setCategory}/>
+        <View white paddingTop={isData ? theme.sizes.padding*2: 0}>
+        <DistinctionList scrollX={scrollX} category={category} setCategory={setCategory}/>
+        { isData ? <View>
+            <View flex={1.6}>
                 <FavoriteList scrollX={scrollX} current={current} setCurrent={setCurrent} navigation={navigation} data={data}/>
             </View>
-            <View flex={false}>
-                <CuisineInfo />
-            </View>
-            <View flex={1} paddingHorizontal={20}paddingBottom={20}>
-                <QuickInfo current={current}/>
-            </View>
-            <View flex={false} paddingHorizontal={16} >
-                <View flex={false} row>
-                    <CirclePercent size={-30} name={mocksData.circle_1.name} rotate={mocksData.circle_1.degree} percent={mocksData.circle_1.percent/100} textSize={18} textColor={mocksData.circle_1.textColor} gradient={mocksData.circle_1.gradient} />
-                    <View flex={false} absolute right={5}>
-                         <CirclePercent size={-30} name={mocksData.circle_3.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_3.percent/100} textSize={18} textColor={mocksData.circle_2.textColor} gradient={mocksData.circle_3.gradient} />
+                <View flex={false}>
+                    <CuisineInfo />
+                </View>
+                    <View flex={1} paddingHorizontal={20}paddingBottom={20}>
+                        <QuickInfo current={current}/>
                     </View>
-                </View>
-                <View flex={false} marginTop={-40}>
-                    <CirclePercent size={-30} name={mocksData.circle_2.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_2.percent/100} textSize={18} textColor={mocksData.circle_3.textColor} gradient={mocksData.circle_2.gradient} />
-                </View>
-            </View>
-            
+                    <View flex={1} paddingHorizontal={16} >
+                        <View flex={false} row>
+                            <CirclePercent size={-30} name={mocksData.circle_1.name} rotate={mocksData.circle_1.degree} percent={mocksData.circle_1.percent/100} textSize={18} textColor={mocksData.circle_1.textColor} gradient={mocksData.circle_1.gradient} />
+                            <View flex={false} absolute right={5}>
+                                <CirclePercent size={-30} name={mocksData.circle_3.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_3.percent/100} textSize={18} textColor={mocksData.circle_2.textColor} gradient={mocksData.circle_3.gradient} />
+                            </View>
+                        </View>
+                        <View flex={false} marginTop={-40}>
+                            <CirclePercent size={-30} name={mocksData.circle_2.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_2.percent/100} textSize={18} textColor={mocksData.circle_3.textColor} gradient={mocksData.circle_2.gradient} />
+                        </View>
+                    </View>
+                <View>
+            </View> 
+        </View> : null }
+
+        {!isData ?<View center middle>
+            <Pic
+            src={require('../assets/icons/empty.png')}
+            size={[200,145]}
+            />
+            <Text secondary aregular size={25} top={20}>Dreaming of what to cook</Text>
+            <Text secondary aregular size={15} top={3}>You didn't favorite anything on <Text abold >{tabs.favorites.sideTabs[category]}</Text>.</Text>
+        </View>: null}
         </View>
     );
 }
+
 
 export default Favorite;

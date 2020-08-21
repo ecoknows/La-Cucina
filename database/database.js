@@ -759,8 +759,19 @@ const FavoriteGet =(setData)=> {
 
 
 const FetchFavorite =(setData,category)=> {
+  let query = null;
   
-  let query = "SELECT * from " + favorite_tbl + " WHERE tabsIndex = " + category.toString();
+  switch(category){
+      case 0:
+        query = "SELECT * from " + favorite_tbl + " ORDER BY id desc" ;
+        break;
+      case 1: 
+      query = "SELECT * from " + favorite_tbl;
+        break;
+  }
+  
+  if(category > 1)
+    query = "SELECT * from " + favorite_tbl + " WHERE tabsIndex = " + (category-2).toString()+ " ORDER BY id desc";
   let params = [];
 
   db.transaction(
