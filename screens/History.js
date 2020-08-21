@@ -8,6 +8,8 @@ const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
 let late_index = -1;
 const data_change = { value : true};
 const isAnim = { value : true};
+
+let bearAnim = null;
        
 function ListView(props){
     const {item, index, size, latestIndex, setLatestIndex, navigation} = props;
@@ -548,44 +550,131 @@ function ListView(props){
 
 }
 
+
 function History({navigation}){
     const [latestIndex, setLatestIndex] = useState(0);
     const [data , setData] = useState([]);
+    const zOpacity_1 = useRef(new Animated.Value(0)).current;
+    const zOpacity_2 = useRef(new Animated.Value(0)).current;
+    const zOpacity_3 = useRef(new Animated.Value(0)).current;
+    const zOpacity_4 = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             FetchHistory(setData,isAnim,data);
         });
+        
+        const z_loop =()=>{
+            return  Animated.loop(Animated.sequence([
+                Animated.timing(zOpacity_1,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                Animated.timing(zOpacity_2,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                Animated.timing(zOpacity_3,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                Animated.timing(zOpacity_4,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                
+                Animated.timing(zOpacity_1,{
+                    toValue: 0,
+                    duration: 400,
+                }),
+                
+                Animated.timing(zOpacity_2,{
+                    toValue: 0,
+                    duration: 400,
+                }),
+                Animated.timing(zOpacity_3,{
+                    toValue: 0,
+                    duration: 400,
+                }), 
+                Animated.timing(zOpacity_4,{
+                    toValue: 0,
+                    duration: 400,
+                }),
+            ]));
+        }
+            
+        bearAnim = z_loop();
+
+        bearAnim.start();
           return unsubscribe;
       }, [navigation]);
       
     useEffect(() => {
         isAnim.value = true;
       }, [data]);
-    return(
-        <View white center middle>
+    
+    if(data.length != 0){
+        bearAnim.stop();
+    }
+      
+    const BearLoading =()=>{
+        return(
 
-        <Pic
-                src={require('../assets/icons/empty.png')}
-                size={[200,145]}
-        />
-        <Text secondary aregular size={25} top={20}>We're in deep sleep</Text>
-        <Text secondary aregular size={15} top={3}>You have no <Text abold >history</Text>.</Text>
-        </View>
-    )
+            <View center middle>
+            <View flex={false}>
+                <View flex={false} paddingLeft={50} marginBottom={-15}>
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z4.png')}
+                        size={[17.24,21.81]}
+                        style={{marginLeft: 35,opacity: zOpacity_4}}
+                    />
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z3.png')}
+                        size={[13.73,15.57]}
+                        style={{marginLeft: 20,opacity: zOpacity_3}}
+                    />
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z2.png')}
+                        size={[9.9,12.59]}
+                        style={{marginLeft: 10,opacity: zOpacity_2}}
+                    />
+                        
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z1.png')}
+                        size={[9.81,10.94]}
+                        style={{opacity: zOpacity_1}}
 
-    /*
+                    />
+
+
+                </View>
+            
+                <Pic
+                    src={require('../assets/icons/bear/body.png')}
+                    size={[200,100]}
+                />
+            </View>
+            <Text secondary aregular size={25} top={20}>We're in deep sleep</Text>
+            <Text secondary aregular size={15} top={3}>You have no <Text abold >history</Text>.</Text>
+            </View>
+        );
+    }
+
     return(
        <View white>
-            <List 
+            {data.length != 0 ?<List 
                     data={data}
                     renderItem={({item,index})=> <ListView item={item} index={index} size={data.length}  latestIndex={latestIndex} setLatestIndex={setLatestIndex} navigation={navigation}/> }
                     keyExtractor={(item,index)=> index.toString()}
                     
                     contentContainerStyle={{paddingTop: 100,paddingBottom: 100}}
-            />
+            />: <BearLoading/>}
        </View>
-    )*/
+    )
 }
 
 export default History;

@@ -171,6 +171,7 @@ const initial_note_data = [
     },
 ];
 
+
 export {
     sizes,
     colors,

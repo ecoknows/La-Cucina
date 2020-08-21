@@ -15,7 +15,7 @@ let isSwipe_cat = false;
 
 let currentTop = 0;
 let offsetX = 0;
-
+let bearAnim = null;
 const { width, height } = Dimensions.get('window');
 
 function FavoriteList(props){
@@ -213,6 +213,12 @@ function DistinctionList(props){
 function Favorite({navigation}){
     const animated = useRef(new Animated.Value(0)).current;
     const scrollX = useRef(new Animated.Value(0)).current;
+    
+    const zOpacity_1 = useRef(new Animated.Value(0)).current;
+    const zOpacity_2 = useRef(new Animated.Value(0)).current;
+    const zOpacity_3 = useRef(new Animated.Value(0)).current;
+    const zOpacity_4 = useRef(new Animated.Value(0)).current;
+
     const [category, setCategory] = useState(0);
     const [current, setCurrent] = useState(0);
     const [data, setData] = useState([]);
@@ -222,9 +228,99 @@ function Favorite({navigation}){
             FetchFavorite(setData, category);
         });
         onStart = true;
+        
+        const z_loop =()=>{
+            return  Animated.loop(Animated.sequence([
+                Animated.timing(zOpacity_1,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                Animated.timing(zOpacity_2,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                Animated.timing(zOpacity_3,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                Animated.timing(zOpacity_4,{
+                    toValue: 1,
+                    duration: 500,
+                }),
+                
+                Animated.timing(zOpacity_1,{
+                    toValue: 0,
+                    duration: 400,
+                }),
+                
+                Animated.timing(zOpacity_2,{
+                    toValue: 0,
+                    duration: 400,
+                }),
+                Animated.timing(zOpacity_3,{
+                    toValue: 0,
+                    duration: 400,
+                }), 
+                Animated.timing(zOpacity_4,{
+                    toValue: 0,
+                    duration: 400,
+                }),
+            ]));
+        }
+            
+        bearAnim = z_loop();
+        bearAnim.start();
           return unsubscribe;
       }, [navigation]);
     
+      
+    const BearLoading =()=>{
+        return(
+
+            <View center middle>
+            <View flex={false}>
+                <View flex={false} paddingLeft={50} marginBottom={-15}>
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z4.png')}
+                        size={[17.24,21.81]}
+                        style={{marginLeft: 35,opacity: zOpacity_4}}
+                    />
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z3.png')}
+                        size={[13.73,15.57]}
+                        style={{marginLeft: 20,opacity: zOpacity_3}}
+                    />
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z2.png')}
+                        size={[9.9,12.59]}
+                        style={{marginLeft: 10,opacity: zOpacity_2}}
+                    />
+                        
+                    <Pic
+                        animated
+                        src={require('../assets/icons/bear/z1.png')}
+                        size={[9.81,10.94]}
+                        style={{opacity: zOpacity_1}}
+
+                    />
+
+
+                </View>
+            
+                <Pic
+                    src={require('../assets/icons/bear/body.png')}
+                    size={[200,100]}
+                />
+            </View>
+            <Text secondary aregular size={25} top={20}>Dreaming of what to cook</Text>
+            <Text secondary aregular size={15} top={3}>You didn't favorite anything on <Text abold >{tabs.favorites.sideTabs[category]}</Text>.</Text>
+            </View>
+        );
+    }
+
     
     useEffect(() => {
         if(!onStart){
@@ -233,12 +329,6 @@ function Favorite({navigation}){
         }
     }, [category]);
 
-    /*
-    if(data.length == 0)
-        return (
-            <View white></View>
-        );
-    */
     let tabsIndex = null;
     let mocksIndex = null;
     let mocksData = null;
@@ -248,6 +338,10 @@ function Favorite({navigation}){
         tabsIndex = data[current].tabsIndex;
         mocksIndex = data[current].mocksIndex;
         mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
+    }else{
+        if(bearAnim != null){
+            bearAnim.start();
+        }
     }
 
     const CuisineInfo =props=>{
@@ -323,14 +417,7 @@ function Favorite({navigation}){
             </View> 
         </View> : null }
 
-        {!isData ?<View center middle>
-            <Pic
-            src={require('../assets/icons/empty.png')}
-            size={[200,145]}
-            />
-            <Text secondary aregular size={25} top={20}>Dreaming of what to cook</Text>
-            <Text secondary aregular size={15} top={3}>You didn't favorite anything on <Text abold >{tabs.favorites.sideTabs[category]}</Text>.</Text>
-        </View>: null}
+        {!isData ?<BearLoading/>: null}
         </View>
     );
 }

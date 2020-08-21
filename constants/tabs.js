@@ -135,6 +135,7 @@ const favorites = {
     ],
 }
 
+
 export {
     cuisine,
     favorites
