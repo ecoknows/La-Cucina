@@ -378,18 +378,20 @@ function CuisineSelected({navigation, route}){
         console.log(' wat ' , hour);
         if(percent > 0 && percent < 100 ){
             navigation.navigate('InfoModal',{info: 
-            {text: 'Hello there!\nYou have unfinish work!\n'+display_date+' at ' +time+'\nremember? ^_^'}, 
+            {
+            text: 'Unfinished cuisine on \n'+display_date+' at ' +time+'\nwant to continue it ? ^.^'
+            }, 
             button: [
+                {
+                    title: 'Continue',
+                    purpose: CONTINUE,
+                },
                 {
                     title: 'Start Over',
                     navigate: 'CuisineSelected',
                     purpose: RESTART,
-                },
-                {
-                    title: 'Continue',
-                    purpose: CONTINUE,
                 }
-                ],
+                ],  
             exit: false,
             })
         }

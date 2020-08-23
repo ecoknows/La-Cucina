@@ -15,7 +15,7 @@ function ListView(props){
     const {item, index, size, latestIndex, setLatestIndex, navigation} = props;
     const {mocks_tabs, mocks_index, capacity, time_finished, date} = item;
     const index_plus = index+1;
-    
+
     let cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index];    
     const item_date = new Date(date);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
@@ -38,6 +38,7 @@ function ListView(props){
         }
     }
     const isOdd = ((index_plus % 2) == 1);
+    const [goAnim, setGoAnim] = useState(true);
 
     
     const scale_line = useRef(new Animated.Value(0)).current;
@@ -45,71 +46,79 @@ function ListView(props){
     const image_anim = useRef(new Animated.Value(isOdd ? -30 : 30)).current;
     const title_anim = useRef(new Animated.Value(0)).current;
 
-    const animation_in =()=>{
-        
-        Animated.timing(title_anim,{
-            toValue: 1,
-            duration: 500,
-            easing: Easing.linear,
-        }).start();
-        Animated.sequence([
-        Animated.timing(scale_line,{
-            toValue: 1,
-            easing: Easing.linear,
-        }),
-        
-        Animated.timing(image_anim,{
-            toValue: isOdd ? 10 : -10
-        }),
-        
-        Animated.timing(text_anim,{
-            toValue: isOdd ? 20 : -20
-        }),
-        
-        Animated.timing(scale_line,{
-            toValue: 0
+    useEffect(()=>{
+        const animation_in =()=>{
             
-        }),
-        
+            Animated.timing(title_anim,{
+                toValue: 1,
+                duration: 500,
+                easing: Easing.linear,
+            }).start();
+            Animated.sequence([
+            Animated.timing(scale_line,{
+                toValue: 1,
+                easing: Easing.linear,
+            }),
+            
+            Animated.timing(image_anim,{
+                toValue: isOdd ? 10 : -10
+            }),
+            
+            Animated.timing(text_anim,{
+                toValue: isOdd ? 20 : -20
+            }),
+            
+            Animated.timing(scale_line,{
+                toValue: 0
+                
+            }),
+            
 
-        ]).start();
-    }
+            ]).start(()=>setGoAnim(false));
+        }
 
-    const animation_out =()=>{
-        Animated.sequence([
+        const animation_out =()=>{
             
-        Animated.timing(scale_line,{
-            toValue: 1
+            Animated.sequence([
+                
+            Animated.timing(scale_line,{
+                toValue: 1
+                
+            }),
             
-        }),
-        
-        Animated.timing(text_anim,{
-            toValue: isOdd ? -200 : 200
-        }),
-        Animated.timing(image_anim,{
-            toValue: isOdd ? -30 : 30
-        }),
-        
-        
-        Animated.timing(scale_line,{
-            toValue: 0
+            Animated.timing(text_anim,{
+                toValue: isOdd ? -200 : 200
+            }),
+            Animated.timing(image_anim,{
+                toValue: isOdd ? -30 : 30
+            }),
             
-        }),
-        
-        ]).start();
-        
-        Animated.timing(title_anim,{
-            toValue: 0,
-            duration: 1500,
-            easing: Easing.linear,
-        }).start();
+            
+            Animated.timing(scale_line,{
+                toValue: 0
+                
+            }),
+            
+            ]).start();
+            
+            Animated.timing(title_anim,{
+                toValue: 0,
+                duration: 1500,
+                easing: Easing.linear,
+            }).start(()=>setGoAnim(true));
 
-    }    
-    if(late_index == index && isAnim.value)
-        animation_out();
-    //console.log(latestIndex, late_index +' asd ', index , ' d ', isAnim);
-    if(latestIndex == index && isAnim.value)
-        animation_in(); 
+        }
+
+        if(late_index == index && isAnim.value){
+            animation_out();
+        }
+        //console.log(latestIndex, late_index +' asd ', index , ' d ', isAnim);
+        if(latestIndex == index && isAnim.value ){
+            animation_in();
+        }
+    },[latestIndex])
+    
+    
 
     const EvenInfo =()=>{
         return(
@@ -558,10 +567,9 @@ function History({navigation}){
     const zOpacity_2 = useRef(new Animated.Value(0)).current;
     const zOpacity_3 = useRef(new Animated.Value(0)).current;
     const zOpacity_4 = useRef(new Animated.Value(0)).current;
-
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            FetchHistory(setData,isAnim,data);
+            FetchHistory(setData,data);
         });
         
         const z_loop =()=>{
@@ -610,13 +618,16 @@ function History({navigation}){
       }, [navigation]);
       
     useEffect(() => {
-        isAnim.value = true;
+        isAnim.value = true; 
+        if(data.length != 0){
+            late_index = latestIndex;
+            setLatestIndex(0);
+        }
       }, [data]);
     
-    if(data.length != 0){
+    if(data.length != 0 && bearAnim != null){
         bearAnim.stop();
     }
-      
     const BearLoading =()=>{
         return(
 
@@ -671,7 +682,7 @@ function History({navigation}){
                     renderItem={({item,index})=> <ListView item={item} index={index} size={data.length}  latestIndex={latestIndex} setLatestIndex={setLatestIndex} navigation={navigation}/> }
                     keyExtractor={(item,index)=> index.toString()}
                     
-                    contentContainerStyle={{paddingTop: 100,paddingBottom: 100}}
+                    contentContainerStyle={{paddingTop: 120,paddingBottom: 100}}
             />: <BearLoading/>}
        </View>
     )

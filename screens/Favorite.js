@@ -348,7 +348,10 @@ function Favorite({navigation}){
         return(
             <View middle flex={false}>
 
-                <Text family='semi-bold' color='#8F8F8F' size={16} bottom={5}>{mocksData.name}</Text>
+                <Text family='semi-bold' color='#8F8F8F' size={16} bottom={5} 
+                    style={{width: '80%'}}
+                    center
+                >{mocksData.name}</Text>
                 <View flex={false} row>
                     <Pic
                         src={require('../assets/images/chopping-knife.png')}
