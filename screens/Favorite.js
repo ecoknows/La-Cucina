@@ -16,6 +16,8 @@ let isSwipe_cat = false;
 let currentTop = 0;
 let offsetX = 0;
 let bearAnim = null;
+
+let category_change = 0;
 const { width, height } = Dimensions.get('window');
 
 function FavoriteList(props){
@@ -222,10 +224,11 @@ function Favorite({navigation}){
     const [category, setCategory] = useState(0);
     const [current, setCurrent] = useState(0);
     const [data, setData] = useState([]);
+    category_change = category;
     let onStart = false;
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            FetchFavorite(setData, category);
+            FetchFavorite(setData, category_change);
         });
         onStart = true;
         
@@ -338,10 +341,7 @@ function Favorite({navigation}){
         tabsIndex = data[current].tabsIndex;
         mocksIndex = data[current].mocksIndex;
         mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
-    }else{
-        if(bearAnim != null){
-            bearAnim.start();
-        }
+        
     }
 
     const CuisineInfo =props=>{
@@ -385,9 +385,9 @@ function Favorite({navigation}){
     const QuickInfo =props=>{
         const { current } = props;
         return(
-            <View flex={false}>
+            <View flex={false} >
                 <Text color='#FF6600' family='extra-bold' size={25} bottom={10} top={10}>Quick Info</Text>
-        <Text color='#727272' size={14}>{mocksData.description}</Text>
+                 <Text color='#727272' size={14}>{mocksData.description}</Text>
             </View>
         );
     }
@@ -396,16 +396,18 @@ function Favorite({navigation}){
         <View white paddingTop={isData ? theme.sizes.padding*2: 0}>
         <DistinctionList scrollX={scrollX} category={category} setCategory={setCategory}/>
         { isData ? <View>
-            <View flex={1.6}>
+            <View flex={0.5}>
                 <FavoriteList scrollX={scrollX} current={current} setCurrent={setCurrent} navigation={navigation} data={data}/>
             </View>
-                <View flex={false}>
+                     <View flex={false}>
                     <CuisineInfo />
                 </View>
-                    <View flex={1} paddingHorizontal={20}paddingBottom={20}>
+                    
+                <View>
+                    <View flex={false} paddingHorizontal={20}paddingBottom={10}>
                         <QuickInfo current={current}/>
                     </View>
-                    <View flex={1} paddingHorizontal={16} >
+                    <View flex={false} paddingHorizontal={16} >
                         <View flex={false} row>
                             <CirclePercent size={-30} name={mocksData.circle_1.name} rotate={mocksData.circle_1.degree} percent={mocksData.circle_1.percent/100} textSize={18} textColor={mocksData.circle_1.textColor} gradient={mocksData.circle_1.gradient} />
                             <View flex={false} absolute right={5}>
@@ -416,8 +418,7 @@ function Favorite({navigation}){
                             <CirclePercent size={-30} name={mocksData.circle_2.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_2.percent/100} textSize={18} textColor={mocksData.circle_3.textColor} gradient={mocksData.circle_2.gradient} />
                         </View>
                     </View>
-                <View>
-            </View> 
+                </View> 
         </View> : null }
 
         {!isData ?<BearLoading/>: null}

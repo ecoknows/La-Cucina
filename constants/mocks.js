@@ -299,7 +299,7 @@ const breakfast = [
         ' frying eggs, you can make your breakfast meal'+
         ' more exciting and tastier. Make an omelette out'+
         ' of it and add more ingredients such as spinach,'+
-        ' tomato, and cheese. ',
+        ' tomato, and cheese.',
         author: 'Vanjo Merano',
         circle_1: {name: 'Cal', textColor: '#FF6600' ,percent: 50, degree: '-120deg', gradient: theme.gradients.orange},
         circle_2: {name: 'Iron', textColor: '#1BAA09' ,percent: 25, degree: '0deg', gradient: theme.gradients.blue},

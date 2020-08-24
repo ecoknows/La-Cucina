@@ -259,14 +259,13 @@ function Ingridients({navigation, route}){
         <View white>
 
 
-            <View flex={15} paddingTop={30} row>
+            <View paddingTop={30} row>
                 <ScrollView
                   onScroll={({nativeEvent}) => {
                     if (isCloseToBottom(nativeEvent)) {
                         _1_data = true;
                         _2_data = true;
                         NextDataSelect(setStateData1,setStateData2,"6");
-                        console.log('adada');
                    }
                    
                 }
@@ -340,13 +339,18 @@ function Ingridients({navigation, route}){
 
             </View>
             
-            <View paddingTop={10} center middle >
-                <Card touchable round={50} accent size={[100]} center middle 
+            <View absolute center middle bottom={0} size={['100%','5%']}>
+                <Card touchable round={50} white size={[100]} center middle 
+                    style={{
+                        borderWidth: 2,
+                        borderColor: theme.colors.accent
+                    }}
                     press={()=> navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]}, index: -1}) }
                 >
-                    <Text family='semi-bold' size={18} white>Create</Text>
+                    <Text family='semi-bold' size={18} accent>Create</Text>
                 </Card>
             </View>
+            
         </View>
     );
 }
