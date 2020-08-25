@@ -323,7 +323,6 @@ function Favorite({navigation}){
             </View>
         );
     }
-
     
     useEffect(() => {
         if(!onStart){
@@ -342,6 +341,10 @@ function Favorite({navigation}){
         mocksIndex = data[current].mocksIndex;
         mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
         
+    }else{
+        if(bearAnim != null){
+            bearAnim.start();
+        }
     }
 
     const CuisineInfo =props=>{

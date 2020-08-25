@@ -301,7 +301,7 @@ const breakfast = [
         ' of it and add more ingredients such as spinach,'+
         ' tomato, and cheese.',
         author: 'Vanjo Merano',
-        circle_1: {name: 'Cal', textColor: '#FF6600' ,percent: 50, degree: '-120deg', gradient: theme.gradients.orange},
+        circle_1: {name: 'Cal', textColor: '#FF6600' ,percent: 50, degree: '-120deg', gradient: theme.gradients.flare},
         circle_2: {name: 'Iron', textColor: '#1BAA09' ,percent: 25, degree: '0deg', gradient: theme.gradients.blue},
         circle_3: {name: 'Fats', textColor: '#0269FF' ,percent: 40, degree: '120deg', gradient: theme.gradients.green},
         direction: directions.spinach_tomato_and_cheese_omelette,
@@ -310,24 +310,6 @@ const breakfast = [
     },
 
     
-];
-
-const meal = [
-    {
-        id: 'Adobo',
-        color: '#FFDFC4',
-        title: 'Blue',
-        title_bold: 'Salad',
-        caption: 'Aside from their natural good taste and great crunchy texture alongside wonderful colors and fragrances, eating a large serving of fresh, raw vegetables each day can have significant health benefits.',
-    },
-    {
-        id: 'hakdog',
-        color: '#D3D3D3',
-    },
-    {
-        id: 'tocino',
-        color: '#80bdab',
-    },
 ];
 
 const brunch = [
@@ -342,15 +324,31 @@ const lunch = [
 const tea = [
 
 ];
+const supper = [
+
+];
+const dinner = [
+
+];
+const dessert = [
+
+];
+const appetizers = [
+
+];
+
 
 
 
 
 export {
     breakfast,
-    meal,
     brunch,
     elevenses,
     lunch,
     tea,
+    supper,
+    dinner,
+    dessert,
+    appetizers,
 }

@@ -54,7 +54,12 @@ const gradients = {
         start : '#005EE8',
         middle : '#AAC0FF',
         end : '#005EE8',
-    }
+    },
+    flare: {
+        start : '#f12711',
+        middle : null,
+        end : '#f5af19',
+    },
     
 };
 

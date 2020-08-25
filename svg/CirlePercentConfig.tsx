@@ -44,6 +44,19 @@ const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
   const strokeDashoffset = multiply(α, r);
   const strokeShadowOffset = multiply(α, (r+4));
   const circumferenceShadow = (r+4) * 2 * PI;
+  let linear_gradient = null;
+  if(middle != null){
+   linear_gradient = <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
+                        <Stop offset="0%" stopColor={start} />
+                        <Stop offset="50%" stopColor={middle} />
+                        <Stop offset="100%" stopColor={end} />
+                      </LinearGradient>
+  }else{
+    linear_gradient = <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
+                        <Stop offset="0%" stopColor={start} />
+                        <Stop offset="100%" stopColor={end} />
+                      </LinearGradient>
+  }
   return (
     <AnimatedView style={{flex: 0, alignItems: 'center', justifyContent:'center'}}>
            
@@ -57,14 +70,7 @@ const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
         
           <Svg width={size+20} height={size+20} style={styles.container}>
           <Defs>
-            <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
-              <Stop offset="0%" stopColor={start} />
-              <Stop offset="50%" stopColor={middle} />
-              <Stop offset="100%" stopColor={end} />
-            </LinearGradient>
-            
-            
-          
+            {linear_gradient}
           </Defs>
           <Circle
             stroke={end}

@@ -51,7 +51,7 @@ const cuisine = {
             first: 'Tea',
             second: ' ',
             mocks: mocks.tea,
-            light: true,
+            light: false,
             width: 129,
         },
         {

@@ -313,6 +313,7 @@ function Cuisine({navigation}){
     const [ bottomActive, setBottomActive] = useState(causineTabs[0].bottomTabs[0].name);
     
     const CurrentCausine = () => {
+        console.log(isCurrent);
         const cuisine = causineTabs[isCurrent].mocks;
 
         let filtered = cuisine.filter( 
@@ -381,9 +382,22 @@ function Cuisine({navigation}){
                             [{nativeEvent: {contentOffset: {x: topScrollX}},}],
                             {
                                 listener: event => {
-                                    const offsetX = Math.floor(event.nativeEvent.contentOffset.x / 100);
+                                    /*
+                                    const ar_te = 
+                                    [
+                                        100,
+                                        140,
+                                        130,
+                                        135,
+                                        129,
+                                        118,
+                                        118,
+                                        118,
+                                        118,
+                                    ]*/
+                                    const offsetX = Math.floor(event.nativeEvent.contentOffset.x / 118);
                                     isSwipe = true;
-
+                                    console.log(offsetX);
                                     if(swipeTO != null)
                                         clearTimeout(swipeTO);
                                     
