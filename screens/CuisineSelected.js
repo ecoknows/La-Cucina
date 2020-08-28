@@ -5,6 +5,7 @@ import { theme, directions, ingridients, mocks, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { Easing, set } from 'react-native-reanimated';
 import { AddHistory, GetHistory,GetHistroyCapacity, SnapShotListiner,DeleteHistory } from '../database/database'
+import moment from "moment";
 
 const DONE = 0;
 const START = 1;
@@ -369,13 +370,13 @@ function CuisineSelected({navigation, route}){
         const item_date = new Date(last_save_date.value);
         const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
         const display_date = monthsText[item_date.getMonth()] + ' ' + item_date.getDate() + ', ' + item_date.getFullYear();
-        let hour = item_date.getHours();
+        /*
+        let hour = item_date.getHours()
         let minutes = item_date.getMinutes();
         minutes = minutes < 10 ?  '0' + minutes : minutes;
         hour = (hour >= 13 ) ? (hour - 12) : hour;
-        const std = (hour >= 12 )? 'PM': 'AM';
-        let time = hour + ':' + minutes +' '+ std;
-        console.log(' wat ' , hour);
+        const std = (hour >= 12 )? 'PM': 'AM';*/
+        let time = moment(item_date).format('hh:mm A');
         if(percent > 0 && percent < 100 ){
             navigation.navigate('InfoModal',{info: 
             {

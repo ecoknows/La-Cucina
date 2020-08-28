@@ -4,6 +4,8 @@ import { View, Pic,List,Text } from '../components';
 import { FetchHistory } from '../database/database';
 import { tabs } from '../constants';
 import { parse } from 'react-native-svg';
+import moment from "moment";
+
 const ODD = -1, EVEN = -2, FIRST = -3, LAST_EVEN = -4, LAST_ODD = -5;
 let late_index = -1;
 const data_change = { value : true};
@@ -20,12 +22,12 @@ function ListView(props){
     const item_date = new Date(date);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const display_date = monthsText[item_date.getMonth()] + ' / ' + item_date.getDate() + ' / ' + item_date.getFullYear();
-    let hour = item_date.getHours();
+    /*let hour = item_date.getHours();
     let minutes = item_date.getMinutes();
     minutes = minutes < 10 ?  '0' + minutes : minutes;
     hour = (hour >= 13 ) ? (hour - 12) : hour;
-    const std = (hour >= 12 )? 'PM': 'AM';
-    let time = hour + ':' + minutes +' '+ std;
+    const std = (hour >= 12 )? 'PM': 'AM';*/
+    let time = moment(item_date).format('hh:mm A');
 
     let item_state = (index_plus % 2) == 0 ? EVEN : ODD;
     item_state = (index_plus == 1) ? FIRST : item_state;
