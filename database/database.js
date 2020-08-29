@@ -159,7 +159,7 @@ const CheckNote =()=>{
       tx => {
           tx.executeSql(
               `create table if not exists ${history_tbl} `+
-              `(id integer primary key not null, parent_id text, favorite integer, capacity integer, ingredients text, directions integer, date text, time_finished text, image integer, mocks_index integer, mocks_tabs integer)`
+              `(id integer primary key not null, parent_id integer, favorite integer, capacity integer, ingredients text, directions integer, date text, time_finished text, image integer, mocks_index integer, mocks_tabs integer)`
           );
       }
     );
@@ -168,7 +168,7 @@ const CheckNote =()=>{
       tx => {
           tx.executeSql(
               `create table if not exists ${favorite_tbl} `+
-              `(id integer primary key not null, tabsIndex integer, mocksIndex integer)`
+              `(id integer primary key not null, recipe_id integer, tabsIndex integer, mocksIndex integer)`
           );
       }
     );
@@ -259,7 +259,7 @@ const GetHistory =(arg)=>{
     histor_id
   } = arg;
 
-  let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
+  let query = "SELECT * from " + history_tbl + " WHERE parent_id = "+id.toString();
   let params = [];
 
   db.transaction(
@@ -267,6 +267,7 @@ const GetHistory =(arg)=>{
       tx.executeSql(query, params,(tx, results) =>{
         
         if(results.rows._array.length > 0){
+          
           const latest = results.rows._array.length-1 ;
           //console.log(results.rows._array,'asd ', latest);
           if(results.rows._array[ latest ].time_finished != '100%'){
@@ -283,6 +284,7 @@ const GetHistory =(arg)=>{
             if(results.rows._array[ latest ].ingredients != ' '){
 
               let ing_arr = results.rows._array[ latest ].ingredients.split(',').map(Number);
+              console.log(ing_arr);
               ingridents_finish_counter.value = ing_arr.length;
               original_ingridients.value = ing_arr.length;
               _ingredients_changer.array = _ingredients_changer.array.filter(value => !ing_arr.includes(value));
@@ -332,7 +334,7 @@ const DeleteHistory =(id, setReset, reset)=>{
 }
 
 const GetHistroyCapacity =(id, setCapacity, original_capacity)=>{
-  let query = "SELECT * from " + history_tbl + " WHERE parent_id = '" + id+"'";
+  let query = "SELECT * from " + history_tbl + " WHERE parent_id = " + id.toString();
   let params = [];
 
   db.transaction(
@@ -678,10 +680,10 @@ const QueryChangesList =(data)=>{
 }
 
 const FavoriteData= (data, isAdd) => {
-  const { tabsIndex, mocksIndex } = data;
+  const { tabsIndex, mocksIndex,recipe_id } = data;
   if(isAdd){
-    let query = "INSERT INTO "+ favorite_tbl +" (id,tabsIndex,mocksIndex) VALUES (null,?,?)";
-    let params = [tabsIndex, mocksIndex];
+    let query = "INSERT INTO "+ favorite_tbl +" (id,recipe_id,tabsIndex,mocksIndex) VALUES (null,?,?,?)";
+    let params = [recipe_id,tabsIndex, mocksIndex];
 
     db.transaction(
         (tx)=> {
@@ -694,7 +696,7 @@ const FavoriteData= (data, isAdd) => {
         }
     )
   }else{
-    let query = "DELETE FROM "+ favorite_tbl +" WHERE tabsIndex = "+tabsIndex.toString()+" AND mocksIndex = "+mocksIndex.toString();
+    let query = "DELETE FROM "+ favorite_tbl +" WHERE recipe_id = "+ recipe_id.toString();
     let params = [];
 
     db.transaction(
@@ -721,7 +723,8 @@ const FavoriteUpdate =(setRefresh, refresh)=> {
         if(results.rows._array.length > 0){
           for(let i = 0; i < results.rows._array.length; i++){
             const { tabsIndex, mocksIndex} = results.rows._array[i];
-            tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex].favorite = true;
+            console.log(tabsIndex , ' d ' , mocksIndex);
+            tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex].recipe.favorite = true;
           }
           setRefresh(!refresh);
         }

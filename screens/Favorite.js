@@ -36,7 +36,7 @@ function FavoriteList(props){
         
         const tabsIndex = item.tabsIndex;
         const mocksIndex = item.mocksIndex;
-        const mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
+        const mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex].recipe;
         const {image} = mocksData;
 
 
@@ -52,7 +52,7 @@ function FavoriteList(props){
                     listRef.current.scrollToIndex({index, animated: true });
                 }else{
                     mocksData.mocks_tabs = tabsIndex;
-                    navigation.navigate('CuisineSelected', {item: mocksData});
+                    navigation.navigate('CuisineSelected', {item: mocksData, index: mocksIndex});
                 }
                 }}
                 > 
@@ -339,7 +339,7 @@ function Favorite({navigation}){
 
         tabsIndex = data[current].tabsIndex;
         mocksIndex = data[current].mocksIndex;
-        mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex];
+        mocksData = tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex].recipe;
         
     }else{
         if(bearAnim != null){

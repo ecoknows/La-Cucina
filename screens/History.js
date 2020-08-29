@@ -18,7 +18,7 @@ function ListView(props){
     const {mocks_tabs, mocks_index, capacity, time_finished, date} = item;
     const index_plus = index+1;
 
-    let cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index];    
+    let cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index].recipe;
     const item_date = new Date(date);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const display_date = monthsText[item_date.getMonth()] + ' / ' + item_date.getDate() + ' / ' + item_date.getFullYear();

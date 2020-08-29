@@ -3,10 +3,9 @@ import * as ingridients from './ingridients';
 import * as nutrition from './nutrition';
 import * as theme from './theme';
 
-const breakfast = [
-    {
-        id: 'maruya',
-        index: 0,
+const VenjoRecipe= {
+    maruya: {
+        id: 0,
         name: 'Maruya',
         title_size: 24,
         favorite: false,
@@ -31,9 +30,8 @@ const breakfast = [
         ingridients: ingridients.maruya,
         nutrition: nutrition.maruya,
     },
-    {
-        id: 'arroz-caldo',
-        index: 1,
+    arroz_caldo: {
+        id: 1,
         name: 'Arroz Caldo',
         title_size: 24,
         favorite: false,
@@ -56,9 +54,8 @@ const breakfast = [
         ingridients: ingridients.arroz_caldo,
         nutrition: nutrition.arroz_caldo,
     },
-    {
-        id: 'corned-beef-omelette', 
-        index: 2,
+    corned_beef_omelet: {
+        id: 2,
         name: 'Corned Beef Omelet',
         title_size: 24,
         favorite: false,
@@ -83,9 +80,8 @@ const breakfast = [
         ingridients: ingridients.corned_beef_omelet,
         nutrition: nutrition.corned_beef_omelet,
     },
-    {
-        id: 'chicken-adobo-fried-rice-and-tortang-corned-beef',
-        index: 3,
+    chicken_adobo_fried_rice_and_tortang_corned_beef: {
+        id: 3,
         name: 'Chicken Adobo Fried Rice and Tortang Corned Beef',
         title_size: 15,
         favorite: false,
@@ -110,13 +106,12 @@ const breakfast = [
         ingridients: ingridients.chicken_adobo_fried_rice_and_tortang_corned_beef,
         nutrition: nutrition.chicken_adobo_fried_rice_and_tortang_corned_beef,
     },
-    {
-        id: 'tapsilog',
-        index: 4,
+    tapsilog: {
+        id: 4,
         name: 'Tapsilog',
         title_size: 24,
         favorite: false,
-         circle_1: {name: 'Cal', textColor: '#FF6600' ,percent: 50, degree: '-120deg', gradient: theme.gradients.orange},
+        circle_1: {name: 'Cal', textColor: '#FF6600' ,percent: 50, degree: '-120deg', gradient: theme.gradients.orange},
         circle_2: {name: 'Iron', textColor: '#1BAA09' ,percent: 25, degree: '0deg', gradient: theme.gradients.blue},
         circle_3: {name: 'Fats', textColor: '#0269FF' ,percent: 40, degree: '120deg', gradient: theme.gradients.green},
         tags: [,'rice','fried', 'egg','meat'],
@@ -140,9 +135,8 @@ const breakfast = [
         ingridients: ingridients.tap_silog,
         nutrition: nutrition.tap_silog,
     },
-    {
-        id: 'filipino_omellete',
-        index: 5,
+    filipino_omellete: {
+        id: 5,
         name: 'Filipino Omellete',
         title_size: 24,
         favorite: false,
@@ -167,9 +161,8 @@ const breakfast = [
         ingridients: ingridients.filipino_omellete,
         nutrition: nutrition.filipino_omellete,
     },
-    {
-        id: 'hot-silog',
-        index: 6,
+    hot_silog: {
+        id: 6,
         name: 'Hot Silog',
         title_size: 24,
         favorite: false,
@@ -194,9 +187,8 @@ const breakfast = [
         ingridients: ingridients.hot_silog,
         nutrition: nutrition.hot_silog,
     },
-    {
-        id: 'skinless-longganisa',
-        index: 7,
+    skinless_longganisa: {
+        id: 7,
         name: 'Skinless Longganisa',
         title_size: 24,
         favorite: false,
@@ -221,9 +213,8 @@ const breakfast = [
         ingridients: ingridients.skinless_longganisa,
         nutrition: nutrition.skinless_longganisa,
     },
-    {
-        id: 't-bone-steak-with-fried-eggs',
-        index: 8,
+    t_bone_steak_with_fried_eggs: {
+        id: 8,
         name: 'T-Bone Steak with Fried Eggs',
         title_size: 24,
         favorite: false,
@@ -249,9 +240,8 @@ const breakfast = [
         ingridients: ingridients.t_bone_steak_with_fried_egg,
         nutrition: nutrition.t_bone_steak_with_fried_egg,
     }, 
-    {
-        id: 'tortang-tuna-with-spinach',
-        index: 9,
+    tortang_tuna_with_spinach: {
+        id: 9,
         name: 'Tortang Tuna with Spinach',
         title_size: 24,
         favorite: false,
@@ -278,9 +268,8 @@ const breakfast = [
         ingridients: ingridients.tortang_tuna_with_spinach,
         nutrition: nutrition.tortang_tuna_with_spinach,
     },
-    {
-        id: 'spinach-tomato-and-cheese-omelette',
-        index: 10,
+    spinach_tomato_and_cheese_omelette : {
+        id: 10,
         name: 'Spinach Tomato and Cheese Omelette',
         title_size: 20,
         favorite: false,
@@ -308,19 +297,93 @@ const breakfast = [
         ingridients: ingridients.spinach_tomato_and_cheese_omelette,
         nutrition: nutrition.spinach_tomato_and_cheese_omelette,
     },
+    special_longanisa_fried_rice: {
+        id: 11,
+        name: 'Special Longanisa Fried Rice',
+        title_size: 24,
+        favorite: false,
+        tags: ['rice','veggies','egg'],
+        color: '#FFDFC4',
+        image: require('../assets/foods/special_longanisa_fried_rice.png'),
+        image_scale: 220,
+        cooking_time: '30 mins',
+        prep_time: '5 mins',
+        capacity: 4,
+        capacity_cache : {value: null},
+        burn: '24 calories',
+        description: 'Have you tried cooking Special'+
+        ' Longanisa Fried Rice for brunch? If not,'+
+        ' you might want to continue reading this recipe'+
+        ' so that you can gather all the necessary information'+
+        ' to plan ahead. If you like longanisa and enjoy eating'+
+        ' fried rice, you’re in for a treat.',
+        author: 'Vanjo Merano',
+        circle_1: {name: 'Cal', textColor: '#FF6600' ,percent: 50, degree: '-120deg', gradient: theme.gradients.orange},
+        circle_2: {name: 'Iron', textColor: '#1BAA09' ,percent: 25, degree: '0deg', gradient: theme.gradients.blue},
+        circle_3: {name: 'Fats', textColor: '#0269FF' ,percent: 40, degree: '120deg', gradient: theme.gradients.green},
+        direction: directions.arroz_caldo,
+        ingridients: ingridients.arroz_caldo,
+        nutrition: nutrition.arroz_caldo,
+    },
+};
 
-    
+const breakfast = [
+    {
+        index: 0,
+        recipe: VenjoRecipe.maruya
+    },
+    {
+        index: 1,
+        recipe: VenjoRecipe.arroz_caldo
+    },
+    {
+        index: 2,
+        recipe: VenjoRecipe.corned_beef_omelet
+    },
+    {
+        index: 3,
+        recipe: VenjoRecipe.chicken_adobo_fried_rice_and_tortang_corned_beef
+    },
+    {
+        index: 4,
+        recipe: VenjoRecipe.filipino_omellete
+    },
+    {
+        index: 5,
+        recipe: VenjoRecipe.hot_silog
+    },
+    {
+        index: 6,
+        recipe: VenjoRecipe.skinless_longganisa
+    },
+    {
+        index: 7,
+        recipe: VenjoRecipe.t_bone_steak_with_fried_eggs
+    },
+    {
+        index: 8,
+        recipe: VenjoRecipe.tortang_tuna_with_spinach
+    },
+    {
+        index: 9,
+        recipe: VenjoRecipe.spinach_tomato_and_cheese_omelette
+    },
+
 ];
 
 const brunch = [
-
+    {
+        index: 0,
+        recipe: VenjoRecipe.maruya
+    },
 ];
+
 const elevenses = [
-
 ];
+
 const lunch = [
-
 ];
+
 const tea = [
 
 ];

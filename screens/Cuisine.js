@@ -17,13 +17,13 @@ const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs
 
 function Middle (props){ 
     const { item, index, navigation, middleListRef, mocks_tabs} = props;
+    const { recipe } = item;
     let hColor = null;
     let cColor = null;
     const [refresh, setRefresh] = useState(true);
     let x = 30;
-    console.log(item.favorite);
 
-    if(!item.favorite){
+    if(!recipe.favorite){
         hColor = 'white';
         cColor = theme.colors.accent;
     }else{
@@ -44,8 +44,8 @@ function Middle (props){
             middleListRef.current.scrollToIndex({index , animated: true });
             currentMiddle = index;
         }else{
-            item.mocks_tabs = mocks_tabs;
-            navigation.navigate('CuisineSelected', {item})
+            recipe.mocks_tabs = mocks_tabs;
+            navigation.navigate('CuisineSelected', {item: recipe, index: item.index})
         }
     }
     
@@ -73,7 +73,7 @@ function Middle (props){
 
             <Card
                 round={32}
-                color={item.color}
+                color={recipe.color}
                 style={{flex:0}}
                 marginY={[10]}
                 marginX={[10]}
@@ -83,15 +83,15 @@ function Middle (props){
                 <View touchable activeOpacity={1} flex={false} absolute end
                     press={()=>{
                         if(currentMiddle == index)
-                            navigation.navigate('ImageModal',{image: item.image});
+                            navigation.navigate('ImageModal',{image: recipe.image});
                         else
                             middleClick();
                     }}
                 >
                 <Pic 
                     right={-30}
-                    size={[item.image_scale,item.image_scale]}
-                    src={item.image} />
+                    size={[recipe.image_scale,recipe.image_scale]}
+                    src={recipe.image} />
 
                 </View>
 
@@ -104,8 +104,8 @@ function Middle (props){
                     <View flex={false} row marginY={[12]}>
                         <Circle size={10} primary marginY={[12]}/>
 
-                        <Text size={item.title_size} asemi_bold left={8}>
-                            {item.name}
+                        <Text size={recipe.title_size} asemi_bold left={8}>
+                            {recipe.name}
                         </Text>
 
                     </View>
@@ -115,7 +115,7 @@ function Middle (props){
 
                 
                 <Text size={13} thirdary top={10} style={{flex: 1}}>
-                    {item.description} 
+                    {recipe.description} 
                 </Text>
 
             </View>
@@ -139,18 +139,20 @@ function Middle (props){
                 }}>
                 <Circle center touchable middle color={cColor} size={50}
                     press={()=>{
-                        if(!item.favorite){
+                        if(!recipe.favorite){
                             FavoriteData({
+                                recipe_id: recipe.id,
                                 tabsIndex: mocks_tabs,
                                 mocksIndex: item.index,
                             },true);
-                            item.favorite = true;
+                            recipe.favorite = true;
                         }else{
                             FavoriteData({
+                                recipe_id:recipe.id,
                                 tabsIndex: mocks_tabs,
                                 mocksIndex: item.index,
                             },false);
-                            item.favorite = false;
+                            recipe.favorite = false;
                         }
                         setRefresh(!refresh);
                         SnapShotListiner.favorite = true;
@@ -270,7 +272,7 @@ function Bottom(props){
         const active = isActive === item.name;
 
         return(
-            <Card marginX={[10]} center middle size={[70,70]} round={20} accent={active} gray2={!active}
+            <Card marginX={[10]} center middle size={[width - (width * 0.8),'75%']} round={20} accent={active} gray2={!active}
                     touchable showOpacity={1} 
                     press={()=> setIsActive(item.name)}
                     >
@@ -313,15 +315,13 @@ function Cuisine({navigation}){
     const [ bottomActive, setBottomActive] = useState(causineTabs[0].bottomTabs[0].name);
     
     const CurrentCausine = () => {
-        console.log(isCurrent);
         const cuisine = causineTabs[isCurrent].mocks;
-
         let filtered = cuisine.filter( 
-            cuisine => cuisine.tags.includes(leftActive.toLowerCase())
+            cuisine => cuisine.recipe.tags.includes(leftActive.toLowerCase())
         )
 
         filtered = filtered.filter( 
-            cuisine => cuisine.tags.includes(bottomActive.toLowerCase())
+            cuisine => cuisine.recipe.tags.includes(bottomActive.toLowerCase())
         )
         
         return filtered;
@@ -441,7 +441,7 @@ function Cuisine({navigation}){
                         data={middleCuisine}
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item, index }) =>  <Middle middleListRef={middleListRef} item={item} index={index} navigation={navigation} mocks_tabs={isCurrent}/>}
-                        keyExtractor={item => item.id}
+                        keyExtractor={(item, index)=>index.toString()}
                         contentContainerStyle={{paddingStart : 40, paddingEnd: 40}}
                         getItemLayout={getMiddleItemLayout}
                         onScroll={

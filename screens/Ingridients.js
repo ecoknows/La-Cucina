@@ -13,7 +13,6 @@ let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
 
 function Ingridients({navigation, route}){
-    console.log('agaha');
 
     const [stateData1, setStateData1] = useState([]);
     const [stateData2, setStateData2] = useState([]);

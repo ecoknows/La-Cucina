@@ -358,8 +358,8 @@ function CuisineSelected({navigation, route}){
     const pan = useRef(new Animated.ValueXY()).current;
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
-    const { item } = route.params;
-    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,index,title_size} = item;
+    const { item, index } = route.params;
+    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,title_size} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     const [reset, setReset] = useState(false);
 
