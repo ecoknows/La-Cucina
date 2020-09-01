@@ -73,7 +73,7 @@ function Middle (props){
 
             <Card
                 round={32}
-                color={recipe.color}
+                color='#FFDFC4'
                 style={{flex:0}}
                 marginY={[10]}
                 marginX={[10]}
@@ -104,7 +104,7 @@ function Middle (props){
                     <View flex={false} row marginY={[12]}>
                         <Circle size={10} primary marginY={[12]}/>
 
-                        <Text size={recipe.title_size} asemi_bold left={8}>
+                        <Text size={recipe.title_size}  asemi_bold left={8}>
                             {recipe.name}
                         </Text>
 
@@ -114,7 +114,7 @@ function Middle (props){
                 </View>
 
                 
-                <Text size={13} thirdary top={10} style={{flex: 1}}>
+                <Text size={13} gray top={10} style={{flex: 1}}>
                     {recipe.description} 
                 </Text>
 

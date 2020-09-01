@@ -395,6 +395,55 @@ const spinach_tomato_and_cheese_omelette = [
 
 ];
 
+const special_longanisa_fried_rice = [
+    {
+        step: 'Crack the eggs in a bowl. Beat until smooth.',
+    },
+    {
+        step: 'Heat a pan and pour 3 tablespoons cooking oil.',
+    },
+    {
+        step: 'When the oil gets hot, pour the beaten'+
+        ' egg into the pan. Cook one side until done and '+
+        'then flip to cook the other side.'+
+        ' Remove the egg from the pan. Set aside.',
+    },
+    {
+        step: 'Add the remaining oil in the same pan.'+
+        ' Once the oil heats-up, add the longanisa.'+
+        ' Continue to cook for 5 to 7 minutes'+
+        ' (or until the meat is fully cooked)'+
+        ' in medium heat while stirring once in a while.',
+    },
+    {
+        step: 'Add the butter and let it melt.',
+    },
+    {
+        step: 'Slide the rice into the pan. '+
+        'Fold until all the ingredients are'+
+        ' well blended. Cook for 3 minutes.',
+    },
+    {
+        step: 'Press the tip of the spatula towards the '+
+        'egg on the plate to slice it initially.'+
+        ' Add the egg into the pan. Continue to '+
+        'stir fry for 1 minute.',
+    },
+    {
+        step: 'Put the green peas and carrots in. Cook for 3 to 5 minutes',
+    },
+    {
+        step: 'Add salt and pepper to taste. Stir and make sure that all ingredients are well incorporated.',
+    },
+    {
+        step: 'Transfer to a serving bowl. Serve.',
+    },
+    {
+        step: 'Share and enjoy!',
+    },
+
+];
+
 
 
 
@@ -410,4 +459,6 @@ export{
     t_bone_steak_with_fried_egg,
     tortang_tuna_with_spinach,
     spinach_tomato_and_cheese_omelette,
+    special_longanisa_fried_rice,
+
 }

@@ -5,7 +5,7 @@ const maruya = [
         icon : require('../assets/nutrition/serving.png'),
     },
     {
-        weight : '460kcal',
+        weight : '460',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -78,7 +78,7 @@ const arroz_caldo = [
         icon : require('../assets/nutrition/serving.png'),
     },
     {
-        weight : '538kcal',
+        weight : '538',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -156,7 +156,7 @@ const corned_beef_omelet = [
         icon : require('../assets/nutrition/serving.png'),
     },
     {
-        weight : '284kcal',
+        weight : '284',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -227,18 +227,87 @@ const corned_beef_omelet = [
     },
 ];
 
-
 const hot_silog = [
     {
         weight : '1g',
         type : 'Serving',
         icon : require('../assets/nutrition/serving.png'),
     },
+    {
+        weight : '707',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '48.7g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '19.8g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '30g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '11g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '248.3mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '1382.2mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '256.1mg',
+        type : 'Potassium',
+        icon : require('../assets/nutrition/potassium.png'),
+    },
+    {
+        weight : '1.5g',
+        type : 'Fiber',
+        icon : require('../assets/nutrition/fiber.png'),
+    },
+    {
+        weight : '3g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '14.8%',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '8.7%',
+        type : 'Vitamin C',
+        icon : require('../assets/nutrition/vitamin_c.png'),
+    },
+    {
+        weight : '8.6%',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '13.8%',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
 ];
 
 const chicken_adobo_fried_rice_and_tortang_corned_beef = [
     {
-        weight : '721kcal',
+        weight : '721',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -311,7 +380,7 @@ const chicken_adobo_fried_rice_and_tortang_corned_beef = [
 
 const tap_silog = [
     {
-        weight : '883kcal',
+        weight : '883',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -385,7 +454,7 @@ const tap_silog = [
 
 const filipino_omellete = [
     {
-        weight : '113kcal',
+        weight : '113',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -453,7 +522,7 @@ const filipino_omellete = [
 
 const skinless_longganisa = [
     {
-        weight : '114kcal',
+        weight : '114',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -522,7 +591,7 @@ const skinless_longganisa = [
 
 const t_bone_steak_with_fried_egg = [
     {
-        weight : '360cal',
+        weight : '1050',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -580,7 +649,7 @@ const t_bone_steak_with_fried_egg = [
 
 const tortang_tuna_with_spinach = [
     {
-        weight : '462cal',
+        weight : '462',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -636,10 +705,9 @@ const tortang_tuna_with_spinach = [
     },
 ];
 
-
 const spinach_tomato_and_cheese_omelette = [
     {
-        weight : '649.6g',
+        weight : '649.6',
         type : 'Calories',
         icon : require('../assets/images/fire.png'),
     },
@@ -684,6 +752,73 @@ const spinach_tomato_and_cheese_omelette = [
         icon : require('../assets/nutrition/fiber.png'),
     },
 ];
+const special_longanisa_fried_rice = [
+    {
+        weight : '638',
+        type : 'Calories',
+        icon : require('../assets/images/fire.png'),
+    },
+    {
+        weight : '51.8g',
+        type : 'Carbohydrates',
+        icon : require('../assets/nutrition/carbohydrates.png'),
+    },
+    {
+        weight : '26.1g',
+        type : 'Protein',
+        icon : require('../assets/nutrition/protein.png'),
+    },
+    {
+        weight : '34.7g',
+        type : 'Fat',
+        icon : require('../assets/nutrition/fat.png'),
+    },
+    {
+        weight : '10.7g',
+        type : 'Saturated Fat',
+        icon : require('../assets/nutrition/saturated_fat.png'),
+    },
+    {
+        weight : '433mg',
+        type : 'Cholesterol',
+        icon : require('../assets/nutrition/cholesterol.png'),
+    },
+    {
+        weight : '1040mg',
+        type : 'Sodium',
+        icon : require('../assets/nutrition/sodium.png'),
+    },
+    {
+        weight : '1.2g',
+        type : 'Sugar',
+        icon : require('../assets/nutrition/sugar.png'),
+    },
+    {
+        weight : '1.5g',
+        type : 'Fiber',
+        icon : require('../assets/nutrition/fiber.png'),
+    },
+    {
+        weight : '22%',
+        type : 'Vitamin A',
+        icon : require('../assets/nutrition/vitamin_a.png'),
+    },
+    {
+        weight : '8.7%',
+        type : 'Vitamin C',
+        icon : require('../assets/nutrition/vitamin_c.png'),
+    },
+    {
+        weight : '5.7%',
+        type : 'Calcium',
+        icon : require('../assets/nutrition/calcium.png'),
+    },
+    {
+        weight : '5%',
+        type : 'Iron',
+        icon : require('../assets/nutrition/iron.png'),
+    },
+];
 
 export {
     maruya,
@@ -697,4 +832,6 @@ export {
     t_bone_steak_with_fried_egg,
     tortang_tuna_with_spinach,
     spinach_tomato_and_cheese_omelette,
+    special_longanisa_fried_rice,
+
 }

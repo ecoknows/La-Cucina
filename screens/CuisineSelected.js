@@ -359,7 +359,7 @@ function CuisineSelected({navigation, route}){
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
     const { item, index } = route.params;
-    const { id,name , color, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,title_size} = item;
+    const { id,name, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,title_size} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     const [reset, setReset] = useState(false);
 
@@ -600,7 +600,7 @@ function CuisineSelected({navigation, route}){
     }
       
     return(
-        <View color={color}  >
+        <View color='#FFDFC4'  >
         <View flex={false} row style={{alignSelf: 'flex-end', marginTop: 25, marginRight: 15}}>
             
             
@@ -717,7 +717,7 @@ function CuisineSelected({navigation, route}){
                     height={80}
                      {...panResponderTwo.panHandlers}>
                         <View 
-                            color={color}
+                            color='#FFDFC4'
                             style={styles.indicator}/>
                          </View>
                     <SheetText ExistHistory={ExistHistory} item={item} capacity={capacity} setCapacity={setCapacity} people={item.capacity} navigation={navigation} reset={reset}/>

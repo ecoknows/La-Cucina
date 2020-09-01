@@ -484,7 +484,48 @@ const spinach_tomato_and_cheese_omelette = [
 ];
 
 
-
+const special_longanisa_fried_rice =[
+    {
+        value: 4,
+        step: 'cups cooked rice',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'pieces longanisa',
+        checked : false,
+    },
+    {
+        value: 0.75,
+        step: 'cup frozen green peas',
+        checked : false,
+    },
+    {
+        value: 0.75,
+        step: 'cup carrot cubed',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'tablespoons butter',
+        checked : false,
+    },
+    {
+        value: 2,
+        step: 'eggs',
+        checked : false,
+    },
+    {
+        value: 4,
+        step: 'tablespoons cooking oil',
+        checked : false,
+    },
+    {
+        value: -1,
+        step: 'Salt and ground black pepper to taste',
+        checked : false,
+    },
+]
 
 
 export {
@@ -499,5 +540,6 @@ export {
     t_bone_steak_with_fried_egg,
     tortang_tuna_with_spinach,
     spinach_tomato_and_cheese_omelette,
+    special_longanisa_fried_rice,
 
 }
