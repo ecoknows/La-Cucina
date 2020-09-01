@@ -83,7 +83,7 @@ const arroz_caldo = [
         icon : require('../assets/images/fire.png'),
     },
     {
-        weight : '41g',
+        weight : '40g',
         type : 'Carbohydrates',
         icon : require('../assets/nutrition/carbohydrates.png'),
     },
@@ -93,7 +93,7 @@ const arroz_caldo = [
         icon : require('../assets/nutrition/protein.png'),
     },
     {
-        weight : '29g',
+        weight : '30g',
         type : 'Fat',
         icon : require('../assets/nutrition/fat.png'),
     },

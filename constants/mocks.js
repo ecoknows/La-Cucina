@@ -45,9 +45,9 @@ const VenjoRecipe= {
         description: 'Arroz caldo is the Filipino variety of congee,'+
         ' a thick rice porridge that is ubiquitous in many Asian countries.',
         author: 'Vanjo Merano',
-        circle_1: {name: 'Cal', textColor: '#FF6600' ,percent: 50, degree: '-120deg', gradient: theme.gradients.orange},
-        circle_2: {name: 'Iron', textColor: '#1BAA09' ,percent: 25, degree: '0deg', gradient: theme.gradients.blue},
-        circle_3: {name: 'Fats', textColor: '#0269FF' ,percent: 40, degree: '120deg', gradient: theme.gradients.green},
+        circle_1: {name: 'Carbs', textColor: '#FF6600' ,percent: 30, degree: '-120deg', gradient: theme.gradients.orange},
+        circle_2: {name: 'Protein', textColor: '#1BAA09' ,percent: 19, degree: '0deg', gradient: theme.gradients.blue},
+        circle_3: {name: 'Fat', textColor: '#0269FF' ,percent: 51, degree: '120deg', gradient: theme.gradients.green},
         direction: directions.arroz_caldo,
         ingridients: ingridients.arroz_caldo,
         nutrition: nutrition.arroz_caldo,
