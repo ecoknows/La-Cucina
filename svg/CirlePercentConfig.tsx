@@ -23,7 +23,7 @@ const TextIncrimenting =(props)=>{
   }, [progress])
 
   return(
-  <Text bold center gray size={textSize}>{counter}%</Text>
+  <Text bold center gray left={5}size={textSize}>{counter}%</Text>
   )
 }
 const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
@@ -57,12 +57,13 @@ const CircularPogressProps = ({ progress, config }: CircularPogressProps) => {
                         <Stop offset="100%" stopColor={end} />
                       </LinearGradient>
   }
+  
   return (
     <AnimatedView style={{flex: 0, alignItems: 'center', justifyContent:'center'}}>
            
       <AnimatedView style={{flex:0, position:'absolute'}} >
-        <Text size={textSize} extra_bold color={textColor}>{name}</Text>
-        <TextIncrimenting textSize={textSize} progress={progress} />
+        <Text size={Math.floor(size*textSize)-1} center extra_bold style={{color: textColor}}>{name}</Text>
+        <TextIncrimenting textSize={Math.floor(size*textSize)-1} progress={progress} />
       </AnimatedView>
       <AnimatedView flex={0} style={{flex: 0, 
        transform:[{rotate: circRotate}]

@@ -16,6 +16,7 @@ let isSwipe_cat = false;
 let currentTop = 0;
 let offsetX = 0;
 let bearAnim = null;
+let currentMiddle = 0;
 
 let category_change = 0;
 const { width, height } = Dimensions.get('window');
@@ -48,7 +49,7 @@ function FavoriteList(props){
         })
         return(
             <View flex={false} touchable activeOpacity={1} onPress={()=>{
-                if(offsetX != index){
+                if(offsetX != index || currentMiddle != index){
                     listRef.current.scrollToIndex({index, animated: true });
                 }else{
                     mocksData.mocks_tabs = tabsIndex;
@@ -95,6 +96,8 @@ function FavoriteList(props){
                             offsetX =Math.floor(x);
                             //console.log(event.nativeEvent.contentOffset.x );
                             if(x%1 >= 0.0 &&  x%1 <= 0.1){
+                                currentMiddle = offsetX == -1 ? 0 : offsetX;
+                                
                                 isSwipe = true;
                                 if(swipeTO != null)
                                     clearTimeout(swipeTO);
@@ -111,6 +114,8 @@ function FavoriteList(props){
                                         setCurrent(offsetX == -1 ? 0 : offsetX);
                                     }, 500);
                                 }
+                            }else{
+                                currentMiddle = -1;
                             }
                         }
                     }
@@ -374,13 +379,27 @@ function Favorite({navigation}){
                     <Text end asemi_bold size={13} gray3> cooking</Text>
                 </View> 
                 <View row flex={false}>
-                    <Pic
-                            accent
-                            src={require('../assets/images/people.png')}
-                            size={[25,25]}
-                            marginRight={5}
-                        />
-                    <Text end asemi_bold size={14} thirdary>{mocksData.capacity} people</Text>
+
+                    <View row flex={false}>
+                        <Pic
+                                accent
+                                src={require('../assets/images/people.png')}
+                                size={[25,25]}
+                                marginRight={5}
+                            />
+                        <Text end asemi_bold size={14} thirdary>{mocksData.capacity} people</Text>
+                    </View>
+                    <View row flex={false} marginLeft={10}>
+                        <Pic
+                                accent
+                                src={require('../assets/images/fire.png')}
+                                size={[20,20]}
+                                marginTop={5}
+                                marginRight={5}
+                            />
+                        <Text end asemi_bold size={14} thirdary>{mocksData.burn}</Text>
+                    </View>
+
                 </View>
             </View>
         )
@@ -412,13 +431,13 @@ function Favorite({navigation}){
                     </View>
                     <View flex={false} paddingHorizontal={16} >
                         <View flex={false} row>
-                            <CirclePercent size={-30} name={mocksData.circle_1.name} rotate={mocksData.circle_1.degree} percent={mocksData.circle_1.percent/100} textSize={18} textColor={mocksData.circle_1.textColor} gradient={mocksData.circle_1.gradient} />
+                            <CirclePercent size={-30} name={mocksData.circle_1.name} rotate={mocksData.circle_1.degree} percent={mocksData.circle_1.percent/100} textSize={.17} textColor={mocksData.circle_1.textColor} gradient={mocksData.circle_1.gradient} />
                             <View flex={false} absolute right={5}>
-                                <CirclePercent size={-30} name={mocksData.circle_3.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_3.percent/100} textSize={18} textColor={mocksData.circle_2.textColor} gradient={mocksData.circle_3.gradient} />
+                                <CirclePercent size={-30} name={mocksData.circle_3.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_3.percent/100} textSize={.17} textColor={mocksData.circle_3.textColor} gradient={mocksData.circle_3.gradient} />
                             </View>
                         </View>
                         <View flex={false} marginTop={-40}>
-                            <CirclePercent size={-30} name={mocksData.circle_2.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_2.percent/100} textSize={18} textColor={mocksData.circle_3.textColor} gradient={mocksData.circle_2.gradient} />
+                            <CirclePercent size={-30} name={mocksData.circle_2.name} rotate={mocksData.circle_3.degree} percent={mocksData.circle_2.percent/100} textSize={.15} textColor={mocksData.circle_2.textColor} gradient={mocksData.circle_2.gradient} />
                         </View>
                     </View>
                 </View> 

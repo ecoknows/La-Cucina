@@ -20,7 +20,7 @@ const maruya = [
         icon : require('../assets/nutrition/protein.png'),
     },
     {
-        weight : '30g',
+        weight : '28g',
         type : 'Fat',
         icon : require('../assets/nutrition/fat.png'),
     },
@@ -239,17 +239,17 @@ const hot_silog = [
         icon : require('../assets/images/fire.png'),
     },
     {
-        weight : '48.7g',
+        weight : '67g',
         type : 'Carbohydrates',
         icon : require('../assets/nutrition/carbohydrates.png'),
     },
     {
-        weight : '19.8g',
+        weight : '21g',
         type : 'Protein',
         icon : require('../assets/nutrition/protein.png'),
     },
     {
-        weight : '30g',
+        weight : '39g',
         type : 'Fat',
         icon : require('../assets/nutrition/fat.png'),
     },
@@ -312,17 +312,17 @@ const chicken_adobo_fried_rice_and_tortang_corned_beef = [
         icon : require('../assets/images/fire.png'),
     },
     {
-        weight : '62g',
+        weight : '61g',
         type : 'Carbohydrates',
         icon : require('../assets/nutrition/carbohydrates.png'),
     },
     {
-        weight : '17g',
+        weight : '18g',
         type : 'Protein',
         icon : require('../assets/nutrition/protein.png'),
     },
     {
-        weight : '45g',
+        weight : '44g',
         type : 'Fat',
         icon : require('../assets/nutrition/fat.png'),
     },

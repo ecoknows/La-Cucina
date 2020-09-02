@@ -60,7 +60,22 @@ const gradients = {
         middle : null,
         end : '#f5af19',
     },
-    
+    instagram: {
+        start : '#833ab4',
+        middle : '#fd1d1d',
+        end : '#fcb045',
+
+    },
+    endless_river: {
+        start : '#43cea2',
+        middle : null,
+        end : '#185a9d',
+    },
+    mojito:{
+        start : '#56B4D3',
+        middle : null,
+        end : '#348F50',
+    }
 };
 
 const fonts = {
