@@ -270,13 +270,12 @@ function Bottom(props){
         
         const { item, } = props;
         const active = isActive === item.name;
-
         return(
             <Card marginX={[10]} center middle size={[width - (width * 0.8),'75%']} round={20} accent={active} gray2={!active}
                     touchable showOpacity={1} 
                     press={()=> setIsActive(item.name)}
                     >
-                <Text white={active} size={14} abold gray={!active} >{item.name}</Text>
+                <Text white={active} size={Math.floor((width-(width * 0.8))*.2)-1} abold gray={!active} >{item.name}</Text>
             </Card>
         );
     }

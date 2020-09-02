@@ -17,7 +17,6 @@ function ListView(props){
     const {item, index, size, latestIndex, setLatestIndex, navigation} = props;
     const {mocks_tabs, mocks_index, capacity, time_finished, date} = item;
     const index_plus = index+1;
-
     let cuisine = tabs.cuisine.uppedTabs[mocks_tabs].mocks[mocks_index].recipe;
     const item_date = new Date(date);
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
@@ -508,7 +507,7 @@ function ListView(props){
                         }else{
                             cuisine.mocks_tabs = mocks_tabs;
                             cuisine.index = mocks_index;
-                            navigation.navigate('CuisineSelected', {item: cuisine,data_change})
+                            navigation.navigate('CuisineSelected', {item: cuisine,data_change, index: mocks_index})
                         }
                         }}>
 
