@@ -4,6 +4,8 @@ import { StyleSheet, Animated, Dimensions  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FavoriteData, FavoriteUpdate, SnapShotListiner } from '../database/database';
+import { duration } from 'moment';
+import { Easing } from 'react-native-reanimated';
 
 
 const { height, width} = Dimensions.get('window');
@@ -14,6 +16,32 @@ let currentMiddle = 0;
 
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
+
+function TutorialFinger(props){
+    const animated = useRef(new Animated.Value(0)).current;
+    const { swipe } = props;
+
+    if(swipe){
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.timing(animated,{
+                    toValue: -100,
+                    duration: 3000,
+                })
+            ).start();
+        }
+        animatedStart();
+    }
+    return(
+        <Pic
+        animated
+        absolute
+        style={[props.style, {transform: [{translateX: animated}]}]}
+        src={require('../assets/icons/tutorial_finger.png')}
+        size={[70,70]}
+        />
+    )
+}
 
 function Middle (props){ 
     const { item, index, navigation, middleListRef, mocks_tabs} = props;
@@ -207,7 +235,6 @@ function Top(props){
 
     
     const topClick =(item,index)=>{
-        console.log('was');
         if(!isSwipe){
             listRef.current.scrollToIndex({index , animated: true });
         }
@@ -268,7 +295,7 @@ function Bottom(props){
 
     const BottomItem = (props) =>{
         
-        const { item, } = props;
+        const { item, index } = props;
         const active = isActive === item.name;
         return(
             <Card marginX={[10]} center middle size={[width - (width * 0.8),'75%']} round={20} accent={active} gray2={!active}
@@ -276,6 +303,8 @@ function Bottom(props){
                     press={()=> setIsActive(item.name)}
                     >
                 <Text white={active} size={Math.floor((width-(width * 0.8))*.2)-1} abold gray={!active} >{item.name}</Text>
+                
+                    {index == 1 ?<TutorialFinger style={{alignSelf: 'center', top:10}}/>: null}
             </Card>
         );
     }
@@ -365,8 +394,8 @@ function Cuisine({navigation}){
     return(
         <View animated white style={styles.container}>
             
-            <View flex={0.6} >
-                    
+            <View flex={0.6} zIndex={1}>
+                { isCurrent == 0 ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1}} swipe/> : null}
                 <List
                     horizontal
                     data={tabs.cuisine.uppedTabs}
@@ -419,9 +448,9 @@ function Cuisine({navigation}){
                     }
                 />
             </View>
-
-            <View row flex={6} 
-                >
+           
+            <View row flex={6} >
+                <TutorialFinger style={{alignSelf: 'center', zIndex: 1}}/>
                 <View animated center flex={false} paddingY={[0,30]} size={[0.1]} opacity={leftOpacity}>
 
                 <View
