@@ -18,10 +18,28 @@ const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs
 
 
 function TutorialFinger(props){
-    const animated = useRef(new Animated.Value(0)).current;
-    const { swipe } = props;
-
+    const animated = useRef(new Animated.Value(1)).current;
+    const { swipe, tap } = props;
+    let picstyle = null;
+    if(tap){
+        picstyle = {transform: [{scale: animated}]};
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                    }),
+                    Animated.timing(animated,{
+                        toValue: 1,
+                    })
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
     if(swipe){
+
+        picstyle = {transform: [{translateX: animated}]};
         const animatedStart =()=> {
             Animated.loop(
                 Animated.timing(animated,{
@@ -36,7 +54,7 @@ function TutorialFinger(props){
         <Pic
         animated
         absolute
-        style={[props.style, {transform: [{translateX: animated}]}]}
+        style={[props.style, picstyle]}
         src={require('../assets/icons/tutorial_finger.png')}
         size={[70,70]}
         />
@@ -450,7 +468,7 @@ function Cuisine({navigation}){
             </View>
            
             <View row flex={6} >
-                <TutorialFinger style={{alignSelf: 'center', zIndex: 1}}/>
+                <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/>
                 <View animated center flex={false} paddingY={[0,30]} size={[0.1]} opacity={leftOpacity}>
 
                 <View
