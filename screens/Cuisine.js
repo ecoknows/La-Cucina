@@ -1,11 +1,11 @@
 import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../components';
-import { StyleSheet, Animated, Dimensions  } from 'react-native';
+import { StyleSheet, Animated, Dimensions, PanResponder  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FavoriteData, FavoriteUpdate, SnapShotListiner } from '../database/database';
 import { duration } from 'moment';
-import { Easing } from 'react-native-reanimated';
+import { Easing, event } from 'react-native-reanimated';
 
 
 const { height, width} = Dimensions.get('window');
@@ -15,6 +15,8 @@ let isSwipe = false;
 let currentMiddle = 0;
 
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
+
+let tutorialLevel = 2, tutSubLevel = 0;
 
 
 function TutorialFinger(props){
@@ -333,20 +335,20 @@ function Top(props){
 
 function Bottom(props){
     const [ isActive, setIsActive] = useState('Veggies');
-    const { setBottomActive, data } = props;
+    const { setBottomActive, data, setRefresh,refresh } = props;
 
     useEffect(()=>{
         setBottomActive(isActive)
     }, [isActive]);
-
+      
     const BottomItem = (props) =>{
         
         const { item, index } = props;
         const active = isActive === item.name;
         return(
             <Card marginX={[10]} center middle size={[width - (width * 0.8),'75%']} round={20} accent={active} gray2={!active}
-                    touchable showOpacity={1} 
-                    press={()=> setIsActive(item.name)}
+                 showOpacity={1} 
+                 
                     >
                 <Text white={active} size={Math.floor((width-(width * 0.8))*.2)-1} abold gray={!active} >{item.name}</Text>
                 
@@ -355,7 +357,6 @@ function Bottom(props){
     }
 
     return(
-        
         <List 
         horizontal
         data={data}
@@ -365,8 +366,17 @@ function Bottom(props){
         }
         keyExtractor={item => item.name}
         contentContainerStyle={{paddingEnd: 10}}
-        size={[50,50]}
-
+        onScroll={
+            ({event})=>{
+                if(tutorialLevel == 2){
+                    
+                    console.log('af');
+                    tutorialLevel = 3;
+                    setRefresh(!refresh);
+                }
+            }
+        }
+        
         />
     );
 
@@ -434,13 +444,13 @@ function Cuisine({navigation}){
     
         return  { length: 10, width: size, offset: size * index, index }
     }
-
+    
     
     return(
         <View animated white style={styles.container}>
             
             <View flex={0.6} zIndex={1}>
-                { isCurrent == 0 ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1}} swipe/> : null}
+                { tutorialLevel == 0? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1}} swipe={tutSubLevel == 0} tap={tutSubLevel == 1}/> : null}
                 <List
                     horizontal
                     data={tabs.cuisine.uppedTabs}
@@ -495,7 +505,7 @@ function Cuisine({navigation}){
             </View>
            
             <View row flex={6} >
-                <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/>
+                {tutorialLevel == 1 ? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/> : null}
                 <View animated center flex={false} paddingY={[0,30]} size={[0.1]} opacity={leftOpacity}>
 
                 <View
@@ -542,8 +552,10 @@ function Cuisine({navigation}){
             <View end flex={1.2} paddingX={[0,0]}>
                 <Bottom setBottomActive={setBottomActive}
                     data={causineTabs[isCurrent].bottomTabs}
+                    setRefresh={setRefresh}
+                    refresh={refresh}
                 />
-                <TutorialFinger swipe style={{alignSelf: 'center', top:10}}/>
+                {tutorialLevel == 2 ? <TutorialFinger swipe={tutSubLevel == 0} tap={tutSubLevel == 1} style={{alignSelf: 'center', top:10}}/> : null }
             </View>
             
         </View>
