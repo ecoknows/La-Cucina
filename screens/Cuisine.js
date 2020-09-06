@@ -14,6 +14,7 @@ let timeOut = null;
 let isSwipe = false;
 let currentMiddle = 0;
 
+
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
 let isTutorial = true;
@@ -407,7 +408,7 @@ function Bottom(props){
 }
 
 
-function Cuisine({navigation}){
+function Cuisine({navigation, route}){
     const listRef = useRef();
     const middleListRef = useRef();
 
@@ -442,6 +443,12 @@ function Cuisine({navigation}){
         FavoriteUpdate(setRefresh, refresh);
     },[]);
 
+    useEffect(()=>{
+        if(route.params?.modal){
+            console.log('eco');
+        }
+    },[route.params?.modal]);
+
     const leftOpacity = midScrollX.interpolate({
         inputRange: [0, 80],
         outputRange: [1,0],
@@ -471,7 +478,39 @@ function Cuisine({navigation}){
     if(tutorialLevel == 1 && leftActive != 'Rice'){
         tutorialLevel = 2;
     }
+
+    const ProceedTutorial =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text: 'Proceed'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: 'Cuisine',
+                    purpose: YES,
+                },
+                ],  
+            exit: false,
+            });
+    }
     
+    const StartTutorial =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: 'Cuisine',
+                },
+                ],  
+            exit: true,
+            });
+    }
+    StartTutorial();
+
     return(
         <View animated white style={styles.container}>
             
