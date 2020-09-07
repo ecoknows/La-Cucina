@@ -17,7 +17,8 @@ let currentMiddle = 0;
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
 let isTutorial = true, tutorial_callback = { value : false};
-let tutorialLevel = -1, isTap = false;
+let tutorialLevel = -1, tutorialInfo = true, swipeTut = true;
+let TutDelayTime = 1000;
 
 
 function TutorialFinger(props){
@@ -254,7 +255,7 @@ function Middle (props){
 
 function Left (props){
     const [isActive , setIsActive] = useState('Rice');
-    const { setLeftActive } = props;
+    const { setLeftActive,ProceedTutorial } = props;
 
     useEffect(()=>{
         setLeftActive(isActive)
@@ -271,7 +272,12 @@ function Left (props){
                 key={tab.name} flex={false} style={{flexDirection: 'column-reverse'}} >
                     
                     <TouchableOpacity 
-                        onPress={()=> setIsActive(tab.name)}
+                        onPress={()=> {
+                            setIsActive(tab.name);
+                            if(isTutorial && tutorialLevel == 2 && tab.name != active ){
+                                ProceedTutorial();
+                            }
+                        }}
                         style={{flexDirection: 'column-reverse'}}>
 
                       <Text secondary={!active} right={30} rotate={180} asemi_bold size={16} style={{width: tab.width}} >{tab.name}</Text>
@@ -287,7 +293,7 @@ function Left (props){
 }
 
 function Top(props){
-    const { item, index, topScrollX, listRef, setRefresh, refresh} = props;
+    const { item, index, topScrollX, listRef, setRefresh, refresh,ProceedTutorial} = props;
     const { width, first, second, light } = item;
 
     
@@ -296,11 +302,9 @@ function Top(props){
             listRef.current.scrollToIndex({index , animated: true });
         }
         
-        if(isTutorial && isTap){
-            isTap = false;
-            tutorialLevel = 1;
+        if(isTutorial){
             setTimeout(() => {
-                setRefresh(!refresh);
+                ProceedTutorial();
                 listRef.current.scrollToIndex({index:0 , animated: true });
             }, 2000);
         }
@@ -353,7 +357,7 @@ function Top(props){
 
 function Bottom(props){
     const [ isActive, setIsActive] = useState('Veggies');
-    const { setBottomActive, data, setRefresh,refresh } = props;
+    const { setBottomActive, data, setRefresh,refresh, ProceedTutorial } = props;
 
     useEffect(()=>{
         setBottomActive(isActive)
@@ -369,8 +373,8 @@ function Bottom(props){
                  touchable
                  press={()=> {
                      setIsActive(item.name)
-                     if(isTutorial){
-                        tutorialLevel = 4;
+                     if(isTutorial && tutorialLevel == 4){
+                        ProceedTutorial();
                      }
                     }}
                     >
@@ -393,9 +397,9 @@ function Bottom(props){
         onScroll={
             isTutorial ? 
             ({event})=>{
-                if(tutorialLevel == 2){
-                        tutorialLevel = 3;
-                        setRefresh(!refresh);
+                if(tutorialLevel == 3 && swipeTut){
+                    swipeTut = false;
+                    ProceedTutorial();
                 }
             } : null
         }
@@ -440,14 +444,14 @@ function Cuisine({navigation, route}){
     useEffect(()=>{
         FavoriteUpdate(setRefresh, refresh);
         if(isTutorial){
-            if(tutorialLevel == -1);
-            StartTutorial();
+            if(tutorialLevel == -1)
+                StartTutorial();
             const unsubscribe = navigation.addListener('focus', () => {
-                console.log(tutorial_callback.value);
                 if(tutorial_callback.value){
-                    if(tutorialLevel = -1){
-                        tutorialLevel = 0;
-                    }
+                    tutorialInfo = false;
+                    tutorialLevel++;
+                    swipeTut = true;
+                    console.log(tutorialLevel, 'level');
                     setRefresh(refresh);
                     tutorial_callback.value = false;
                 }
@@ -483,24 +487,24 @@ function Cuisine({navigation, route}){
         return  { length: 10, width: size, offset: size * index, index }
     }
 
-    if(tutorialLevel == 1 && leftActive != 'Rice'){
-        tutorialLevel = 2;
-    }
 
     const ProceedTutorial =()=>{
         navigation.navigate('InfoModal',{info: 
             {
-            text: 'Proceed'
+            text: 'Test'
             }, 
             button: [
                 {
                     title: 'Ok',
-                    navigate: 'Cuisine',
-                    purpose: YES,
+                    navigate: 'Cuisine'
                 },
                 ],  
-            exit: false,
-            });
+            exit: true,
+            callback: [tutorial_callback, true],
+
+        });
+        tutorialInfo = true;
+        setRefresh(!refresh);
     }
     
     const StartTutorial =()=>{
@@ -515,8 +519,7 @@ function Cuisine({navigation, route}){
                 },
                 ],  
             exit: true,
-            callback: [tutorial_callback, true],
-
+            callback: [tutorial_callback,true],
             });
     }
     
@@ -524,13 +527,13 @@ function Cuisine({navigation, route}){
         <View animated white style={styles.container}>
             
             <View flex={0.6} zIndex={1}>
-                { tutorialLevel == 0? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1, right: 0}} swipe={!isTap} tap={isTap}/> : null}
+                { (tutorialLevel == 0 || tutorialLevel == 1) && !tutorialInfo ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1, right: 0}} swipe={tutorialLevel == 0} tap={tutorialLevel == 1}/> : null}
                 <List
                     horizontal
                     data={tabs.cuisine.uppedTabs}
                     ref={listRef}
                     showsHorizontalScrollIndicator={false}
-                    renderItem={({ item, index }) => <Top item={item} index={index} topScrollX={topScrollX} listRef={listRef} refresh={refresh} setRefresh={setRefresh} />}
+                    renderItem={({ item, index }) => <Top item={item} index={index} topScrollX={topScrollX} listRef={listRef} refresh={refresh} setRefresh={setRefresh} ProceedTutorial={ProceedTutorial}/>}
                     contentContainerStyle={{paddingEnd : 240}}
                     getItemLayout={getTopItemLayout}
                     
@@ -571,11 +574,11 @@ function Cuisine({navigation, route}){
                                             setIsCurrent(offsetX == -1 ? 0 : offsetX);
                                         }, 1);
                                     }
-                                    if(isTutorial && tutorialLevel == 0 && !isTap){
-                                        isTap = true;    
+                                    if(isTutorial && tutorialLevel == 0 && swipeTut){
+                                        swipeTut = false;
                                         setTimeout(() => {
-                                            listRef.current.scrollToIndex({index : 0, animated: true });
-                                            setRefresh(!refresh);
+                                            listRef.current.scrollToIndex({index:0 , animated: true });
+                                            ProceedTutorial();
                                         }, 1000);
                                     }
                                 }
@@ -586,12 +589,12 @@ function Cuisine({navigation, route}){
             </View>
            
             <View row flex={6} >
-                {tutorialLevel == 1 ? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/> : null}
+                {(tutorialLevel == 2) && !tutorialInfo? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/> : null}
                 <View animated center flex={false} paddingY={[0,30]} size={[0.1]} opacity={leftOpacity}>
 
                 <View
                 center flex={false} rotate={90} rowVerse paddingY={[0,10]} left={25} > 
-                    <Left setLeftActive={setLeftActive} />
+                    <Left setLeftActive={setLeftActive} ProceedTutorial={ProceedTutorial} />
                 </View>
                 
                 </View>
@@ -648,7 +651,7 @@ function Cuisine({navigation, route}){
                     setRefresh={setRefresh}
                     refresh={refresh}
                 />
-                {tutorialLevel == 2 || tutorialLevel == 3 ? <TutorialFinger swipe={tutorialLevel == 2} tap={tutorialLevel == 3} style={{alignSelf: 'center', top:10}}/> : null }
+                {tutorialLevel == 3 || tutorialLevel == 4 ? <TutorialFinger swipe={tutorialLevel == 3} tap={tutorialLevel == 4} style={{alignSelf: 'center', top:10}} ProceedTutorial={ProceedTutorial}/> : null }
             </View>
             
         </View>
