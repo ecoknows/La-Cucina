@@ -4,13 +4,16 @@ import {StyleSheet,TouchableOpacity} from 'react-native';
 import { theme } from '../constants';
 
 function InfoModal({navigation, route}){
-    const { info, button, exit } = route.params;
+    const { info, button, exit, callback} = route.params;
 
 
     const modalPress = (item) => {
         if(item.navigate == null){
             navigation.goBack();
         }else{
+            if(callback != null){
+                callback[0].value = callback[1];
+            }
             navigation.navigate(item.navigate,{
                 modal: item.purpose
             });

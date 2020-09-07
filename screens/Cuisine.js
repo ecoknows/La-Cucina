@@ -5,8 +5,7 @@ import { theme, tabs, mocks } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FavoriteData, FavoriteUpdate, SnapShotListiner } from '../database/database';
 import { duration } from 'moment';
-import { Easing, event } from 'react-native-reanimated';
-
+import { Easing, event, set } from 'react-native-reanimated';
 
 const { height, width} = Dimensions.get('window');
 let swipeTO = null;
@@ -17,8 +16,8 @@ let currentMiddle = 0;
 
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
-let isTutorial = true;
-let tutorialLevel = 0, isTap = false;
+let isTutorial = true, tutorial_callback = { value : false};
+let tutorialLevel = -1, isTap = false;
 
 
 function TutorialFinger(props){
@@ -433,7 +432,6 @@ function Cuisine({navigation, route}){
         
         return filtered;
     }
-    
     const middleCuisine = CurrentCausine();
     useEffect(()=>{
         if(middleCuisine.length != 0)
@@ -441,13 +439,23 @@ function Cuisine({navigation, route}){
     },[bottomActive]);
     useEffect(()=>{
         FavoriteUpdate(setRefresh, refresh);
-    },[]);
-
-    useEffect(()=>{
-        if(route.params?.modal){
-            console.log('eco');
+        if(isTutorial){
+            if(tutorialLevel == -1);
+            StartTutorial();
+            const unsubscribe = navigation.addListener('focus', () => {
+                console.log(tutorial_callback.value);
+                if(tutorial_callback.value){
+                    if(tutorialLevel = -1){
+                        tutorialLevel = 0;
+                    }
+                    setRefresh(refresh);
+                    tutorial_callback.value = false;
+                }
+            });
+            
+          return unsubscribe;
         }
-    },[route.params?.modal]);
+    },[]);
 
     const leftOpacity = midScrollX.interpolate({
         inputRange: [0, 80],
@@ -503,14 +511,15 @@ function Cuisine({navigation, route}){
             button: [
                 {
                     title: 'Ok',
-                    navigate: 'Cuisine',
+                    navigate: 'Cuisine'
                 },
                 ],  
             exit: true,
+            callback: [tutorial_callback, true],
+
             });
     }
-    StartTutorial();
-
+    
     return(
         <View animated white style={styles.container}>
             
