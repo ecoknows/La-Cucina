@@ -1,7 +1,7 @@
 import React,{useState, useEffect, useRef} from 'react';
 import { View, List,Text, Card } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
-import { theme } from '../constants';
+import { theme, tabs } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { AddNote, DropTable,SeeData,NextDataSelect ,InitialData, DataPos, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, SetFirstNote, GetFirstNote, RemovePos, RemoveNote } from '../database/database'
 import { PanResponder, Animated } from 'react-native';
@@ -21,6 +21,41 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     const fSwipe = useRef(new Animated.ValueXY()).current;
+    
+    const TutorialModal =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text:'You have current tutorial at ' + tabs.tutorial.current + '\ntab I will navigate you back'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: tabs.tutorial.current
+                },
+                ],  
+            exit: false,
+            });
+    }
+
+    useEffect(()=>{
+        if(tabs.tutorial.ingridients != null){
+            const unsubscribe = navigation.addListener('focus', () => {
+                if(!tabs.tutorial.ingridients)
+                    TutorialModal();
+            });
+
+            return unsubscribe;
+        }
+    },[navigation]);
+
+    
+    if(!tabs.tutorial.ingridients){
+        TutorialModal();
+        return <View white>
+
+                </View>
+    }
+      
 
     useEffect(()=> {
         if(stateData1.length != 0 && _1_data){

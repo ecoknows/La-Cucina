@@ -16,9 +16,9 @@ let currentMiddle = 0;
 
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
-let isTutorial = true, tutorial_callback = { value : false};
+let isTutorial = false, tutorial_callback = { value : false};
 let tutorialLevel = -1, tutorialInfo = true, swipeTut = true;
-let TutDelayTime = 1000;
+let TutDelayTime = 1000, tutStart = false;
 
 
 function TutorialFinger(props){
@@ -94,7 +94,7 @@ function TutorialFinger(props){
 }
 
 function Middle (props){ 
-    const { item, index, navigation, middleListRef, mocks_tab, mainRefresh, setMainRefresh} = props;
+    const { item, index, navigation, middleListRef, mocks_tab, ProceedTutorial, mainRefresh, setMainRefresh} = props;
     const { recipe } = item;
     let hColor = null;
     let cColor = null;
@@ -118,12 +118,22 @@ function Middle (props){
     
     
     const middleClick =()=>{
+        if(isTutorial && tutorialLevel != 8){
+            //setMainRefresh(!mainRefresh);
+            return;
+        }
         if(currentMiddle != index ){
             middleListRef.current.scrollToIndex({index , animated: true });
             currentMiddle = index;
         }else{
             recipe.mocks_tabs = mocks_tab;
-            navigation.navigate('CuisineSelected', {item: recipe, index: item.index})
+            navigation.navigate('CuisineSelected', {item: recipe, index: item.index, cuisineTutorial: isTutorial})
+        }
+        if(isTutorial && tutorialLevel == 8){
+            isTutorial = false;
+            tutorialLevel = -1;
+            tutorialInfo = false;
+            setMainRefresh(!mainRefresh);
         }
     }
     
@@ -160,9 +170,10 @@ function Middle (props){
             <View flex={1}>
                 <View touchable activeOpacity={1} flex={false} absolute end
                     press={()=>{
-                        if(isTutorial && tutorialLevel == 5){
-                            tutorialLevel = 6;
-                            setMainRefresh(!mainRefresh);
+                        if(isTutorial && tutorialLevel == 6){
+                            setTimeout(()=>{
+                                ProceedTutorial();
+                            }, TutDelayTime/2);
                         }
                         if(currentMiddle == index)
                             navigation.navigate('ImageModal',{image: recipe.image});
@@ -221,9 +232,8 @@ function Middle (props){
                 }}>
                 <Circle center touchable middle color={cColor} size={50}
                     press={()=>{
-                        if(isTutorial && tutorialLevel == 6){
-                            tutorialLevel = 7;
-                            setMainRefresh(!mainRefresh);
+                        if(isTutorial && tutorialLevel == 7){
+                            ProceedTutorial();
                         }
                         if(!recipe.favorite){
                             FavoriteData({
@@ -302,7 +312,8 @@ function Top(props){
             listRef.current.scrollToIndex({index , animated: true });
         }
         
-        if(isTutorial){
+        if(isTutorial && tutorialLevel == 1 && swipeTut){
+            swipeTut = false;
             setTimeout(() => {
                 ProceedTutorial();
                 listRef.current.scrollToIndex({index:0 , animated: true });
@@ -397,9 +408,11 @@ function Bottom(props){
         onScroll={
             isTutorial ? 
             ({event})=>{
-                if(tutorialLevel == 3 && swipeTut){
+                if(isTutorial && tutorialLevel == 3 && swipeTut ){
                     swipeTut = false;
-                    ProceedTutorial();
+                    setTimeout(()=>{
+                        ProceedTutorial();
+                    }, TutDelayTime);
                 }
             } : null
         }
@@ -448,12 +461,16 @@ function Cuisine({navigation, route}){
                 StartTutorial();
             const unsubscribe = navigation.addListener('focus', () => {
                 if(tutorial_callback.value){
-                    tutorialInfo = false;
-                    tutorialLevel++;
-                    swipeTut = true;
-                    console.log(tutorialLevel, 'level');
-                    setRefresh(refresh);
-                    tutorial_callback.value = false;
+                    if(tutorialLevel == -1 && !tutStart){
+                        ProceedTutorial();
+                        tutStart = true;
+                    }else{
+                        tutorialInfo = false;
+                        tutorialLevel++;
+                        swipeTut = true;
+                        setRefresh(refresh);
+                        tutorial_callback.value = false;
+                    }
                 }
             });
             
@@ -491,15 +508,15 @@ function Cuisine({navigation, route}){
     const ProceedTutorial =()=>{
         navigation.navigate('InfoModal',{info: 
             {
-            text: 'Test'
+            text: theme.tutorial_info.cuisine[tutorialLevel+1]
             }, 
             button: [
                 {
                     title: 'Ok',
-                    navigate: 'Cuisine'
+                    navigate: 'Main'
                 },
                 ],  
-            exit: true,
+            exit: false,
             callback: [tutorial_callback, true],
 
         });
@@ -527,7 +544,7 @@ function Cuisine({navigation, route}){
         <View animated white style={styles.container}>
             
             <View flex={0.6} zIndex={1}>
-                { (tutorialLevel == 0 || tutorialLevel == 1) && !tutorialInfo ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1, right: 0}} swipe={tutorialLevel == 0} tap={tutorialLevel == 1}/> : null}
+                { (tutorialLevel == 0 || tutorialLevel == 1) && !tutorialInfo && isTutorial ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1, right: 0}} swipe={tutorialLevel == 0} tap={tutorialLevel == 1}/> : null}
                 <List
                     horizontal
                     data={tabs.cuisine.uppedTabs}
@@ -589,7 +606,7 @@ function Cuisine({navigation, route}){
             </View>
            
             <View row flex={6} >
-                {(tutorialLevel == 2) && !tutorialInfo? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/> : null}
+                {(tutorialLevel == 2) && !tutorialInfo && isTutorial ? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/> : null}
                 <View animated center flex={false} paddingY={[0,30]} size={[0.1]} opacity={leftOpacity}>
 
                 <View
@@ -608,7 +625,7 @@ function Cuisine({navigation, route}){
                         ref={middleListRef}
                         data={middleCuisine}
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({ item, index }) =>  <Middle middleListRef={middleListRef} item={item} index={index} navigation={navigation} mocks_tab={isCurrent} mainRefresh={refresh} setMainRefresh={setRefresh}/>}
+                        renderItem={({ item, index }) =>  <Middle middleListRef={middleListRef} item={item} index={index} navigation={navigation} mocks_tab={isCurrent} ProceedTutorial={ProceedTutorial} mainRefresh={refresh} setMainRefresh={setRefresh}/>}
                         keyExtractor={(item, index)=>index.toString()}
                         contentContainerStyle={{paddingStart : 40, paddingEnd: 40}}
                         getItemLayout={getMiddleItemLayout}
@@ -623,12 +640,12 @@ function Cuisine({navigation, route}){
                                         if(x % 1 > 0.05){
                                             currentMiddle = -1;
                                         }
-                                        if(isTutorial && tutorialLevel == 4){
-                                            tutorialLevel = 5;
+                                        if(isTutorial && tutorialLevel == 5 && swipeTut){
+                                            swipeTut = false;
                                             setTimeout(() => {
-                                                setRefresh(!refresh);
+                                                ProceedTutorial();
                                                 middleListRef.current.scrollToIndex({index : 0, animated: true });    
-                                            }, 2000);
+                                            }, TutDelayTime);
                                         }
                                     }
                                 }
@@ -636,10 +653,10 @@ function Cuisine({navigation, route}){
                         }
                     />
                     
-                    { tutorialLevel == 4? <TutorialFinger swipe={true}/> : null}
-                    { tutorialLevel == 5? <TutorialFinger style={{top: height * 0.2}} tap={true}/> : null}
-                    { tutorialLevel == 6? <TutorialFinger style={{top: height * 0.05, left: width * 0.1}} tap={true}/> : null}
-                    { tutorialLevel == 7? <TutorialFinger tap={true} style={{top : height * 0.5}}/> : null}
+                    { tutorialLevel == 5 && isTutorial && !tutorialInfo ? <TutorialFinger swipe={true}/> : null}
+                    { tutorialLevel == 6 && isTutorial && !tutorialInfo ? <TutorialFinger style={{top: height * 0.2}} tap={true}/> : null}
+                    { tutorialLevel == 7 && isTutorial && !tutorialInfo ? <TutorialFinger style={{top: height * 0.05, left: width * 0.1}} tap={true}/> : null}
+                    { tutorialLevel == 8 && isTutorial && !tutorialInfo ? <TutorialFinger tap={true} style={{top : height * 0.5}}/> : null}
                 </View>
 
             </View>
@@ -650,8 +667,9 @@ function Cuisine({navigation, route}){
                     data={causineTabs[isCurrent].bottomTabs}
                     setRefresh={setRefresh}
                     refresh={refresh}
+                    ProceedTutorial={ProceedTutorial}
                 />
-                {tutorialLevel == 3 || tutorialLevel == 4 ? <TutorialFinger swipe={tutorialLevel == 3} tap={tutorialLevel == 4} style={{alignSelf: 'center', top:10}} ProceedTutorial={ProceedTutorial}/> : null }
+                {(tutorialLevel == 3 || tutorialLevel == 4) && isTutorial && !tutorialInfo ? <TutorialFinger swipe={tutorialLevel == 3} tap={tutorialLevel == 4} style={{alignSelf: 'center', top:10}} ProceedTutorial={ProceedTutorial}/> : null }
             </View>
             
         </View>

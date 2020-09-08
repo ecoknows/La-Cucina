@@ -146,7 +146,7 @@ function Navigation({navigation}){
     return(
         <NavigationContainer>
             <Stack.Navigator mode='modal' >
-                <Stack.Screen name="Cuisine" component={BottomNavigation} />
+                <Stack.Screen name="Main" component={BottomNavigation} />
                 <Stack.Screen name="CuisineSelected" component={CuisineSelected}
                 options={{
                     headerShown: false

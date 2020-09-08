@@ -231,9 +231,28 @@ function Favorite({navigation}){
     const [data, setData] = useState([]);
     category_change = category;
     let onStart = false;
+    const TutorialModal =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text:'You have current tutorial at ' + tabs.tutorial.current + '\ntab I will navigate you back'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: tabs.tutorial.current
+                },
+                ],  
+            exit: false,
+            });
+    }
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            FetchFavorite(setData, category_change);
+            if(!tabs.tutorial.favorite){
+                TutorialModal();
+            }else{
+              FetchFavorite(setData, category_change);
+            }
         });
         onStart = true;
         
@@ -281,6 +300,13 @@ function Favorite({navigation}){
           return unsubscribe;
       }, [navigation]);
     
+      
+    if(!tabs.tutorial.favorite){
+        TutorialModal();
+        return <View white>
+
+                </View>
+    }
       
     const BearLoading =()=>{
         return(

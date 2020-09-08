@@ -191,11 +191,26 @@ const initial_note_data = [
     },
 ];
 
+const tutorial_info = {
+    cuisine: [
+        'You can swipe the upper tabs\nto see more meals of ^_^',
+        'Tap the meal that you want',
+        'You can tap the left tab,\non what kind of food you want ^_^',
+        'You can swipe the bottom tabs\nto see what kind of cuisine \nyou want ^_^',
+        'Tap the kind of cuisine you want ^_^',
+        'The middle part is where the food are,\nswipe it to see more ^_^',
+        'If you click the photo \nof the meal it will zoom',
+        'At the left top you will see a heart icon,\nif you tap the food will be\nlist on your favorites ^_^',
+        'Lastly if you tap the food it\nwill navigate you to the recipe.',
+    ]
+}
+
 
 export {
     sizes,
     colors,
     fonts,
     initial_note_data,
-    gradients
+    gradients,
+    tutorial_info
 }

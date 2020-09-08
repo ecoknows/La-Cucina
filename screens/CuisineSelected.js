@@ -1,6 +1,6 @@
 import React,{useState, useRef, useEffect} from 'react';
 import { View, Text, Pic, Circle, List, Card  } from '../components';
-import { PanResponder,StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { PanResponder,StyleSheet, Animated, TouchableOpacity, Dimensions } from 'react-native';
 import { theme, directions, ingridients, mocks, } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { Easing, set } from 'react-native-reanimated';
@@ -45,6 +45,109 @@ const SAVE = 1;
 const BACK = 2;
 
 let open_nutrition;
+
+let isTutorial = true, tutorial_callback = { value : false}
+let tutorialLevel = -1;
+
+const {height, width} = Dimensions.get('window');
+
+function TutorialFinger(props){
+    const animated = useRef(new Animated.Value(1.1)).current;
+    const swipe_animated = useRef(new Animated.Value(0)).current;
+    let circle_trans = null;
+    const { swipe, tap, vertical,alternate } = props;
+    let picstyle = null;
+    if(tap){
+        picstyle = {transform: [{scale: animated}]};
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    })
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    if(swipe && alternate && !vertical){
+
+        picstyle = {transform: [{ translateX: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateX: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: 100,
+                        duration: 3000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: 0,
+                        duration: 3000,
+                    }),
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    if(swipe && vertical && alternate){
+
+        picstyle = {transform: [{ translateY: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateY: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: -100,
+                        duration: 3000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: 100,
+                        duration: 3000,
+                    }),
+                    
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+
+    return(
+        <View flex={false} absolute style={props.style}>
+            { tap || swipe? <Circle size={40}
+             absolute animated style={[circle_trans,{
+                
+                top: -10,
+                left: 5,
+                opacity: animated.interpolate({
+                    inputRange: [1,1.1],
+                    outputRange: [0.1,0],
+                    extrapolate: 'clamp'
+                })
+            }]}/>:null}
+            <Pic
+            animated
+            style={picstyle}
+            src={require('../assets/icons/tutorial_finger.png')}
+            size={[70,70]}
+            />
+        </View>
+    )
+}
+
 
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
@@ -204,6 +307,7 @@ function SheetText(props){
             <Text size={12} color='#18A623' family='bold' touchable press={IndicatorClick}>
                 {isIndicator ? 'Start' : 'Done'}
             </Text>
+
         </View> : null;
         let SideTextIndicator = null;
         let FloatingCongrats = null;
@@ -269,7 +373,7 @@ function SheetText(props){
 
     return(
         <View marginY={[50]} marginX={[theme.sizes.margin * 2,theme.sizes.margin * 2]} >
-            <View flex={false} row center marginY={[10,theme.sizes.margin*2]}>
+            <View flex={false} row center marginY={[10,theme.sizes.margin*2]} zIndex={1}>
                 
                <Text 
                 touchable
@@ -281,6 +385,9 @@ function SheetText(props){
                 secondary={isDirection}
                 center
                 >Ingredients</Text>
+                
+                 <TutorialFinger style={{left: width * 0.15}} tap/>
+                 <TutorialFinger style={{right: width * 0.1}} tap/>
 
                 <Text 
                 size={19} 
@@ -324,7 +431,8 @@ function PeopleView(props){
     },[capacity])
     
     return(
-        <View flex={false} row paddingY={[20]}>
+        <View flex={false} row paddingY={[20]} zIndex={1}>
+            
             <TouchableOpacity onPress={()=>{
                     setCapacity(capacity+1);
             }}>
@@ -333,6 +441,10 @@ function PeopleView(props){
                     size={[25,25]}
                     accent
                 />
+
+
+                
+            <TutorialFinger style={{left: -width * 0.02,top: height * .02}} tap/>
             </TouchableOpacity>
             <Pic 
                 src={require('../assets/images/people.png')}
@@ -349,6 +461,8 @@ function PeopleView(props){
                     size={[25,25]}
                     accent
                 />
+                
+            <TutorialFinger style={{left: -width * 0.02,top: height * .02}} tap/>
             </TouchableOpacity>
         </View>
     )
@@ -358,7 +472,7 @@ function CuisineSelected({navigation, route}){
     const pan = useRef(new Animated.ValueXY()).current;
     const nutrition_pan = useRef(new Animated.ValueXY()).current;
 
-    const { item, index } = route.params;
+    const { item, index, cuisineTutorial } = route.params;
     const { id,name, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,title_size} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     const [reset, setReset] = useState(false);
@@ -449,7 +563,6 @@ function CuisineSelected({navigation, route}){
         }
       })).current;
       
-
     const NutritionPanResponder = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: (_,{dx}) => true,
         onPanResponderGrant: () => {
@@ -577,6 +690,30 @@ function CuisineSelected({navigation, route}){
 
     },[route.params?.modal])
 
+    /*
+    useEffect(()=>{
+        if(isTutorial){
+            if(tutorialLevel == -1)
+                StartTutorial();
+        }
+    },[]);*/
+    
+    const StartTutorial =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: 'Cuisine'
+                },
+                ],  
+            exit: true,
+            callback: [tutorial_callback,true],
+            });
+    }
+
     const BackButtonClick =()=>{
         if(ingridents_finish_counter.value != original_ingridients.value
             || direction_finish_counter.value != original_direction.value || capacity != original_capacity.value ){
@@ -659,12 +796,13 @@ function CuisineSelected({navigation, route}){
                     </View>
 
 
-                    <View touchable activeOpacity={1} press={()=> navigation.navigate('ImageModal',{image})} >
+                    <View touchable activeOpacity={1} press={()=> navigation.navigate('ImageModal',{image})} cente >
                         <Pic src={image}
                             resizeMode='contain'
                             size={[250,250]}
                          />
 
+                        <TutorialFinger style={{alignSelf: 'center', top: height * 0.2}} tap/>
                     </View>
 
 
@@ -680,6 +818,8 @@ function CuisineSelected({navigation, route}){
                         ]  
                     }]}
                     flex={false} absolute {...NutritionPanResponder.panHandlers}>
+                        
+                 <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} swipe alternate/>
                     <TouchableOpacity activeOpacity={1} flex={0} onPress={NutritionClick}>
                         <Pic 
                             resizeMode='contain'
@@ -707,6 +847,8 @@ function CuisineSelected({navigation, route}){
                     }
                     ]}
                  >
+                     
+                  <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} swipe vertical alternate/>
                     <View 
                     middle
                     flex={false}
@@ -736,6 +878,7 @@ function CuisineSelected({navigation, route}){
 
 
             {...NutritionPanResponder.panHandlers}>
+                
                 
                     {nutrition.map((item, index) => 
                         (

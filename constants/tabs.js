@@ -168,8 +168,15 @@ const favorites = {
     ],
 }
 
+const tutorial = {
+    current: 'Cuisine',
+    favorite: null,
+    history: null,
+    ingridients: null,
+}
 
 export {
     cuisine,
-    favorites
+    favorites,
+    tutorial
 }

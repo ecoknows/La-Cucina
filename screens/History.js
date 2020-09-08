@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, ScrollView,TouchableOpacity, Animated, Easing } from 'react-native';
 import { View, Pic,List,Text } from '../components';
 import { FetchHistory } from '../database/database';
-import { tabs } from '../constants';
+import { tabs, theme } from '../constants';
 import { parse } from 'react-native-svg';
 import moment from "moment";
 
@@ -568,9 +568,29 @@ function History({navigation}){
     const zOpacity_2 = useRef(new Animated.Value(0)).current;
     const zOpacity_3 = useRef(new Animated.Value(0)).current;
     const zOpacity_4 = useRef(new Animated.Value(0)).current;
+
+    const TutorialModal =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text:'You have current tutorial at ' + tabs.tutorial.current + '\ntab I will navigate you back'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: tabs.tutorial.current
+                },
+                ],  
+            exit: false,
+            });
+    }
+    
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            FetchHistory(setData,data);
+            if(!tabs.tutorial.history){
+                TutorialModal();
+            }else{
+                FetchHistory(setData,data);
+            }
         });
         
         const z_loop =()=>{
@@ -618,6 +638,12 @@ function History({navigation}){
           return unsubscribe;
       }, [navigation]);
       
+    if(!tabs.tutorial.history){
+        TutorialModal();
+        return <View white>
+
+                </View>
+    }
     useEffect(() => {
         isAnim.value = true; 
         if(data.length != 0){
