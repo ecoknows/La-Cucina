@@ -16,7 +16,7 @@ let currentMiddle = 0;
 
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
-let isTutorial = false, tutorial_callback = { value : false};
+let isTutorial = true, tutorial_callback = { value : false};
 let tutorialLevel = -1, tutorialInfo = true, swipeTut = true;
 let TutDelayTime = 1000, tutStart = false;
 
@@ -128,12 +128,13 @@ function Middle (props){
         }else{
             recipe.mocks_tabs = mocks_tab;
             navigation.navigate('CuisineSelected', {item: recipe, index: item.index, cuisineTutorial: isTutorial})
-        }
-        if(isTutorial && tutorialLevel == 8){
-            isTutorial = false;
-            tutorialLevel = -1;
-            tutorialInfo = false;
-            setMainRefresh(!mainRefresh);
+                
+            if(isTutorial && tutorialLevel == 8){
+                isTutorial = false;
+                tutorialLevel = -1;
+                tutorialInfo = false;
+                setMainRefresh(!mainRefresh);
+            }
         }
     }
     
@@ -542,7 +543,7 @@ function Cuisine({navigation, route}){
     
     return(
         <View animated white style={styles.container}>
-            
+        {false ? <TutorialFinger style={{left: width * 0.25,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
             <View flex={0.6} zIndex={1}>
                 { (tutorialLevel == 0 || tutorialLevel == 1) && !tutorialInfo && isTutorial ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1, right: 0}} swipe={tutorialLevel == 0} tap={tutorialLevel == 1}/> : null}
                 <List

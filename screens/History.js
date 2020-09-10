@@ -638,12 +638,6 @@ function History({navigation}){
           return unsubscribe;
       }, [navigation]);
       
-    if(!tabs.tutorial.history){
-        TutorialModal();
-        return <View white>
-
-                </View>
-    }
     useEffect(() => {
         isAnim.value = true; 
         if(data.length != 0){

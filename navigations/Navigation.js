@@ -135,6 +135,7 @@ function BottomNavigation({navigation}){
                             style={{marginBottom: 50}}
                             accent={active_string[active]==='History'}
                         />
+                        
                 ),
                 }}
             />

@@ -47,7 +47,7 @@ const TUTORIAL = 10;
 
 let open_nutrition;
 
-let isTutorial = true, modalOpen = false,tutStart = false;
+let isTutorial = false, modalOpen = false,tutStart = false;
 let tutorialLevel = -1,TutDelayTime = 1000, timeoutTutorial = true;
 
 const {height, width} = Dimensions.get('window');
@@ -153,7 +153,7 @@ function TutorialFinger(props){
 const ProceedTutorial =(navigation)=>{
     navigation.navigate('InfoModal',{info: 
         {
-        text: 'Test'
+        text: theme.tutorial_info.cuisine_selected[tutorialLevel+1],
         }, 
         button: [
             {
@@ -520,7 +520,11 @@ function CuisineSelected({navigation, route}){
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     const [reset, setReset] = useState(false);
     const [refresh, setRefresh] = useState(false);
-
+    if(cuisineTutorial){
+        isTutorial = true;
+    }else if (!cuisineTutorial){
+        isTutorial = false;
+    }
     const ExistHistory =()=> {
         const sum_of_dir_ing = ingridents_finish_counter.value + direction_finish_counter.value;
         let percentage_finish = sum_of_dir_ing != 0? sum_of_dir_ing / (length_ingredients+length_directions) : 0;
@@ -760,16 +764,26 @@ function CuisineSelected({navigation, route}){
                         }
                     }
                     navigation.goBack();
+                    
+                    if(isTutorial && tutorialLevel == 11){
+                        isTutorial = false;
+                        tutorialLevel = -1;
+                        tutorialInfo = false;
+                    }
                     break;
                 
                 case RESTART:
                     RestartCuisine();
                     break;
                 case BACK:
-                    navigation.goBack();
+                    navigation.goBack();            
+                    if(isTutorial && tutorialLevel == 11){
+                        isTutorial = false;
+                        tutorialLevel = -1;
+                        tutorialInfo = false;
+                    }
                     break;
                 case TUTORIAL:
-                    console.log(tutStart, ' asd ',tutorialLevel );
                     if(isTutorial && tutorialLevel == -1 && !tutStart){
                         ProceedTutorial(navigation);
                         tutStart = true;
@@ -794,6 +808,9 @@ function CuisineSelected({navigation, route}){
 
 
     const BackButtonClick =()=>{
+        if(isTutorial && tutorialLevel != 11){
+            return;
+        }
         if(ingridents_finish_counter.value != original_ingridients.value
             || direction_finish_counter.value != original_direction.value || capacity != original_capacity.value ){
             navigation.navigate('InfoModal',{info: {text: 'Do you want to save it? ^_^'}, 
@@ -813,12 +830,12 @@ function CuisineSelected({navigation, route}){
             })
         }else
             navigation.goBack();
+            
     }
       
     return(
         <View color='#FFDFC4'  >
         <View flex={false} row style={{alignSelf: 'flex-end', marginTop: 25, marginRight: 15}}>
-            
             
             <View touchable flex={false}
             press={BackButtonClick}>

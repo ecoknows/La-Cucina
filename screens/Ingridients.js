@@ -38,7 +38,7 @@ function Ingridients({navigation, route}){
     }
 
     useEffect(()=>{
-        if(tabs.tutorial.ingridients != null){
+        if(tabs.tutorial.current != null){
             const unsubscribe = navigation.addListener('focus', () => {
                 if(!tabs.tutorial.ingridients)
                     TutorialModal();
@@ -47,15 +47,6 @@ function Ingridients({navigation, route}){
             return unsubscribe;
         }
     },[navigation]);
-
-    
-    if(!tabs.tutorial.ingridients){
-        TutorialModal();
-        return <View white>
-
-                </View>
-    }
-      
 
     useEffect(()=> {
         if(stateData1.length != 0 && _1_data){

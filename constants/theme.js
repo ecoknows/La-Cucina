@@ -203,7 +203,20 @@ const tutorial_info = {
         'At the left top you will see a heart icon,\nif you tap the food will be\nlist on your favorites ^_^',
         'Lastly if you tap the food it\nwill navigate you to the recipe.',
     ],
-    
+    cuisine_selected : [
+        'You can increase the people who can eat it. ^_^',
+        'You can decrease the people who can eat it. ^_^',
+        'Swipe upward the sheet\nwhere the ingridients and \ndirection listed ^.^',
+        'Swipe sideward the nutrition\nso that you can see \nthe nutrition xD',
+        'Tap the nutrition to automatically open it ^,^',
+        'You can also zoom the image\nof cuisine by tapping it ^,^',
+        'On the ingridients you can tap \nthe check boxes =.=',
+        'Tap on direction so that you can see \nthe proceedure. *^.^',
+        'If you want to start the proceedure tap the start ^.^',
+        'If you\'re done doing the proceedure you can tap done ^_^',
+        'You can go back to ingridients \nby tapping it. ^_^',
+        'Lastly if your done and changes \nare made you can save it or not \nby tapping X. ^_^',
+    ],
 }
 
 

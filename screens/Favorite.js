@@ -301,13 +301,6 @@ function Favorite({navigation}){
       }, [navigation]);
     
       
-    if(!tabs.tutorial.favorite){
-        TutorialModal();
-        return <View white>
-
-                </View>
-    }
-      
     const BearLoading =()=>{
         return(
 
