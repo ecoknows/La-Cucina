@@ -43,11 +43,12 @@ let latest_check_ingridients;
 
 const SAVE = 1;
 const BACK = 2;
+const TUTORIAL = 10;
 
 let open_nutrition;
 
-let isTutorial = true, tutorial_callback = { value : false}
-let tutorialLevel = -1;
+let isTutorial = true, modalOpen = false,tutStart = false;
+let tutorialLevel = -1,TutDelayTime = 1000, timeoutTutorial = true;
 
 const {height, width} = Dimensions.get('window');
 
@@ -148,6 +149,23 @@ function TutorialFinger(props){
     )
 }
 
+        
+const ProceedTutorial =(navigation)=>{
+    navigation.navigate('InfoModal',{info: 
+        {
+        text: 'Test'
+        }, 
+        button: [
+            {
+                title: 'Ok',
+                navigate: 'CuisineSelected',
+                purpose: TUTORIAL
+            },
+            ],  
+        exit: false,
+        });
+}
+
 
 function SheetText(props){
     const [ isDirection, setDirection ] = useState(false);
@@ -205,9 +223,13 @@ function SheetText(props){
 
     
     if(isDirection && oneTimeOnly){
-        navigation.navigate('InfoModal',{info: {text: 'Make sure your ingredients \n are ready ^_^'},
-        button:[ {title: 'ok'}]
-    })
+        if(isTutorial && tutorialLevel == 7){
+            ProceedTutorial(navigation);
+        }else{
+            navigation.navigate('InfoModal',{info: {text: 'Make sure your ingredients \n are ready ^_^'},
+            button:[ {title: 'ok'}]
+            })
+        }
         oneTimeOnly = false;
     }
 
@@ -217,6 +239,9 @@ function SheetText(props){
         setIsCurrentStepState( isCurrentStepState ? DONE : START);
         if(isCurrentStepState == DONE)
             current_step.value++;
+            
+        if(isTutorial && (tutorialLevel == 8 || tutorialLevel ==9))
+            ProceedTutorial(navigation);
     }
 
 
@@ -240,7 +265,9 @@ function SheetText(props){
                 let test = [index];
                 _ingredients_changer.array = _ingredients_changer.array.filter(value => !test.includes(value));
             }
-            
+            if(isTutorial && tutorialLevel == 6){
+                ProceedTutorial(navigation);
+            }
         }
         
         const PopUpMessage =(props)=>{
@@ -356,9 +383,10 @@ function SheetText(props){
         return(
             <View row>
             {Indicator}
-            <View row marginY={[0,20]} marginX={[ (isActive && isDirection) ? 15 : 50 ,30]} >
+            <View row marginY={[0,20]} marginX={[ (isActive && isDirection) ? 15 : 50 ,30]}>
                 
                 {SideTextIndicator}
+                
                 {ValueText}
                 <View flex={false} marginLeft={textLeft}>
                     <Text size={14} color={itemColor}family='semi-bold'>{item.step}</Text>
@@ -378,7 +406,12 @@ function SheetText(props){
                <Text 
                 touchable
                 tFlex={1}
-                press={()=>setDirection(false)}
+                press={()=>{
+                    setDirection(false);
+                    if(isTutorial && tutorialLevel == 10){
+                        ProceedTutorial(navigation);
+                    }
+                }}
                 size={19} 
                 abold
                 accent={!isDirection}
@@ -386,8 +419,6 @@ function SheetText(props){
                 center
                 >Ingredients</Text>
                 
-                 <TutorialFinger style={{left: width * 0.15}} tap/>
-                 <TutorialFinger style={{right: width * 0.1}} tap/>
 
                 <Text 
                 size={19} 
@@ -400,7 +431,11 @@ function SheetText(props){
                 center
                 >Direction</Text>
                 
+                {tutorialLevel == 10 && isTutorial ?<TutorialFinger style={{left: width * 0.15, top: height * 0.02}} tap/> : null}
+                 {tutorialLevel == 7 && isTutorial ? <TutorialFinger style={{right: width * 0.1, top: height * 0.02}} tap/> : null}
+                
             </View>
+           
             <List 
                 extraData={isCurrentStepState}
                 scrollEnabled={true}
@@ -412,13 +447,15 @@ function SheetText(props){
                 
                 contentContainerStyle={{paddingBottom: 200}}
             />
-
+                {tutorialLevel == 6 && isTutorial ? <TutorialFinger style={{left: width *.04, top: height * .09}} tap/>: null}
+                {tutorialLevel == 8 && isTutorial ? <TutorialFinger style={{left: 0, top: height * .09}} tap/> : null}
+                {tutorialLevel == 9 && isTutorial ? <TutorialFinger style={{left: 0, top: height * .09}} tap/> : null}
         </View>
     );
 }
 
 function PeopleView(props){
-    const {item, mainCapacity,reset} = props;
+    const {item, mainCapacity,reset, setRefresh, refresh, navigation} = props;
     const [capacity, setCapacity] = useState(props.capacity);
     
     useEffect(()=>{
@@ -435,6 +472,9 @@ function PeopleView(props){
             
             <TouchableOpacity onPress={()=>{
                     setCapacity(capacity+1);
+                    if(isTutorial && tutorialLevel == 0){
+                        ProceedTutorial(navigation);
+                    }
             }}>
                 <Pic 
                     src={require('../assets/images/upgrade.png')}
@@ -444,7 +484,7 @@ function PeopleView(props){
 
 
                 
-            <TutorialFinger style={{left: -width * 0.02,top: height * .02}} tap/>
+            { tutorialLevel == 0 && isTutorial ? <TutorialFinger style={{left: -width * 0.02,top: height * .02}} tap/> : null}
             </TouchableOpacity>
             <Pic 
                 src={require('../assets/images/people.png')}
@@ -455,6 +495,9 @@ function PeopleView(props){
             <Text end asemi_bold size={14} thirdary> people</Text>
             <TouchableOpacity onPress={()=>{
                     setCapacity(capacity-1);
+                    if(isTutorial && tutorialLevel == 1){
+                        ProceedTutorial(navigation);
+                    }
             }}>
                 <Pic 
                     src={require('../assets/images/downgrade.png')}
@@ -462,7 +505,7 @@ function PeopleView(props){
                     accent
                 />
                 
-            <TutorialFinger style={{left: -width * 0.02,top: height * .02}} tap/>
+            { tutorialLevel == 1 && isTutorial ?<TutorialFinger style={{left: -width * 0.02,top: height * .02}} tap/>: null }
             </TouchableOpacity>
         </View>
     )
@@ -476,6 +519,7 @@ function CuisineSelected({navigation, route}){
     const { id,name, cooking_time, prep_time, burn, nutrition, favorite, image,mocks_tabs,title_size} = item;
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     const [reset, setReset] = useState(false);
+    const [refresh, setRefresh] = useState(false);
 
     const ExistHistory =()=> {
         const sum_of_dir_ing = ingridents_finish_counter.value + direction_finish_counter.value;
@@ -539,6 +583,23 @@ function CuisineSelected({navigation, route}){
         SnapShotListiner.history = true;
         DeleteHistory(histor_id.value,setReset,reset);
     }
+    
+    const StartTutorial =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: 'CuisineSelected',
+                    purpose: TUTORIAL
+                },
+                ],  
+            exit: true,
+            });
+    }
+    
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
@@ -556,6 +617,10 @@ function CuisineSelected({navigation, route}){
           pan.flattenOffset();
           if(sheet_latestoffset < -100){
             pan.y.setValue(-100);
+            if(isTutorial && tutorialLevel == 2){
+                ProceedTutorial(navigation);
+                CloseSheet();
+            }
           }
           if(sheet_latestoffset > 0){
             pan.y.setValue(0);
@@ -588,6 +653,11 @@ function CuisineSelected({navigation, route}){
             }
             if(nutrition_latestoffset > 80){
                 OpenNutrition(true);
+                
+                if(isTutorial && tutorialLevel == 3){
+                    ProceedTutorial(navigation);
+                    OpenNutrition(false);
+                }
             }else{
                 OpenNutrition(false);
             }
@@ -611,14 +681,28 @@ function CuisineSelected({navigation, route}){
             toValue: des ? 200 : 0,
         }).start();
     }
+    
+    const CloseSheet =()=>{
+        Animated.timing(pan.y,{
+            toValue: 0,
+        }).start();
+    }
 
     const NutritionClick =()=>{
+        
         if(open_nutrition == false){
             OpenNutrition(true);
             open_nutrition = true;
         }else{
             OpenNutrition(false);
             open_nutrition = false;
+        }
+        if(isTutorial && tutorialLevel == 4 && timeoutTutorial){
+            timeoutTutorial = false;
+            setTimeout(()=>{
+                ProceedTutorial(navigation);
+                OpenNutrition(false);
+            },TutDelayTime);
         }
         
     }
@@ -684,35 +768,30 @@ function CuisineSelected({navigation, route}){
                 case BACK:
                     navigation.goBack();
                     break;
-
+                case TUTORIAL:
+                    console.log(tutStart, ' asd ',tutorialLevel );
+                    if(isTutorial && tutorialLevel == -1 && !tutStart){
+                        ProceedTutorial(navigation);
+                        tutStart = true;
+                    }else{
+                        tutorialLevel++;
+                        timeoutTutorial = true;
+                    }
+                    route.params.modal = -1;
+                    setRefresh(!refresh);
+                    break;
             }
         }
 
     },[route.params?.modal])
 
-    /*
     useEffect(()=>{
         if(isTutorial){
             if(tutorialLevel == -1)
                 StartTutorial();
         }
-    },[]);*/
-    
-    const StartTutorial =()=>{
-        navigation.navigate('InfoModal',{info: 
-            {
-            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
-            }, 
-            button: [
-                {
-                    title: 'Ok',
-                    navigate: 'Cuisine'
-                },
-                ],  
-            exit: true,
-            callback: [tutorial_callback,true],
-            });
-    }
+    },[]);
+
 
     const BackButtonClick =()=>{
         if(ingridents_finish_counter.value != original_ingridients.value
@@ -747,6 +826,8 @@ function CuisineSelected({navigation, route}){
                 size={[30,30]}
                 src={require('../assets/icons/x.png')} 
                 />
+                
+                {tutorialLevel == 11 && isTutorial ?<TutorialFinger style={{left: -width * 0.02, top: height * 0.02}} tap/>: null}
             </View>
 
         </View>
@@ -779,7 +860,7 @@ function CuisineSelected({navigation, route}){
                             <Text gray3 end asemi_bold size={13} thirdary left={0}> cooking</Text>
                         </View>
                         
-                        <PeopleView item={item} mainCapacity={setCapacity} capacity={capacity} reset={reset} />
+                        <PeopleView item={item} mainCapacity={setCapacity} capacity={capacity} reset={reset} refresh={refresh} setRefresh={setRefresh} navigation={navigation}/>
                         
                         <View flex={false} row paddingY={[20]}>
                             <Pic 
@@ -796,13 +877,19 @@ function CuisineSelected({navigation, route}){
                     </View>
 
 
-                    <View touchable activeOpacity={1} press={()=> navigation.navigate('ImageModal',{image})} cente >
+                    <View touchable activeOpacity={1} press={()=> {
+                        navigation.navigate('ImageModal',{image});
+                        if(isTutorial && tutorialLevel == 5){
+                            ProceedTutorial(navigation);
+                        }
+
+                        }} cente >
                         <Pic src={image}
                             resizeMode='contain'
                             size={[250,250]}
                          />
 
-                        <TutorialFinger style={{alignSelf: 'center', top: height * 0.2}} tap/>
+                        {tutorialLevel == 5 && isTutorial ? <TutorialFinger style={{alignSelf: 'center', top: height * 0.2}} tap/>: null}
                     </View>
 
 
@@ -819,7 +906,7 @@ function CuisineSelected({navigation, route}){
                     }]}
                     flex={false} absolute {...NutritionPanResponder.panHandlers}>
                         
-                 <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} swipe alternate/>
+                {tutorialLevel == 3 && isTutorial ? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} swipe alternate/> : null}
                     <TouchableOpacity activeOpacity={1} flex={0} onPress={NutritionClick}>
                         <Pic 
                             resizeMode='contain'
@@ -829,6 +916,7 @@ function CuisineSelected({navigation, route}){
                             onPress={()=>console.log('afafafa')} 
                         />
                         <Text top={9} left={15} absolute white family='bold' size={16}>Nutrition</Text> 
+                {tutorialLevel == 4 && isTutorial ? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} tap/>: null}
                     </TouchableOpacity>  
                 </View>
 
@@ -848,7 +936,6 @@ function CuisineSelected({navigation, route}){
                     ]}
                  >
                      
-                  <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} swipe vertical alternate/>
                     <View 
                     middle
                     flex={false}
@@ -858,6 +945,8 @@ function CuisineSelected({navigation, route}){
                     color='transparent'
                     height={80}
                      {...panResponderTwo.panHandlers}>
+                         
+                  { tutorialLevel == 2 && isTutorial ? <TutorialFinger style={{alignSelf: 'center', zIndex: 1}} swipe vertical alternate/> : null}
                         <View 
                             color='#FFDFC4'
                             style={styles.indicator}/>
@@ -868,6 +957,7 @@ function CuisineSelected({navigation, route}){
 
             <View animated flex={false} size={[200,'100%']} accent 
             style={[styles.nutrients,{
+                zIndex: 1,
                 transform: [
                     {
                         translateX: xAxis

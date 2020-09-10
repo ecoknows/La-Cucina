@@ -202,7 +202,8 @@ const tutorial_info = {
         'If you click the photo \nof the meal it will zoom',
         'At the left top you will see a heart icon,\nif you tap the food will be\nlist on your favorites ^_^',
         'Lastly if you tap the food it\nwill navigate you to the recipe.',
-    ]
+    ],
+    
 }
 
 
