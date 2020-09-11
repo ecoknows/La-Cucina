@@ -1,7 +1,7 @@
 import React,{useState, useRef, useEffect} from 'react';
 import { View, Text, Pic, Circle, List, Card  } from '../components';
 import { PanResponder,StyleSheet, Animated, TouchableOpacity, Dimensions } from 'react-native';
-import { theme, directions, ingridients, mocks, } from '../constants';
+import { theme, directions, ingridients, mocks, tabs } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { Easing, set } from 'react-native-reanimated';
 import { AddHistory, GetHistory,GetHistroyCapacity, SnapShotListiner,DeleteHistory } from '../database/database'
@@ -425,7 +425,12 @@ function SheetText(props){
                 abold
                 touchable
                 tFlex={1}
-                press={()=>setDirection(true)}
+                press={()=>{
+                    if(isTutorial && tutorialLevel != 7) {
+                        return;
+                    }
+                    setDirection(true)
+                }}
                 accent={isDirection}
                 secondary={!isDirection}
                 center
@@ -769,6 +774,8 @@ function CuisineSelected({navigation, route}){
                         isTutorial = false;
                         tutorialLevel = -1;
                         tutorialInfo = false;
+                        tabs.tutorial.current = 'Ingridients';
+                        tabs.tutorial.ingridients = true;
                     }
                     break;
                 
@@ -781,6 +788,8 @@ function CuisineSelected({navigation, route}){
                         isTutorial = false;
                         tutorialLevel = -1;
                         tutorialInfo = false;
+                        tabs.tutorial.current = 'Ingridients';
+                        tabs.tutorial.ingridients = true;
                     }
                     break;
                 case TUTORIAL:

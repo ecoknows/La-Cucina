@@ -169,10 +169,10 @@ const favorites = {
 }
 
 const tutorial = {
-    current: 'Cuisine',
+    current: 'Ingridients',
     favorite: false,
     history: false,
-    ingridients: false,
+    ingridients: true,
 }
 
 export {

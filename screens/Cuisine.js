@@ -16,7 +16,7 @@ let currentMiddle = 0;
 
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
-let isTutorial = true, tutorial_callback = { value : false};
+let isTutorial = false, tutorial_callback = { value : false};
 let tutorialLevel = -1, tutorialInfo = true, swipeTut = true;
 let TutDelayTime = 1000, tutStart = false;
 
@@ -461,7 +461,10 @@ function Cuisine({navigation, route}){
             if(tutorialLevel == -1)
                 StartTutorial();
             const unsubscribe = navigation.addListener('focus', () => {
-                if(tutorial_callback.value){
+                if(!isTutorial){
+                console.log(tabs.tutorial.current, ' wazap');
+                 setRefresh(refresh);
+                }else if(tutorial_callback.value){
                     if(tutorialLevel == -1 && !tutStart){
                         ProceedTutorial();
                         tutStart = true;
@@ -543,7 +546,9 @@ function Cuisine({navigation, route}){
     
     return(
         <View animated white style={styles.container}>
-        {false ? <TutorialFinger style={{left: width * 0.25,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
+        {tabs.tutorial.current == 'Ingridients' && !isTutorial ? <TutorialFinger style={{left: width * 0.25,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
+        {tabs.tutorial.current == 'Favorite' && !isTutorial ? <TutorialFinger style={{left: width * 0.50,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
+        {tabs.tutorial.current == 'History' && !isTutorial ? <TutorialFinger style={{left: width * 0.75,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
             <View flex={0.6} zIndex={1}>
                 { (tutorialLevel == 0 || tutorialLevel == 1) && !tutorialInfo && isTutorial ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1, right: 0}} swipe={tutorialLevel == 0} tap={tutorialLevel == 1}/> : null}
                 <List
@@ -575,7 +580,6 @@ function Cuisine({navigation, route}){
                                     ]*/
                                     const offsetX = Math.floor(event.nativeEvent.contentOffset.x / 118);
                                     isSwipe = true;
-                                    console.log(offsetX);
                                     if(swipeTO != null)
                                         clearTimeout(swipeTO);
                                     

@@ -1,16 +1,90 @@
 import React,{useState, useEffect, useRef} from 'react';
-import { View, List,Text, Card } from '../components';
+import { View, List,Text, Card, Circle, Pic } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme, tabs } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { AddNote, DropTable,SeeData,NextDataSelect ,InitialData, DataPos, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, SetFirstNote, GetFirstNote, RemovePos, RemoveNote } from '../database/database'
-import { PanResponder, Animated } from 'react-native';
+import { PanResponder, Animated, Dimensions } from 'react-native';
 
 let _1_data = true;
 let _2_data = true;
 let _1_latest_offset_data = 0;
 let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
+
+let isTutorial = false;
+const {width, height} = Dimensions.get('window');
+function TutorialFinger(props){
+    const animated = useRef(new Animated.Value(1.1)).current;
+    const swipe_animated = useRef(new Animated.Value(0)).current;
+    let circle_trans = null;
+    const { swipe, tap } = props;
+    let picstyle = null;
+    if(tap){
+        picstyle = {transform: [{scale: animated}]};
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    })
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    if(swipe){
+
+        picstyle = {transform: [{ translateX: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateX: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: -100,
+                        duration: 3000,
+                    }),
+                    
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    }),
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    return(
+        <View flex={false} absolute style={props.style}>
+            { tap || swipe? <Circle size={40}
+             absolute animated style={[circle_trans,{
+                
+                top: -10,
+                left: 5,
+                opacity: animated.interpolate({
+                    inputRange: [1,1.1],
+                    outputRange: [0.1,0],
+                    extrapolate: 'clamp'
+                })
+            }]}/>:null}
+            <Pic
+            animated
+            style={picstyle}
+            src={require('../assets/icons/tutorial_finger.png')}
+            size={[70,70]}
+            />
+        </View>
+    )
+}
 
 function Ingridients({navigation, route}){
 
@@ -21,6 +95,7 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     const fSwipe = useRef(new Animated.ValueXY()).current;
+    const [refresh, setRefresh] = useState(true);
     
     const TutorialModal =()=>{
         navigation.navigate('InfoModal',{info: 
@@ -42,6 +117,10 @@ function Ingridients({navigation, route}){
             const unsubscribe = navigation.addListener('focus', () => {
                 if(!tabs.tutorial.ingridients)
                     TutorialModal();
+                if(tabs.tutorial.ingridients && tabs.tutorial.current == 'Ingridients'){
+                    isTutorial = true;
+                    setRefresh(!refresh);
+                }
             });
 
             return unsubscribe;
@@ -282,7 +361,7 @@ function Ingridients({navigation, route}){
 
     return(
         <View white>
-
+            {isTutorial ? <TutorialFinger style={{left: width * 0.25,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/>: null}
 
             <View paddingTop={30} row>
                 <ScrollView
