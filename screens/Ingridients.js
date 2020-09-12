@@ -12,7 +12,7 @@ let _1_latest_offset_data = 0;
 let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
 
-let isTutorial = false;
+let isTutorial = true;
 const {width, height} = Dimensions.get('window');
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
@@ -50,7 +50,7 @@ function TutorialFinger(props){
                         duration: 1000,
                     }),
                     Animated.timing(swipe_animated,{
-                        toValue: -100,
+                        toValue: 100,
                         duration: 3000,
                     }),
                     
@@ -207,7 +207,7 @@ function Ingridients({navigation, route}){
     };
 
     const CheckList =props=>{
-        const { item, stateData, mainIndex,isFirst } = props;
+        const { item, stateData, mainIndex,isFirst, type} = props;
         const { data, setData } = stateData;
 
         const changeChecked =(index)=>{
@@ -235,6 +235,9 @@ function Ingridients({navigation, route}){
                     />}
                 {item._text == '' ? null : <Text size={12} white family='bold' top={5} left={-3}>
                              {item._text}</Text>}
+                             
+                {isTutorial && index == 0 && type == 1 && mainIndex == 0 ? <TutorialFinger style={{zIndex: 1, left: width * -0.04, top: height * 0.04}} tap/>: null}
+
                 </View>
             );  
         }
@@ -322,9 +325,11 @@ function Ingridients({navigation, route}){
                     inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type}) }>
                 {item.title == ''? null :<Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>}
                 {(item.isNote)? item.note == '' ? null : <Text size={11} white family='semi-bold' bottom={10} numberOfLines={maxNoteLineLength} ellipsizeMode='tail'>{item.note}</Text> : null }
-                {item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data,setData}} /> : null}
+                {item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data,setData}} type={type} /> : null}
                     <Text size={12} white end top={20}>{item.date}</Text>
+                    
                 </Card>
+                {isTutorial && index == 0 && type == 1 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} swipe/>: null}
             </View>
         )
     }
@@ -361,8 +366,6 @@ function Ingridients({navigation, route}){
 
     return(
         <View white>
-            {isTutorial ? <TutorialFinger style={{left: width * 0.25,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/>: null}
-
             <View paddingTop={30} row>
                 <ScrollView
                   onScroll={({nativeEvent}) => {
@@ -452,6 +455,7 @@ function Ingridients({navigation, route}){
                     press={()=> navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]}, index: -1}) }
                 >
                     <Text family='semi-bold' size={18} accent>Create</Text>
+                {isTutorial ? <TutorialFinger style={{zIndex: _1_data,top : -height * 0.08, transform:[{rotate: '180deg'}]}} tap/>: null}
                 </Card>
             </View>
             
