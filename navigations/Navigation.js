@@ -5,11 +5,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, Pic } from '../components'
 import { Cuisine, Ingridients, Favorite, History,CuisineSelected, NoteEditor } from '../screens';
 import {InfoModal, ImageModal} from '../modal';
-import { dynamic } from '../constants';
+import { dynamic, tabs } from '../constants';
 
 const Tab = createBottomTabNavigator();
 const Stack  = createStackNavigator();
-let active = 0;
 let click = false;
 let stack_active = [];
 let active_string = ['Cuisine', 'Ingridients', 'Favorites', 'History'];
@@ -18,10 +17,15 @@ function BottomNavigation({navigation}){
     navigation.setOptions({
         headerShown: false,
     });
-
-    if(!click && stack_active.length != 0){
-        active = stack_active[stack_active.length-1];
+    if(!click && stack_active.length != 0 && ! tabs.variables.tutorial_proceed){
+        tabs.variables.active = stack_active[stack_active.length-1];
         stack_active.pop();
+    }
+
+    if(tabs.variables.tutorial_proceed){
+        stack_active = stack_active.filter(item=> item != tabs.variables.active);
+        stack_active.push(tabs.variables.active);
+        tabs.variables.tutorial_proceed = false;
     }
     click = false;
     
@@ -46,21 +50,21 @@ function BottomNavigation({navigation}){
             
             listeners={{
                 tabPress: e => {
-                    stack_active = stack_active.filter(item=> item != active);
-                    stack_active.push(active);
-                    active = 0;
+                    stack_active = stack_active.filter(item=> item != tabs.variables.active);
+                    stack_active.push(tabs.variables.active);
+                    tabs.variables.active = 0;
                     click = true;
                 },
                 }}
             options={{
-                tabBarLabel: () => active_string[active] === 'Cuisine' ? <Text accent familiy='semi-bold' size={13} style={{marginLeft: 0, marginTop: 5}}>Cuisine</Text> : null,
+                tabBarLabel: () => active_string[tabs.variables.active] === 'Cuisine' ? <Text accent familiy='semi-bold' size={13} style={{marginLeft: 0, marginTop: 5}}>Cuisine</Text> : null,
                 tabBarIcon: ({ color }) => 
                     
                 <Pic
                 resizeMode='contain' src={require('../assets/images/cuisine.png')} 
                     size={[25,25]}
                     style={{marginBottom: 50}}
-                    accent={active_string[active]==='Cuisine'}
+                    accent={active_string[tabs.variables.active]==='Cuisine'}
                 />,
                 
                 }}
@@ -69,14 +73,14 @@ function BottomNavigation({navigation}){
             <Tab.Screen name="Ingridients" component={Ingridients}
             listeners={{
                 tabPress: e => {
-                    stack_active = stack_active.filter(item=> item != active);
-                    stack_active.push(active);
-                    active = 1;
+                    stack_active = stack_active.filter(item=> item != tabs.variables.active);
+                    stack_active.push(tabs.variables.active);
+                    tabs.variables.active = 1;
                     click = true;
                 },
                 }}
             options={{
-                tabBarLabel: () => active_string[active] === 'Ingridients' ? 
+                tabBarLabel: () => active_string[tabs.variables.active] === 'Ingridients' ? 
                 <Text accent familiy='semi-bold' size={13} style={{marginLeft: 0, marginTop: 5}}>Ingredients</Text>
                 : null,
                 tabBarIcon: ({ color }) => (
@@ -84,7 +88,7 @@ function BottomNavigation({navigation}){
                             resizeMode='contain' src={require('../assets/images/ingridients.png')} 
                             size={[25,25]}
                             style={{marginBottom: 50}}
-                            accent={active_string[active]==='Ingridients'}
+                            accent={active_string[tabs.variables.active]==='Ingridients'}
 
                         />
                 )
@@ -95,21 +99,21 @@ function BottomNavigation({navigation}){
             <Tab.Screen name="Favorite" component={Favorite} 
                 listeners={{
                 tabPress: e => {
-                    stack_active = stack_active.filter(item=> item != active);
-                    stack_active.push(active);
-                    active = 2;
+                    stack_active = stack_active.filter(item=> item != tabs.variables.active);
+                    stack_active.push(tabs.variables.active);
+                    tabs.variables.active = 2;
                     click = true;
                 },
                 }}
             options={{
-                tabBarLabel: () => active_string[active] === 'Favorites' ? 
+                tabBarLabel: () => active_string[tabs.variables.active] === 'Favorites' ? 
                 <Text accent familiy='semi-bold' size={13} style={{marginLeft: 0, marginTop: 5}}>Favorites</Text>
                 : null,
                 tabBarIcon: ({ color }) => (
                         <Pic resizeMode='contain' src={require('../assets/images/favorite.png')} 
                             size={[25,25]}
                             style={{marginBottom: 50}}
-                            accent={active_string[active]==='Favorites'}
+                            accent={active_string[tabs.variables.active]==='Favorites'}
                         />
                 ),
                 }}
@@ -118,22 +122,23 @@ function BottomNavigation({navigation}){
             <Tab.Screen name="History" component={History} 
             listeners={{
                 tabPress: e => {
-                    stack_active = stack_active.filter(item=> item != active);
-                    stack_active.push(active);
-                    active = 3;
+                    stack_active = stack_active.filter(item=> item != tabs.variables.active);
+                    stack_active.push(tabs.variables.active);
+                    console.log(stack_active);
+                    tabs.variables.active = 3;
                     click = true;
                 },
                 }}
 
             options={{
-                tabBarLabel: () => active_string[active] === 'History' ? 
+                tabBarLabel: () => active_string[tabs.variables.active] === 'History' ? 
                 <Text accent familiy='semi-bold' size={13} style={{marginRight: 20, marginTop: 5}}>History</Text>
                 : null,
                 tabBarIcon: ({ color }) => (
                         <Pic resizeMode='contain' src={require('../assets/images/history.png')} 
                             size={[25,25]}
                             style={{marginBottom: 50}}
-                            accent={active_string[active]==='History'}
+                            accent={active_string[tabs.variables.active]==='History'}
                         />
                         
                 ),

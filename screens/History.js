@@ -587,6 +587,8 @@ function History({navigation}){
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             if(!tabs.tutorial.history){
+                tabs.variables.active = tabs.tutorial.curr_num;
+                tabs.variables.tutorial_proceed = true;
                 TutorialModal();
             }else{
                 FetchHistory(setData,data);

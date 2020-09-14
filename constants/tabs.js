@@ -169,14 +169,21 @@ const favorites = {
 }
 
 const tutorial = {
-    current: 'Ingridients',
+    current: 'Ingridients', // todo:  null
+    curr_num : 1,
     favorite: false,
     history: false,
     ingridients: true,
 }
 
+const variables = {
+    active : 0,
+    tutorial_proceed : false,
+}
+
 export {
     cuisine,
     favorites,
-    tutorial
+    tutorial,
+    variables
 }

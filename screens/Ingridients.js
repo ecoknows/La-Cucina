@@ -13,6 +13,8 @@ let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
 
 let isTutorial = true;
+let tutorialLevel = -1,tutorial_callback = { value : false};
+
 const {width, height} = Dimensions.get('window');
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
@@ -111,14 +113,43 @@ function Ingridients({navigation, route}){
             exit: false,
             });
     }
+    
+    const StartTutorial =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: 'Ingridients'
+                },
+                ],  
+            exit: true,
+            callback: [tutorial_callback,true],
+            });
+    }
+    
 
     useEffect(()=>{
         if(tabs.tutorial.current != null){
             const unsubscribe = navigation.addListener('focus', () => {
-                if(!tabs.tutorial.ingridients)
+                if(!tabs.tutorial.ingridients){
+                    tabs.variables.active = tabs.tutorial.curr_num;
+                    tabs.variables.tutorial_proceed = true;
                     TutorialModal();
-                if(tabs.tutorial.ingridients && tabs.tutorial.current == 'Ingridients'){
+                }
+                else if (tutorial_callback.value && isTutorial){
+                    tutorialLevel++;
+                    tutorial_callback.value = false;
+                    setRefresh(refresh);
+                }else if(tabs.tutorial.ingridients && tabs.tutorial.current == 'Ingridients'){
                     isTutorial = true;
+                    if(tutorialLevel == -1){
+                        tabs.variables.active = 1;
+                        tabs.variables.tutorial_proceed = true;
+                        StartTutorial();
+                    }
                     setRefresh(!refresh);
                 }
             });
@@ -236,7 +267,7 @@ function Ingridients({navigation, route}){
                 {item._text == '' ? null : <Text size={12} white family='bold' top={5} left={-3}>
                              {item._text}</Text>}
                              
-                {isTutorial && index == 0 && type == 1 && mainIndex == 0 ? <TutorialFinger style={{zIndex: 1, left: width * -0.04, top: height * 0.04}} tap/>: null}
+                {isTutorial && index == 0 && type == 1 && mainIndex == 0 && tutorialLevel == 0 ? <TutorialFinger style={{zIndex: 1, left: width * -0.04, top: height * 0.04}} tap/>: null}
 
                 </View>
             );  
@@ -329,7 +360,7 @@ function Ingridients({navigation, route}){
                     <Text size={12} white end top={20}>{item.date}</Text>
                     
                 </Card>
-                {isTutorial && index == 0 && type == 1 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} swipe/>: null}
+                {isTutorial && index == 0 && type == 1 && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} swipe/>: null}
             </View>
         )
     }
@@ -452,10 +483,15 @@ function Ingridients({navigation, route}){
                         borderWidth: 2,
                         borderColor: theme.colors.accent
                     }}
-                    press={()=> navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]}, index: -1}) }
+                    press={()=> {
+                        if(tutorialLevel != 2 && isTutorial) {
+                            return;
+                        }
+                        navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]}, index: -1})
+                    }}
                 >
                     <Text family='semi-bold' size={18} accent>Create</Text>
-                {isTutorial ? <TutorialFinger style={{zIndex: _1_data,top : -height * 0.08, transform:[{rotate: '180deg'}]}} tap/>: null}
+                {isTutorial && tutorialLevel == 2? <TutorialFinger style={{zIndex: 1,top : -height * 0.08, transform:[{rotate: '180deg'}]}} tap/>: null}
                 </Card>
             </View>
             
