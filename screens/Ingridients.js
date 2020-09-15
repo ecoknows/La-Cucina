@@ -13,8 +13,8 @@ let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
 
 let isTutorial = true;
-let tutorialLevel = -1,tutorial_callback = { value : false};
-
+let tutorialLevel = -1;
+const TUTORIAL = 0;
 const {width, height} = Dimensions.get('window');
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
@@ -88,6 +88,22 @@ function TutorialFinger(props){
     )
 }
 
+        
+const ProceedTutorial =(navigation)=>{
+    navigation.navigate('InfoModal',{info: 
+        {
+        text: 'Test',
+        }, 
+        button: [
+            {
+                title: 'Ok',
+                navigate: 'Ingridients',
+                purpose: TUTORIAL,
+            },
+            ],  
+        exit: false,
+        });
+}
 function Ingridients({navigation, route}){
 
     const [stateData1, setStateData1] = useState([]);
@@ -97,7 +113,7 @@ function Ingridients({navigation, route}){
     const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     const fSwipe = useRef(new Animated.ValueXY()).current;
-    const [refresh, setRefresh] = useState(true);
+    const [refresh, setRefresh] = useState(false);
     
     const TutorialModal =()=>{
         navigation.navigate('InfoModal',{info: 
@@ -122,14 +138,22 @@ function Ingridients({navigation, route}){
             button: [
                 {
                     title: 'Ok',
-                    navigate: 'Ingridients'
+                    navigate: 'Ingridients',
+                    purpose: TUTORIAL,
                 },
                 ],  
             exit: true,
-            callback: [tutorial_callback,true],
             });
     }
     
+    if(route.params?.modal != undefined){
+        switch(route.params.modal){
+            case TUTORIAL: 
+                tutorialLevel++;
+                route.params.modal = undefined;
+                break;
+        }
+    }
 
     useEffect(()=>{
         if(tabs.tutorial.current != null){
@@ -139,18 +163,11 @@ function Ingridients({navigation, route}){
                     tabs.variables.tutorial_proceed = true;
                     TutorialModal();
                 }
-                else if (tutorial_callback.value && isTutorial){
-                    tutorialLevel++;
-                    tutorial_callback.value = false;
-                    setRefresh(refresh);
-                }else if(tabs.tutorial.ingridients && tabs.tutorial.current == 'Ingridients'){
+                if(tabs.tutorial.ingridients && tabs.tutorial.current == 'Ingridients' && tutorialLevel == -1){
                     isTutorial = true;
-                    if(tutorialLevel == -1){
-                        tabs.variables.active = 1;
-                        tabs.variables.tutorial_proceed = true;
-                        StartTutorial();
-                    }
-                    setRefresh(!refresh);
+                    tabs.variables.active = 1;
+                    tabs.variables.tutorial_proceed = true;
+                    StartTutorial();
                 }
             });
 
@@ -242,6 +259,10 @@ function Ingridients({navigation, route}){
         const { data, setData } = stateData;
 
         const changeChecked =(index)=>{
+            if(isTutorial && tutorialLevel == 0){
+                ProceedTutorial(navigation);
+                console.log('wass');
+            }
             if(isFirst){
                 item.checkList[index].status = item.checkList[index].status ? 0 : 1;
                 SetFirstNote(item);

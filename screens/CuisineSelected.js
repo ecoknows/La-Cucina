@@ -525,6 +525,7 @@ function CuisineSelected({navigation, route}){
     const [capacity, setCapacity] = useState(item.capacity_cache.value != null ? item.capacity_cache.value : item.capacity);
     const [reset, setReset] = useState(false);
     const [refresh, setRefresh] = useState(false);
+    
     if(cuisineTutorial){
         isTutorial = true;
     }else if (!cuisineTutorial){
@@ -792,17 +793,6 @@ function CuisineSelected({navigation, route}){
                         tabs.tutorial.ingridients = true;
                     }
                     break;
-                case TUTORIAL:
-                    if(isTutorial && tutorialLevel == -1 && !tutStart){
-                        ProceedTutorial(navigation);
-                        tutStart = true;
-                    }else{
-                        tutorialLevel++;
-                        timeoutTutorial = true;
-                    }
-                    route.params.modal = -1;
-                    setRefresh(!refresh);
-                    break;
             }
         }
 
@@ -814,6 +804,22 @@ function CuisineSelected({navigation, route}){
                 StartTutorial();
         }
     },[]);
+    
+    if(route.params?.modal != undefined){
+        switch(route.params.modal){
+            case TUTORIAL: 
+                if(tutorialLevel == -1 && !tutStart){
+                    ProceedTutorial(navigation);
+                    tutStart = true;
+                }else{
+                    tutorialLevel++;
+                }
+                swipeTut = true;
+                break;
+        }
+        route.params.modal = undefined;
+    }
+
 
 
     const BackButtonClick =()=>{
