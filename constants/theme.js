@@ -6,7 +6,6 @@ const sizes = {
     radius: 4,
 };
 
-
 const colors = {
     accent: '#E24300',
     semi_accent: '#ff5f40',
@@ -89,12 +88,16 @@ const fonts = {
     caption: 13,
 };
 
+const monthsText = ['Jan','Feb','March','April','May','Jun','July','Aug','Sept','Oct','Nov','Dec'];
+const date = new Date();
+const current_date = date.getDate() + " " + monthsText[date.getMonth()];
+
 const initial_note_data = [
     {
         title: 'Ingridients',
         note: 'You can write here what are the things that you want to see when you open this ingridient tab.',
         color: '#ff5f40',
-        date: '16 July',
+        date: current_date,
         checkList: [{_text:'', status: false}],
         isCheckList: 0,
         isNote: 1,
@@ -103,7 +106,7 @@ const initial_note_data = [
         title: 'Shopping List',
         note: '',
         color: '#24a19c',
-        date: '16 July',
+        date: current_date,
         checkList: [
             {
                 _text: '3 pcs of Onions',
@@ -134,7 +137,7 @@ const initial_note_data = [
         title: 'Things To do',
         note: '',
         color: '#ba7967',
-        date: '16 July',
+        date: current_date,
         checkList: [
             {
                 _text: 'Chop the Onions',
@@ -157,7 +160,7 @@ const initial_note_data = [
         title: 'Plan for Today',
         note: '',
         color: '#e79c2a',
-        date: '16 July',
+        date: current_date,
         checkList: [
             {
                 _text: 'Go to the market and buy ingridients',
@@ -181,10 +184,37 @@ const initial_note_data = [
         isNote: 1,
     },
     {
+        title: 'Don\'t forget this ^_^',
+        note: '',
+        color: '#5e6f64',
+        date: current_date,
+        checkList: [
+            {
+                _text: 'Olive Oil',
+                status: 0,
+            },
+            {
+                _text: 'Lemonade',
+                status: 0,
+            },
+            {
+                _text: 'Butter',
+                status: 0,
+            },
+            {
+                _text: 'Rice',
+                status: 0,
+            },
+
+        ],
+        isCheckList: 1,
+        isNote: 1,
+    },
+    {
         title: 'Availabe Ingridients',
         note: '1. 1 bottle of Vinigar \n2. 1/2 dozen of eggs \n3. 45 pcs of fresh tomatoes ',
         color: '#5a3d55',
-        date: '16 July',
+        date: current_date,
         checkList: [{_text:'', status: false}],
         isCheckList: 0,
         isNote: 1,

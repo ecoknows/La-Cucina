@@ -12,15 +12,15 @@ let _1_latest_offset_data = 0;
 let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
 
-let isTutorial = true;
-let tutorialLevel = -1;
+let isTutorial = true, swipeTut = true;
+let tutorialLevel = 0, TutDelayTime = 1000;
 const TUTORIAL = 0;
 const {width, height} = Dimensions.get('window');
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
     const swipe_animated = useRef(new Animated.Value(0)).current;
     let circle_trans = null;
-    const { swipe, tap } = props;
+    const { swipe, tap, upward } = props;
     let picstyle = null;
     if(tap){
         picstyle = {transform: [{scale: animated}]};
@@ -40,7 +40,7 @@ function TutorialFinger(props){
         }
         animatedStart();
     }
-    if(swipe){
+    if(swipe && !upward){
 
         picstyle = {transform: [{ translateX: swipe_animated},{scale: animated}]};
         circle_trans = {transform: [{translateX: swipe_animated}]}
@@ -53,6 +53,32 @@ function TutorialFinger(props){
                     }),
                     Animated.timing(swipe_animated,{
                         toValue: 100,
+                        duration: 3000,
+                    }),
+                    
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    }),
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    
+    if(swipe && upward){
+
+        picstyle = {transform: [{ translateY: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateY: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: -100,
                         duration: 3000,
                     }),
                     
@@ -150,6 +176,7 @@ function Ingridients({navigation, route}){
         switch(route.params.modal){
             case TUTORIAL: 
                 tutorialLevel++;
+                swipeTut = true;
                 route.params.modal = undefined;
                 break;
         }
@@ -259,9 +286,8 @@ function Ingridients({navigation, route}){
         const { data, setData } = stateData;
 
         const changeChecked =(index)=>{
-            if(isTutorial && tutorialLevel == 0){
+            if(isTutorial && tutorialLevel == 1){
                 ProceedTutorial(navigation);
-                console.log('wass');
             }
             if(isFirst){
                 item.checkList[index].status = item.checkList[index].status ? 0 : 1;
@@ -288,7 +314,7 @@ function Ingridients({navigation, route}){
                 {item._text == '' ? null : <Text size={12} white family='bold' top={5} left={-3}>
                              {item._text}</Text>}
                              
-                {isTutorial && index == 0 && type == 1 && mainIndex == 0 && tutorialLevel == 0 ? <TutorialFinger style={{zIndex: 1, left: width * -0.04, top: height * 0.04}} tap/>: null}
+                {isTutorial && index == 0 && type == 1 && mainIndex == 0 && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1, left: width * -0.04, top: height * 0.04}} tap/>: null}
 
                 </View>
             );  
@@ -352,6 +378,9 @@ function Ingridients({navigation, route}){
                         setData2(data2_modi);
                     }
                     NextDataSelect(setStateData1,setStateData2,"1");
+                    if(isTutorial && tutorialLevel == 2){
+                        ProceedTutorial(navigation);
+                    }
                 }
             }
         })).current;
@@ -381,7 +410,7 @@ function Ingridients({navigation, route}){
                     <Text size={12} white end top={20}>{item.date}</Text>
                     
                 </Card>
-                {isTutorial && index == 0 && type == 1 && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} swipe/>: null}
+                {isTutorial && index == 0 && type == 1 && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} swipe/>: null}
             </View>
         )
     }
@@ -419,18 +448,29 @@ function Ingridients({navigation, route}){
     return(
         <View white>
             <View paddingTop={30} row>
+                
                 <ScrollView
                   onScroll={({nativeEvent}) => {
+                    
                     if (isCloseToBottom(nativeEvent)) {
                         _1_data = true;
                         _2_data = true;
                         NextDataSelect(setStateData1,setStateData2,"6");
+                   }
+
+                   if(isTutorial && tutorialLevel == 0 && swipeTut){
+                    swipeTut = true;
+                    setTimeout(()=>{
+                        ProceedTutorial(navigation);
+                    },TutDelayTime)
                    }
                    
                 }
                   }
                   scrollEventThrottle={400}
                 >
+                    
+                {isTutorial && tutorialLevel == 0? <TutorialFinger style={{zIndex: 1,alignSelf:'center', top: height * 0.5}} swipe upward />: null}
 
                 {
                     firstItem != null ? 
@@ -512,7 +552,7 @@ function Ingridients({navigation, route}){
                     }}
                 >
                     <Text family='semi-bold' size={18} accent>Create</Text>
-                {isTutorial && tutorialLevel == 2? <TutorialFinger style={{zIndex: 1,top : -height * 0.08, transform:[{rotate: '180deg'}]}} tap/>: null}
+                {isTutorial && tutorialLevel == 3? <TutorialFinger style={{zIndex: 1,top : -height * 0.08, transform:[{rotate: '180deg'}]}} tap/>: null}
                 </Card>
             </View>
             
