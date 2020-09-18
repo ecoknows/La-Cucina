@@ -5,10 +5,112 @@ import {TouchableOpacity,ScrollView, Dimensions, Animated, Easing, Keyboard} fro
 import { CheckBox } from 'react-native-elements';
 import { AddNote, SelectNote, DeleteAll, DropTable } from '../database/database'
 
-const { height } = Dimensions.get('screen');
+const { height, width } = Dimensions.get('screen');
 let open = null;
 let changesCnt = 0;
 let currentCheckListIndex = 0;
+
+let isTutorial = true;
+let tutorialLevel = -1;
+
+function TutorialFinger(props){
+    const animated = useRef(new Animated.Value(1.1)).current;
+    const swipe_animated = useRef(new Animated.Value(0)).current;
+    let circle_trans = null;
+    const { swipe, tap, upward } = props;
+    let picstyle = null;
+    if(tap){
+        picstyle = {transform: [{scale: animated}]};
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    })
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    if(swipe && !upward){
+
+        picstyle = {transform: [{ translateX: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateX: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: -100,
+                        duration: 3000,
+                    }),
+                    
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    }),
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    
+    if(swipe && upward){
+
+        picstyle = {transform: [{ translateY: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateY: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: -100,
+                        duration: 3000,
+                    }),
+                    
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    }),
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    return(
+        <View flex={false} absolute style={props.style}>
+            { tap || swipe? <Circle size={40}
+             absolute animated style={[circle_trans,{
+                
+                top: -10,
+                left: 5,
+                opacity: animated.interpolate({
+                    inputRange: [1,1.1],
+                    outputRange: [0.1,0],
+                    extrapolate: 'clamp'
+                })
+            }]}/>:null}
+            <Pic
+            animated
+            style={picstyle}
+            src={require('../assets/icons/tutorial_finger.png')}
+            size={[70,70]}
+            />
+        </View>
+    )
+}
+
 function NoteEditor({navigation, route}){
     const { currentNote, index, type} = route.params;
     const checkList = currentNote.checkList != null?  currentNote.checkList.map(a => ({...a})) : [{_text:'', status: false}];
@@ -122,11 +224,15 @@ function NoteEditor({navigation, route}){
             changesCnt++;
         }
         return(
-            <View flex={false} row onLayout={(event) => {
+            <View flex={false} row zIndex={1} onLayout={(event) => {
                 if(stateCheckedData[index].height < event.nativeEvent.layout.height - 10 || stateCheckedData[index].height == null){
                     stateCheckedData[index].height = event.nativeEvent.layout.height;
                 }
               }} >
+                  
+                  { isTutorial && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,top: height * 0.03, left: -width * 0.04}} tap /> : null}
+                  { isTutorial && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,top: height * 0.02, left: width * 0.05}} tap /> : null}
+                  { isTutorial && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,top: height * 0.02, right: height * 0.03}} tap /> : null}
                 <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 0}} onPress={changeCheckedState}/>
                 <Input style={{width: '70%',marginTop: 3, flex: 0}} autoFocus={currentCheckListIndex == index ? true : false} 
                     onSubmitEditing={AddNewCheckList}
@@ -162,14 +268,15 @@ function NoteEditor({navigation, route}){
                         currentCheckListIndex= -1;
                     }}
                 >x</Text>
+                
             </View>
         );
     }
 
     return(
         <View color={noteColor}>
+            
             <View flex={false} row paddingBottom={10}>
-                            
                             <TouchableOpacity style={{flex: 0, marginTop: 25, marginLeft: 10}} onPress={checkData}>
                                 
                                 <Pic 
@@ -210,6 +317,8 @@ function NoteEditor({navigation, route}){
                                                 resizeMode='contain'
                                             
                                             />
+                                            
+                                         { isTutorial && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1, left: -width * 0.03, top: height * 0.02}} tap /> : null}
                                         </TouchableOpacity>
                                         
                                         <CheckBox checkedColor='white' uncheckedColor='white' checked={checked?true:false} 
@@ -217,6 +326,8 @@ function NoteEditor({navigation, route}){
                                             size={30}
                                             containerStyle={{flex: 0, width: 40, height: 40, top: -17, marginRight: 2,}}
                                         />
+                                        
+                                        { isTutorial && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1, left: width * 0.05, top: height * 0.02}} tap /> : null}
         
         
                                         <TouchableOpacity onPress={()=> {
@@ -232,6 +343,8 @@ function NoteEditor({navigation, route}){
                                                 resizeMode='contain'
                                             
                                             />
+                                            
+                                         { isTutorial && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1, left: -width * 0.03, top: height * 0.02}} tap /> : null}
                                         </TouchableOpacity>
                                     </View >
                                         <View animated style={{flex: 0, flexDirection: 'row', marginTop: 30,
@@ -246,7 +359,7 @@ function NoteEditor({navigation, route}){
                                                 horizontal
                                                 showsHorizontalScrollIndicator={false}
                                                 data={theme.colors.wheel}
-                                                renderItem={({item}) => 
+                                                renderItem={({item, index}) => 
                                                 <TouchableOpacity style={{flex: 0}} onPress={()=> setNoteColor(item)}>
                                                     <Circle color={item} size={15} marginRight={5}
                                                     style={{borderColor: 'white',borderWidth: 1}}
@@ -255,7 +368,8 @@ function NoteEditor({navigation, route}){
                                                 }
                                                 keyExtractor={(item,index)=> index.toString()}
                                             />
-        
+                                            {isTutorial && tutorialLevel == 1? <TutorialFinger style={{zIndex: 1, left: width * 0.1, top: height * 0.02}} swipe />: null}
+                                            {isTutorial && tutorialLevel == 1? <TutorialFinger style={{zIndex: 1, top: height * 0.02}} tap />: null}
                                         </View>
                                     
                                 </View>
@@ -283,7 +397,8 @@ function NoteEditor({navigation, route}){
                         value={title}
                     
                     />
-
+                    { isTutorial && tutorialLevel == 0 ? <TutorialFinger style={{zIndex: 1,top: height * .03}} tap /> : null}
+                    { isTutorial && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1,top: height * .09}} tap /> : null}
                     
                     {
                         isNote ? <Input 
@@ -322,6 +437,8 @@ function NoteEditor({navigation, route}){
                             }}>
                                 <Text white size={30} left={-5} top={-5}> + </Text>
                                 <Text size={20} white top={3} left={-5}> List</Text>
+                                
+                  { isTutorial && tutorialLevel == 2? <TutorialFinger style={{zIndex: 1,top: height * 0.03, left: width * 0.04}} tap /> : null}
                             </View>
                         </View>
                         : null

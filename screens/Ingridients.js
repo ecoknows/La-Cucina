@@ -12,7 +12,7 @@ let _1_latest_offset_data = 0;
 let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
 
-let isTutorial = true, swipeTut = true;
+let isTutorial = false, swipeTut = true;
 let tutorialLevel = 0, TutDelayTime = 1000;
 const TUTORIAL = 0;
 const {width, height} = Dimensions.get('window');
