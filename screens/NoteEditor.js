@@ -10,8 +10,10 @@ let open = null;
 let changesCnt = 0;
 let currentCheckListIndex = 0;
 
-let isTutorial = true;
-let tutorialLevel = -1;
+let isTutorial = true,TutDelayTime = 1000;
+let tutorialLevel = -1, swipeTut = true,tutStart = false;
+let TUTORIAL = 0;
+
 
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
@@ -111,6 +113,23 @@ function TutorialFinger(props){
     )
 }
 
+        
+const ProceedTutorial =(navigation)=>{
+    navigation.navigate('InfoModal',{info: 
+        {
+        text: 'Test',
+        }, 
+        button: [
+            {
+                title: 'Ok',
+                navigate: 'NoteEditor',
+                purpose: TUTORIAL,
+            },
+            ],  
+        exit: false,
+        });
+}
+
 function NoteEditor({navigation, route}){
     const { currentNote, index, type} = route.params;
     const checkList = currentNote.checkList != null?  currentNote.checkList.map(a => ({...a})) : [{_text:'', status: false}];
@@ -124,10 +143,29 @@ function NoteEditor({navigation, route}){
 
     const scrollViewAnimated = useRef(new Animated.Value(height - (height * 0.1))).current;
 
+
+    const StartTutorial =()=>{
+        navigation.navigate('InfoModal',{info: 
+            {
+            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+            }, 
+            button: [
+                {
+                    title: 'Ok',
+                    navigate: 'NoteEditor',
+                    purpose: TUTORIAL,
+                },
+                ],  
+            exit: true,
+            });
+    }
+    
     useEffect(()=>{
         open = false;
         changesCnt = 0;
         currentCheckListIndex = 0;
+        if(isTutorial && tutorialLevel == -1)
+        StartTutorial();
         const keyboardListener = Keyboard.addListener('keyboardDidHide', ()=>{scrollViewAnimated.setValue(height - (height * 0.1))});
         return () => {keyboardListener.remove()}
     },[]);
@@ -150,17 +188,23 @@ function NoteEditor({navigation, route}){
         }).start();
     
     }
-    
 
     const checkData =()=>{
-        console.log(changesCnt);
+        if(isTutorial && tutorialLevel != 11){
+            return;
+        }
         if(title == currentNote.title
         && note == currentNote.note
         && noteColor == currentNote.color
         && (checked == currentNote.isCheckList || (checked && (stateCheckedData.length == 1 && stateCheckedData[0]._text == '') ) || (checked && (stateCheckedData.length == 0)))
         && changesCnt <= 0)
         {
-            navigation.goBack();
+            if(isTutorial){
+                navigation.navigate('Ingridients',{modal:TUTORIAL});
+                isTutorial = false;
+            }else{
+                navigation.goBack();
+            }
         }else{
             const current = {
                 id: currentNote.id, 
@@ -172,14 +216,64 @@ function NoteEditor({navigation, route}){
                 isCheckList: checked,
                 isNote: isNote,
             }
-            navigation.navigate('Ingridients',{post:
-                current,
-                index,
-                type,
-            });
+            console.log('asdasf  fsf ', isTutorial);
+            if(isTutorial){
+                navigation.navigate('Ingridients',{post:
+                    current,
+                    index,
+                    type,
+                    modal : TUTORIAL,
+                });
+                isTutorial = false;
+            }else{
+                navigation.navigate('Ingridients',{post:
+                    current,
+                    index,
+                    type,
+                });
+            }
         }
+
+        if(isTutorial && tutorialLevel == 11){
+            ProceedTutorial(navigation);
+        }
+        
     }
 
+    // TextInput Tutorial Checker
+
+    if(route.params?.modal != undefined){
+        switch(route.params.modal){
+            case TUTORIAL: 
+                if(tutorialLevel == -1 && !tutStart){
+                    ProceedTutorial(navigation);
+                    tutStart = true;
+                }else{
+                    tutorialLevel++;
+                }
+                swipeTut = true;
+                break;
+        }
+        route.params.modal = undefined;
+    }
+
+    if(isTutorial){
+        switch(tutorialLevel){
+            case 0: 
+                if(title != ''){
+                    ProceedTutorial(navigation);
+                }
+                break;
+            case 1:
+                if(note != ''){
+                    ProceedTutorial(navigation);
+                }
+                break;
+        }
+    }
+    if(isTutorial && tutorialLevel == 0 && title != ''){
+        ProceedTutorial(navigation);
+    }
     function CheckedList(props){
         const { item, index} = props;
         const [text, setText] = useState(item._text);
@@ -196,6 +290,9 @@ function NoteEditor({navigation, route}){
             setCheckedIndivid(checkedIndivid?false : true);
             let updateData = stateCheckedData;
             updateData[index].status = stateCheckedData[index].status ? 0 : 1;
+            if(isTutorial && tutorialLevel == 4){
+                ProceedTutorial(navigation);
+            }
         }
 
         const changeTextState =textChanged=>{
@@ -215,6 +312,9 @@ function NoteEditor({navigation, route}){
 
             setText(textChanged);
             stateCheckedData[index]._text = textChanged;
+            if(isTutorial && tutorialLevel == 5){
+                ProceedTutorial(navigation);
+            }
         }
 
         const AddNewCheckList =()=>{
@@ -230,9 +330,9 @@ function NoteEditor({navigation, route}){
                 }
               }} >
                   
-                  { isTutorial && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,top: height * 0.03, left: -width * 0.04}} tap /> : null}
-                  { isTutorial && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,top: height * 0.02, left: width * 0.05}} tap /> : null}
-                  { isTutorial && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,top: height * 0.02, right: height * 0.03}} tap /> : null}
+                  { isTutorial && index == 0 && tutorialLevel == 4  ? <TutorialFinger style={{zIndex: 1,top: height * 0.03, left: -width * 0.04}} tap /> : null}
+                  { isTutorial && index == 0 && tutorialLevel == 5 ? <TutorialFinger style={{zIndex: 1,top: height * 0.02, left: width * 0.05}} tap /> : null}
+                  { isTutorial && index == 1 && tutorialLevel == 7 ? <TutorialFinger style={{zIndex: 1,top: height * 0.02, right: height * 0.03}} tap /> : null}
                 <CheckBox  checked={checkedIndivid} checkedColor='white' uncheckedColor='white' containerStyle={{width: 30,marginLeft: -10,height: 0}} onPress={changeCheckedState}/>
                 <Input style={{width: '70%',marginTop: 3, flex: 0}} autoFocus={currentCheckListIndex == index ? true : false} 
                     onSubmitEditing={AddNewCheckList}
@@ -266,6 +366,10 @@ function NoteEditor({navigation, route}){
                         const modified = stateCheckedData.filter(value=> !toRemove.includes(value));   
                         setStateCheckedData(modified);
                         currentCheckListIndex= -1;
+                        
+                        if(isTutorial && tutorialLevel == 7){
+                            ProceedTutorial(navigation);
+                        }
                     }}
                 >x</Text>
                 
@@ -277,7 +381,7 @@ function NoteEditor({navigation, route}){
         <View color={noteColor}>
             
             <View flex={false} row paddingBottom={10}>
-                            <TouchableOpacity style={{flex: 0, marginTop: 25, marginLeft: 10}} onPress={checkData}>
+                            <TouchableOpacity style={{flex: 0, marginTop: 25, marginLeft: 10, zIndex: 1}} onPress={checkData}>
                                 
                                 <Pic 
                                     src={require('../assets/images/back.png')}
@@ -285,6 +389,7 @@ function NoteEditor({navigation, route}){
                                     resizeMode='contain'
                                 />
         
+                                {isTutorial && tutorialLevel == 11? <TutorialFinger style={{zIndex: 1, top: height * 0.02}} tap />: null}
                             </TouchableOpacity>
         
                             <View flex={1}>
@@ -307,7 +412,12 @@ function NoteEditor({navigation, route}){
                                         }}
                                     >
                                         <TouchableOpacity style={{marginRight:-10}} onPress={
-                                            ()=>{setIsNote(isNote? 0: 1);}
+                                            ()=>{
+                                                setIsNote(isNote? 0: 1);
+                                                if(isTutorial && tutorialLevel == 2){
+                                                    ProceedTutorial(navigation);
+                                                }
+                                            }
                                         }>
                                             
                                             <Pic 
@@ -322,18 +432,26 @@ function NoteEditor({navigation, route}){
                                         </TouchableOpacity>
                                         
                                         <CheckBox checkedColor='white' uncheckedColor='white' checked={checked?true:false} 
-                                            onPress={()=>{setChecked(checked?0:1);}}
+                                            onPress={()=>{
+                                                setChecked(checked?0:1);
+                                                if(isTutorial && tutorialLevel == 3){
+                                                    ProceedTutorial(navigation);
+                                                }
+                                            }}
                                             size={30}
                                             containerStyle={{flex: 0, width: 40, height: 40, top: -17, marginRight: 2,}}
                                         />
                                         
-                                        { isTutorial && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1, left: width * 0.05, top: height * 0.02}} tap /> : null}
+                                        { isTutorial && tutorialLevel == 3 ? <TutorialFinger style={{zIndex: 1, left: width * 0.05, top: height * 0.02}} tap /> : null}
         
         
                                         <TouchableOpacity onPress={()=> {
-                                            console.log('pogs',open);
                                             open ? colorClose() : colorOpen();
                                             open = open ? false : true;
+                                            
+                                            if(isTutorial && tutorialLevel == 8){
+                                                ProceedTutorial(navigation);
+                                            }
                                         }} >
                                             
                                             <Pic 
@@ -344,7 +462,7 @@ function NoteEditor({navigation, route}){
                                             
                                             />
                                             
-                                         { isTutorial && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1, left: -width * 0.03, top: height * 0.02}} tap /> : null}
+                                         { isTutorial && tutorialLevel == 8 ? <TutorialFinger style={{zIndex: 1, left: -width * 0.03, top: height * 0.02}} tap /> : null}
                                         </TouchableOpacity>
                                     </View >
                                         <View animated style={{flex: 0, flexDirection: 'row', marginTop: 30,
@@ -360,16 +478,34 @@ function NoteEditor({navigation, route}){
                                                 showsHorizontalScrollIndicator={false}
                                                 data={theme.colors.wheel}
                                                 renderItem={({item, index}) => 
-                                                <TouchableOpacity style={{flex: 0}} onPress={()=> setNoteColor(item)}>
+                                                <TouchableOpacity style={{flex: 0}} onPress={()=> {
+                                                        setNoteColor(item);
+                                                        if(isTutorial && tutorialLevel == 10){
+                                                            ProceedTutorial(navigation);
+                                                        }
+
+                                                    }}>
                                                     <Circle color={item} size={15} marginRight={5}
                                                     style={{borderColor: 'white',borderWidth: 1}}
                                                     /> 
                                                 </TouchableOpacity>
                                                 }
                                                 keyExtractor={(item,index)=> index.toString()}
+                                                onScroll={
+                                                    isTutorial ? 
+                                                    ({event})=>{
+                                                        if(isTutorial && tutorialLevel == 9 && swipeTut ){
+                                                            swipeTut = false;
+                                                            setTimeout(()=>{
+                                                                ProceedTutorial(navigation);
+                                                            }, TutDelayTime);
+                                                        }
+                                                    } : null
+                                                } 
+                                                
                                             />
-                                            {isTutorial && tutorialLevel == 1? <TutorialFinger style={{zIndex: 1, left: width * 0.1, top: height * 0.02}} swipe />: null}
-                                            {isTutorial && tutorialLevel == 1? <TutorialFinger style={{zIndex: 1, top: height * 0.02}} tap />: null}
+                                            {isTutorial && tutorialLevel == 9? <TutorialFinger style={{zIndex: 1, left: width * 0.1, top: height * 0.02}} swipe />: null}
+                                            {isTutorial && tutorialLevel == 10? <TutorialFinger style={{zIndex: 1, top: height * 0.02}} tap />: null}
                                         </View>
                                     
                                 </View>
@@ -434,11 +570,14 @@ function NoteEditor({navigation, route}){
                                  setStateCheckedData(modified);    
                                  currentCheckListIndex = stateCheckedData.length;
                                  changesCnt++;
+                                 if(isTutorial && tutorialLevel == 6){
+                                    ProceedTutorial(navigation);
+                                }
                             }}>
                                 <Text white size={30} left={-5} top={-5}> + </Text>
                                 <Text size={20} white top={3} left={-5}> List</Text>
                                 
-                  { isTutorial && tutorialLevel == 2? <TutorialFinger style={{zIndex: 1,top: height * 0.03, left: width * 0.04}} tap /> : null}
+                  { isTutorial && tutorialLevel == 6? <TutorialFinger style={{zIndex: 1,top: height * 0.03, left: width * 0.04}} tap /> : null}
                             </View>
                         </View>
                         : null

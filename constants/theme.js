@@ -215,7 +215,12 @@ const initial_note_data = [
         note: '1. 1 bottle of Vinigar \n2. 1/2 dozen of eggs \n3. 45 pcs of fresh tomatoes ',
         color: '#5a3d55',
         date: current_date,
-        checkList: [{_text:'', status: false}],
+        checkList: [
+            {
+                _text: 'Are these ingridients exist ? ',
+                status: 1,
+            },
+        ],
         isCheckList: 0,
         isNote: 1,
     },

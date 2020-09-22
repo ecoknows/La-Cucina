@@ -13,7 +13,7 @@ let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
 
 let isTutorial = false, swipeTut = true;
-let tutorialLevel = 0, TutDelayTime = 1000;
+let tutorialLevel = -1, TutDelayTime = 1000, tutStart = false;
 const TUTORIAL = 0;
 const {width, height} = Dimensions.get('window');
 function TutorialFinger(props){
@@ -140,6 +140,7 @@ function Ingridients({navigation, route}){
     const date =  new Date().getDate() +" " + monthsText[new Date().getMonth()];
     const fSwipe = useRef(new Animated.ValueXY()).current;
     const [refresh, setRefresh] = useState(false);
+    const scrollRef = useRef();
     
     const TutorialModal =()=>{
         navigation.navigate('InfoModal',{info: 
@@ -171,15 +172,24 @@ function Ingridients({navigation, route}){
             exit: true,
             });
     }
-    
     if(route.params?.modal != undefined){
         switch(route.params.modal){
             case TUTORIAL: 
-                tutorialLevel++;
+                if(tutorialLevel == -1 && !tutStart){
+                    ProceedTutorial(navigation);
+                    tutStart = true;
+                }else{
+                    
+                    tutorialLevel++;
+                }
                 swipeTut = true;
-                route.params.modal = undefined;
                 break;
         }
+        route.params.modal = undefined;
+    }
+    
+    if(isTutorial && tutorialLevel == 4 ){
+        ProceedTutorial(navigation);
     }
 
     useEffect(()=>{
@@ -190,7 +200,7 @@ function Ingridients({navigation, route}){
                     tabs.variables.tutorial_proceed = true;
                     TutorialModal();
                 }
-                if(tabs.tutorial.ingridients && tabs.tutorial.current == 'Ingridients' && tutorialLevel == -1){
+                if(tabs.tutorial.ingridients && tabs.tutorial.current == 'Ingridients' && tutorialLevel == -1 && !isTutorial){
                     isTutorial = true;
                     tabs.variables.active = 1;
                     tabs.variables.tutorial_proceed = true;
@@ -313,7 +323,7 @@ function Ingridients({navigation, route}){
                     />}
                 {item._text == '' ? null : <Text size={12} white family='bold' top={5} left={-3}>
                              {item._text}</Text>}
-                             
+                
                 {isTutorial && index == 0 && type == 1 && mainIndex == 0 && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1, left: width * -0.04, top: height * 0.04}} tap/>: null}
 
                 </View>
@@ -403,7 +413,11 @@ function Ingridients({navigation, route}){
             }]}}
             >
                 <Card activeOpacity={1} inTouchable round={25} color={item.color} padding={theme.sizes.padding} accent 
-                    inPress={()=>navigation.navigate('NoteEditor',{currentNote: item, index, type}) }>
+                    inPress={()=>{
+                        if(isTutorial && tutorialLevel != 4)
+                         return;
+                        navigation.navigate('NoteEditor',{currentNote: item, index, type})
+                    } }>
                 {item.title == ''? null :<Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>}
                 {(item.isNote)? item.note == '' ? null : <Text size={11} white family='semi-bold' bottom={10} numberOfLines={maxNoteLineLength} ellipsizeMode='tail'>{item.note}</Text> : null }
                 {item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data,setData}} type={type} /> : null}
@@ -411,6 +425,7 @@ function Ingridients({navigation, route}){
                     
                 </Card>
                 {isTutorial && index == 0 && type == 1 && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} swipe/>: null}
+                {isTutorial && index == 1 && type == 1 && tutorialLevel == 5 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} tap/>: null}
             </View>
         )
     }
@@ -450,6 +465,7 @@ function Ingridients({navigation, route}){
             <View paddingTop={30} row>
                 
                 <ScrollView
+                  ref={scrollRef}
                   onScroll={({nativeEvent}) => {
                     
                     if (isCloseToBottom(nativeEvent)) {
@@ -459,9 +475,10 @@ function Ingridients({navigation, route}){
                    }
 
                    if(isTutorial && tutorialLevel == 0 && swipeTut){
-                    swipeTut = true;
+                    swipeTut = false;
                     setTimeout(()=>{
                         ProceedTutorial(navigation);
+                        scrollRef.current.scrollTo({y:0,animated : true});
                     },TutDelayTime)
                    }
                    
@@ -545,7 +562,7 @@ function Ingridients({navigation, route}){
                         borderColor: theme.colors.accent
                     }}
                     press={()=> {
-                        if(tutorialLevel != 2 && isTutorial) {
+                        if(tutorialLevel != 3 && isTutorial) {
                             return;
                         }
                         navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]}, index: -1})
