@@ -390,6 +390,7 @@ function NoteEditor({navigation, route}){
                                 />
         
                                 {isTutorial && tutorialLevel == 11? <TutorialFinger style={{zIndex: 1, top: height * 0.02}} tap />: null}
+                                {isTutorial && tutorialLevel == 12? <TutorialFinger style={{zIndex: 1, top: height * 0.02}} tap />: null}
                             </TouchableOpacity>
         
                             <View flex={1}>

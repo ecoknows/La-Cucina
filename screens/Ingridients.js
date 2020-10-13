@@ -367,6 +367,10 @@ function Ingridients({navigation, route}){
                 if(dx < 100 && dx > -100)
                     animationOut();
                 else{
+                    if(isTutorial && tutorialLevel != 2){
+                     animationOut();
+                     return;
+                    }
                     let isGreater = data.length > data2.length ? 0 : 1;
                     const data2_toSwap = data2.slice(index+isGreater, data2.length);
                     let firstRow = false;
@@ -414,7 +418,7 @@ function Ingridients({navigation, route}){
             >
                 <Card activeOpacity={1} inTouchable round={25} color={item.color} padding={theme.sizes.padding} accent 
                     inPress={()=>{
-                        if(isTutorial && tutorialLevel != 4)
+                        if(isTutorial && tutorialLevel != 5)
                          return;
                         navigation.navigate('NoteEditor',{currentNote: item, index, type})
                     } }>

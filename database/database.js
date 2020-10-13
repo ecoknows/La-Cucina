@@ -117,63 +117,6 @@ const AddInitialNote =()=>{
   
 }
 
-
-const CheckNote =()=>{
-  let isCheckNoteTableDone = false;
-    db.transaction(
-        tx => {
-            tx.executeSql(
-                `create table if not exists ${note_table} `+
-                `(id integer primary key not null, title text, date text, color text, note text, isNote integer, isCheckList integer)`
-            , [], (tx, results) =>{
-              if(isCheckNoteTableDone)
-                IsTableExist();
-              else 
-                isCheckNoteTableDone = true;
-          }, function(tx,err) {
-              console.log(err.message);
-              return;
-          }
-            );
-        }
-    );
-
-    db.transaction(
-        tx => {
-            tx.executeSql(
-                `create table if not exists ${note_check_tbl} `+
-                `(id integer primary key not null, parent_id integer , _text text, status integer)`
-              , [], (tx, results) =>{
-                if(isCheckNoteTableDone)
-                  IsTableExist();
-                else 
-                  isCheckNoteTableDone = true;
-              }, function(tx,err) {
-                  console.log(err.message);
-                  return;
-              }
-            );
-        }
-    );
-    db.transaction(
-      tx => {
-          tx.executeSql(
-              `create table if not exists ${history_tbl} `+
-              `(id integer primary key not null, parent_id integer, favorite integer, capacity integer, ingredients text, directions integer, date text, time_finished text, image integer, mocks_index integer, mocks_tabs integer)`
-          );
-      }
-    );
-    
-    db.transaction(
-      tx => {
-          tx.executeSql(
-              `create table if not exists ${favorite_tbl} `+
-              `(id integer primary key not null, recipe_id integer, tabsIndex integer, mocksIndex integer)`
-          );
-      }
-    );
-}
-
 const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewDate, isNewTimeFinished, isImage, isIndex, isMocksTabs)=>{
   const {id,parent_id,favorite,capacity,ingredients, directions, newDate, time_finished, image, index, mocks_tabs} = data;
   let query = null;
@@ -679,63 +622,6 @@ const QueryChangesList =(data)=>{
 
 }
 
-const FavoriteData= (data, isAdd) => {
-  const { tabsIndex, mocksIndex,recipe_id } = data;
-  if(isAdd){
-    let query = "INSERT INTO "+ favorite_tbl +" (id,recipe_id,tabsIndex,mocksIndex) VALUES (null,?,?,?)";
-    let params = [recipe_id,tabsIndex, mocksIndex];
-
-    db.transaction(
-        (tx)=> {
-        tx.executeSql(query, params,(tx, results) =>{
-            console.log('Success Favorite Add!');
-        }, function(tx,err) {
-            console.log(err.message);
-            return;
-        })
-        }
-    )
-  }else{
-    let query = "DELETE FROM "+ favorite_tbl +" WHERE recipe_id = "+ recipe_id.toString();
-    let params = [];
-
-    db.transaction(
-        (tx)=> {
-        tx.executeSql(query, params,(tx, results) =>{
-            console.log('Success Favorite Delete!');
-        }, function(tx,err) {
-            console.log(err.message);
-            return;
-        })
-        }
-    )
-  }
-}
-
-const FavoriteUpdate =(setRefresh, refresh)=> {
-  
-  let query = "SELECT * from " + favorite_tbl;
-  let params = [];
-
-  db.transaction(
-    (tx)=> {
-      tx.executeSql(query, params,(tx, results) =>{
-        if(results.rows._array.length > 0){
-          for(let i = 0; i < results.rows._array.length; i++){
-            const { tabsIndex, mocksIndex} = results.rows._array[i];
-            console.log(tabsIndex , ' d ' , mocksIndex);
-            tabs.cuisine.uppedTabs[tabsIndex].mocks[mocksIndex].recipe.favorite = true;
-          }
-          setRefresh(!refresh);
-        }
-      }, function(tx,err) {
-        console.log(err.message);
-        return;
-      })
-    }
-  );
-}
-
 const FavoriteGet =(setData)=> {
   
   let query = "SELECT * from " + favorite_tbl;
@@ -795,7 +681,14 @@ const FetchFavorite =(setData,category)=> {
 
 
 export {
-    CheckNote,
+    db,
+    note_table,
+    note_check_tbl,
+    history_tbl,
+    favorite_tbl,
+    is_note_tbl_exist,
+    first_data,
+    TAG,
     AddNote,
     DropTable,
     DataPos,
@@ -815,8 +708,6 @@ export {
     RemoveNote,
     FetchHistory,
     SnapShotListiner,
-    FavoriteData,
-    FavoriteUpdate,
     FavoriteGet,
     DeleteHistory,
     FetchFavorite

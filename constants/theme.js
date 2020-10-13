@@ -184,33 +184,6 @@ const initial_note_data = [
         isNote: 1,
     },
     {
-        title: 'Don\'t forget this ^_^',
-        note: '',
-        color: '#5e6f64',
-        date: current_date,
-        checkList: [
-            {
-                _text: 'Olive Oil',
-                status: 0,
-            },
-            {
-                _text: 'Lemonade',
-                status: 0,
-            },
-            {
-                _text: 'Butter',
-                status: 0,
-            },
-            {
-                _text: 'Rice',
-                status: 0,
-            },
-
-        ],
-        isCheckList: 1,
-        isNote: 1,
-    },
-    {
         title: 'Availabe Ingridients',
         note: '1. 1 bottle of Vinigar \n2. 1/2 dozen of eggs \n3. 45 pcs of fresh tomatoes ',
         color: '#5a3d55',

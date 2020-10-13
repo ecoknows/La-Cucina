@@ -3,7 +3,10 @@ import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../
 import { StyleSheet, Animated, Dimensions, PanResponder  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { FavoriteData, FavoriteUpdate, SnapShotListiner } from '../database/database';
+
+import { SnapShotListiner } from '../database/database';
+import { FavoriteDataUpdate, GetAllFavorite } from '../database/cuisine';
+
 import { duration } from 'moment';
 import { Easing, event, set } from 'react-native-reanimated';
 
@@ -253,14 +256,14 @@ function Middle (props){
                             ProceedTutorial(navigation);
                         }
                         if(!recipe.favorite){
-                            FavoriteData({
+                            FavoriteDataUpdate({
                                 recipe_id: recipe.id,
                                 tabsIndex: mocks_tab,
                                 mocksIndex: item.index,
                             },true);
                             recipe.favorite = true;
                         }else{
-                            FavoriteData({
+                            FavoriteDataUpdate({
                                 recipe_id:recipe.id,
                                 tabsIndex: mocks_tab,
                                 mocksIndex: item.index,
@@ -472,7 +475,7 @@ function Cuisine({navigation, route}){
             middleListRef.current.scrollToIndex({index : 0, animated: true });
     },[bottomActive]);
     useEffect(()=>{
-        FavoriteUpdate(setRefresh, refresh);
+        GetAllFavorite(setRefresh, refresh);
         if(tutorialLevel == -1 && isTutorial)
             StartTutorial();
     },[]);

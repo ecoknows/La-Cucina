@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from './navigations/Navigation'
 import { AppLoading } from 'expo';
-import { CheckNote } from './database/database'
+import { CheckNote } from './database/database';
+import { CheckData } from './database/initial';
+import { IngridientReset } from './database/tutorial';
 import * as Font from 'expo-font';
 
 const  getFonts =()=> Font.loadAsync({
@@ -20,7 +22,8 @@ export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
-    CheckNote();
+    CheckData();
+    IngridientReset();
   }, [])
 
   if(fontsLoaded){

@@ -4,7 +4,8 @@ import { PanResponder,StyleSheet, Animated, TouchableOpacity, Dimensions } from 
 import { theme, directions, ingridients, mocks, tabs } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { Easing, set } from 'react-native-reanimated';
-import { AddHistory, GetHistory,GetHistroyCapacity, SnapShotListiner,DeleteHistory } from '../database/database'
+import {SnapShotListiner} from '../database/database'
+import { UpdateHistory, GetHistory, GetCapacityHistory, DeleteHistory } from '../database/cuisine';
 import moment from "moment";
 
 const DONE = 0;
@@ -465,7 +466,7 @@ function PeopleView(props){
     
     useEffect(()=>{
         setCapacity(props.capacity)
-        GetHistroyCapacity(item.id, setCapacity, original_capacity);
+        GetCapacityHistory(item.id, setCapacity, original_capacity);
     },[reset])
 
     useEffect(()=>{
@@ -737,6 +738,7 @@ function CuisineSelected({navigation, route}){
 
     useEffect(()=>
     {
+        console.log(route.params.modal);
         if(route.params?.modal){
             switch(route.params.modal){
                 case SAVE:
@@ -758,7 +760,17 @@ function CuisineSelected({navigation, route}){
                         directions: current_step.value,
                         ingredients: _ingredients_changer.array.toString(),
                     }
-                    AddHistory(data,isDataFetch,original_capacity.value == capacity, original_direction.value == current_step.value, newDate == last_save_date.value,percent == last_time_finished.value, last_image.value == image, last_index == index, last_mocks_tabs == mocks_tabs);
+                    UpdateHistory(
+                        data,
+                        isDataFetch,
+                        original_capacity.value == capacity,
+                        original_direction.value == current_step.value,
+                        newDate == last_save_date.value,
+                        percent == last_time_finished.value,
+                        last_image.value == image,
+                        last_index == index,
+                        last_mocks_tabs == mocks_tabs
+                    );
                     
                     if(route.params?.data_change){
                         route.params.data_change.value = true;
@@ -804,6 +816,7 @@ function CuisineSelected({navigation, route}){
                 StartTutorial();
         }
     },[]);
+    console.log(route.params.modal, ' ds');
     
     if(route.params?.modal != undefined){
         switch(route.params.modal){
@@ -815,9 +828,9 @@ function CuisineSelected({navigation, route}){
                     tutorialLevel++;
                 }
                 swipeTut = true;
+                route.params.modal = undefined;
                 break;
         }
-        route.params.modal = undefined;
     }
 
 
