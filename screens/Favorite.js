@@ -248,7 +248,7 @@ function Favorite({navigation}){
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            if(!tabs.tutorial.favorite){
+            if(!tabs.tutorial.favorite && tabs.tutorial.current != null){
                 tabs.variables.active = tabs.tutorial.curr_num;
                 tabs.variables.tutorial_proceed = true;
                 TutorialModal();

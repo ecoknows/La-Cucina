@@ -10,7 +10,7 @@ let open = null;
 let changesCnt = 0;
 let currentCheckListIndex = 0;
 
-let isTutorial = true,TutDelayTime = 1000;
+let isTutorial = false,TutDelayTime = 1000;
 let tutorialLevel = -1, swipeTut = true,tutStart = false;
 let TUTORIAL = 0;
 
@@ -131,7 +131,7 @@ const ProceedTutorial =(navigation)=>{
 }
 
 function NoteEditor({navigation, route}){
-    const { currentNote, index, type} = route.params;
+    const { currentNote, index, type, noteTutorial} = route.params;
     const checkList = currentNote.checkList != null?  currentNote.checkList.map(a => ({...a})) : [{_text:'', status: false}];
     const [ title, setTitle] = useState(currentNote.title);
     const [ note, setNote] = useState(currentNote.note);
@@ -165,7 +165,7 @@ function NoteEditor({navigation, route}){
         changesCnt = 0;
         currentCheckListIndex = 0;
         if(isTutorial && tutorialLevel == -1)
-        StartTutorial();
+            StartTutorial();
         const keyboardListener = Keyboard.addListener('keyboardDidHide', ()=>{scrollViewAnimated.setValue(height - (height * 0.1))});
         return () => {keyboardListener.remove()}
     },[]);
@@ -216,7 +216,6 @@ function NoteEditor({navigation, route}){
                 isCheckList: checked,
                 isNote: isNote,
             }
-            console.log('asdasf  fsf ', isTutorial);
             if(isTutorial){
                 navigation.navigate('Ingridients',{post:
                     current,
@@ -240,7 +239,12 @@ function NoteEditor({navigation, route}){
         
     }
 
-    // TextInput Tutorial Checker
+    //Tutorial Checker
+    if(noteTutorial){
+        isTutorial = true;
+    }else{
+        isTutorial = false
+    }
 
     if(route.params?.modal != undefined){
         switch(route.params.modal){
@@ -271,6 +275,7 @@ function NoteEditor({navigation, route}){
                 break;
         }
     }
+
     if(isTutorial && tutorialLevel == 0 && title != ''){
         ProceedTutorial(navigation);
     }

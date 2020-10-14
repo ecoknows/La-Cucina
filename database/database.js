@@ -22,6 +22,8 @@ const PAGING_LIMIT = "4";
 
 let isInitial = true;
 
+let fetching_nextPage = true;
+
 
 const SnapShotListiner = {
   history: true,
@@ -90,31 +92,6 @@ const GetFirstNote = async (setFirstItem)=>{
       console.log(TAG, error);
     }
   }
-}
-
-const IsTableExist = async ()=>{
-    try{
-      result = await AsyncStorage.getItem(is_note_tbl_exist) || null ;
-      if(result == null){
-        AddInitialNote()
-        try{
-          await AsyncStorage.setItem(is_note_tbl_exist,'exist');
-        }catch (error){
-          console.log(TAG, error);
-        }
-      }
-      
-    }catch (error){
-      console.log(TAG, error);
-    }
-}
-const AddInitialNote =()=>{
-  const array = theme.initial_note_data; 
-  SetFirstNote(array[0]);
-  for(let i = 1; i < array.length; i++){
-    AddNote(array[i]);
-  }
-  
 }
 
 const AddHistory =(data,isDataFetch, isCapacityChange, isDirectionChange, isNewDate, isNewTimeFinished, isImage, isIndex, isMocksTabs)=>{
@@ -295,52 +272,6 @@ const GetHistroyCapacity =(id, setCapacity, original_capacity)=>{
   );
 }
 
-const AddNote = (data) =>{
-    const { title, date, color, note, isNote, isCheckList, checkList,} = data;
-
-    let query = "INSERT INTO "+ note_table +" (id,title, date, color, note, isNote, isCheckList) VALUES (null,?,?,?,?,?,?)";
-    let params = [title, date, color, note, isNote, isCheckList];
-
-
-    const AddCheckList = (parent_id, checkList) => {
-      const { _text, status } = checkList;
-      let query = "INSERT INTO "+ note_check_tbl +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
-      let params = [parent_id, _text, status];
-  
-          db.transaction(
-              (tx)=> {
-              tx.executeSql(query, params,(tx, results) =>{
-                  checkList.id = results.insertId;
-                  console.log('Success CheckList!');
-              }, function(tx,err) {
-                  console.log(err.message);
-                  return;
-              })
-              }
-          )
-  
-    }
-
-    db.transaction(
-        (tx)=> {
-          tx.executeSql(query, params,(tx, results) =>{
-            let size = 0;
-            if(checkList.length != 1 && checkList[0]._text != '' )
-              size = checkList.length;
-            
-            for(let i = 0; i < size; i++){
-              AddCheckList(results.insertId, checkList[i]);
-            }
-            console.log('Success Note!');
-            
-          }, function(tx,err) {
-            console.log(err.message);
-            return;
-          })
-        }
-    );
-
-}
 
 const RemoveNote =(id)=>{
   let query = "DELETE from " + note_table + " WHERE id = " + id;
@@ -474,7 +405,7 @@ const SeeData =()=>{
 
 }
 
-let fetching_nextPage = true;
+
 const NextDataSelect =(setStateData1,setStateData2, paging_limit) =>{
   let query = ' ';
   let params = [];
@@ -688,8 +619,8 @@ export {
     favorite_tbl,
     is_note_tbl_exist,
     first_data,
+    userId,
     TAG,
-    AddNote,
     DropTable,
     DataPos,
     InitialData,
@@ -710,5 +641,6 @@ export {
     SnapShotListiner,
     FavoriteGet,
     DeleteHistory,
-    FetchFavorite
+    FetchFavorite,
+    PAGING_LIMIT,
 }

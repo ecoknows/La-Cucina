@@ -3,7 +3,18 @@ import { View, List,Text, Card, Circle, Pic } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme, tabs } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, DropTable,SeeData,NextDataSelect ,InitialData, DataPos, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, SetFirstNote, GetFirstNote, RemovePos, RemoveNote } from '../database/database'
+import {DropTable,SeeData, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, RemovePos } from '../database/database';
+import { 
+    AddNote, 
+    LoadNextNotes, 
+    StartingNotes, 
+    UpdateNotes,
+    NoteChecklistUpdate,
+    GetNoteCheckList,
+    RemoveNote,
+    NoteChangesQuery,
+} from '../database/ingridients';
+import { SetRowNoteStatus, SetFirstNote, GetFirstNote } from '../database/async_storage';
 import { PanResponder, Animated, Dimensions } from 'react-native';
 
 let _1_data = true;
@@ -193,6 +204,11 @@ function Ingridients({navigation, route}){
     }
 
     useEffect(()=>{
+       GetFirstNote(setFirstItem);
+       StartingNotes({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2, id_latest });
+    },[]);
+
+    useEffect(()=>{
         if(tabs.tutorial.current != null){
             const unsubscribe = navigation.addListener('focus', () => {
                 if(!tabs.tutorial.ingridients){
@@ -216,7 +232,7 @@ function Ingridients({navigation, route}){
         if(stateData1.length != 0 && _1_data){
             
             for(let i = _1_latest_offset_data; i < stateData1.length; i++){
-                SelectCheckList(stateData1[i],stateData1,setStateData1, i);
+                GetNoteCheckList(stateData1[i],stateData1,setStateData1, i);
             }
             _1_latest_offset_data = stateData1.length;
             //_1_id_latest_data = stateData1[0].id+1;
@@ -228,7 +244,7 @@ function Ingridients({navigation, route}){
         if(stateData2.length != 0 && _2_data){
             
             for(let i = _2_latest_offset_data; i < stateData2.length; i++){
-                SelectCheckList(stateData2[i],stateData2,setStateData2, i);
+                GetNoteCheckList(stateData2[i],stateData2,setStateData2, i);
             }
             
             _2_latest_offset_data = stateData2.length;
@@ -242,8 +258,6 @@ function Ingridients({navigation, route}){
   //RemovePos();
    // SeeData();
     useEffect(() => {
-       GetFirstNote(setFirstItem);
-       InitialData({setStateData1, setStateData2, setIsFirstRow, stateData1, stateData2, id_latest });
         if (route.params?.post) {
             const {index, post, type} = route.params; 
 
@@ -251,7 +265,7 @@ function Ingridients({navigation, route}){
                 const setData = isFirstRow ? setStateData1 : setStateData2;
                 id_latest.value++;
                 setData(items=>[post,...items])
-                DataPos(isFirstRow ? '0': '1');
+                SetRowNoteStatus(isFirstRow ? '0': '1');
                 setIsFirstRow(!isFirstRow); 
                 AddNote(post);
             }else{
@@ -265,18 +279,17 @@ function Ingridients({navigation, route}){
                         updateData = stateData1;
                         save = updateData[index];
                         updateData[index] = post;
-                        console.log(save, ' gagaga = ', post)
                         setStateData1( items=>[...updateData]);
-                        UpdateTable(QueryChanges({save, post}), post.id.toString(),1);
-                        QueryChangesList({save, post});
+                        UpdateNotes(NoteChangesQuery({save, post}), post.id.toString(),1);
+                        NoteChecklistUpdate({save, post});
                         break;
                     case 2: 
                         updateData = stateData2;
                         save = updateData[index];
                         updateData[index] = post;
                         setStateData2( items=>[...updateData]);
-                        UpdateTable(QueryChanges({save, post}), post.id.toString(),1);
-                        QueryChangesList({save, post});
+                        UpdateNotes(NoteChangesQuery({save, post}), post.id.toString(),1);
+                        NoteChecklistUpdate({save, post});
                         break;
                 }
                 
@@ -307,7 +320,7 @@ function Ingridients({navigation, route}){
             setTimeout(()=>{
                 let updatedData = data;
                 updatedData[mainIndex].checkList[index].status = updatedData[mainIndex].checkList[index].status ? 0 : 1;
-                UpdateTable(" status = " + updatedData[mainIndex].checkList[index].status, updatedData[mainIndex].checkList[index].id,2);
+                UpdateNotes(" status = " + updatedData[mainIndex].checkList[index].status, updatedData[mainIndex].checkList[index].id,2);
                 setData(items=> [...updatedData]);
             }, 1)
             
@@ -391,7 +404,7 @@ function Ingridients({navigation, route}){
                         setData(data1_modi);
                         setData2(data2_modi);
                     }
-                    NextDataSelect(setStateData1,setStateData2,"1");
+                    LoadNextNotes(setStateData1,setStateData2,"1");
                     if(isTutorial && tutorialLevel == 2){
                         ProceedTutorial(navigation);
                     }
@@ -475,7 +488,7 @@ function Ingridients({navigation, route}){
                     if (isCloseToBottom(nativeEvent)) {
                         _1_data = true;
                         _2_data = true;
-                        NextDataSelect(setStateData1,setStateData2,"6");
+                        LoadNextNotes(setStateData1,setStateData2,"6");
                    }
 
                    if(isTutorial && tutorialLevel == 0 && swipeTut){
@@ -569,7 +582,12 @@ function Ingridients({navigation, route}){
                         if(tutorialLevel != 3 && isTutorial) {
                             return;
                         }
-                        navigation.navigate('NoteEditor',{currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]}, index: -1})
+                        navigation.navigate(
+                            'NoteEditor',
+                            {currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]},
+                             index: -1,
+
+                            });
                     }}
                 >
                     <Text family='semi-bold' size={18} accent>Create</Text>
