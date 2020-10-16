@@ -3,7 +3,7 @@ import { View,Text, Pic, List } from '../components';
 import CirclePercent from '../svg/CirclePercent';
 import {Animated,Easing, Dimensions, PanResponder, TouchableOpacity} from 'react-native';
 import { theme, tabs } from '../constants';
-import { FavoriteGet, FetchFavorite } from '../database/database';
+import { FetchFavorite } from '../database/favorite';
 
 let swipeTO = null;
 let timeOut = null;

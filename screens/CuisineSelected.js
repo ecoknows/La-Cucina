@@ -5,7 +5,7 @@ import { theme, directions, ingridients, mocks, tabs } from '../constants';
 import { CheckBox } from 'react-native-elements';
 import { Easing, set } from 'react-native-reanimated';
 import {SnapShotListiner} from '../database/database'
-import { UpdateHistory, GetHistory, GetCapacityHistory, DeleteHistory } from '../database/cuisine';
+import { UpdateHistory, GetHistory, GetCapacityHistory, DeleteHistory } from '../database/history';
 import moment from "moment";
 
 const DONE = 0;

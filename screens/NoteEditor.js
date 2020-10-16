@@ -3,7 +3,6 @@ import { View, Input, Text, Pic, Circle, List } from '../components';
 import { theme } from '../constants';
 import {TouchableOpacity,ScrollView, Dimensions, Animated, Easing, Keyboard} from 'react-native';
 import { CheckBox } from 'react-native-elements';
-import { AddNote, SelectNote, DeleteAll, DropTable } from '../database/database'
 
 const { height, width } = Dimensions.get('screen');
 let open = null;

@@ -435,6 +435,7 @@ const UpdateTable =(change, id, table_id )=>{
   }
 }
 
+/*
 const FavoriteGet =(setData)=> {
   
   let query = "SELECT * from " + favorite_tbl;
@@ -455,7 +456,7 @@ const FavoriteGet =(setData)=> {
       })
     }
   );
-}
+}*/
 
 
 const FetchFavorite =(setData,category)=> {
@@ -518,7 +519,6 @@ export {
     RemoveNote,
     FetchHistory,
     SnapShotListiner,
-    FavoriteGet,
     DeleteHistory,
     FetchFavorite,
     PAGING_LIMIT,

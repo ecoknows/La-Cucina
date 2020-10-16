@@ -5,7 +5,7 @@ import { theme, tabs, mocks } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { SnapShotListiner } from '../database/database';
-import { FavoriteDataUpdate, GetAllFavorite } from '../database/cuisine';
+import { FavoriteDataUpdate, GetAllFavorite } from '../database/favorite';
 
 import { duration } from 'moment';
 import { Easing, event, set } from 'react-native-reanimated';

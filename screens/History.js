@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, ScrollView,TouchableOpacity, Animated, Easing } from 'react-native';
 import { View, Pic,List,Text } from '../components';
-import { FetchHistory } from '../database/database';
+import { FetchHistory } from '../database/history';
 import { tabs, theme } from '../constants';
 import { parse } from 'react-native-svg';
 import moment from "moment";
