@@ -406,35 +406,6 @@ const SeeData =()=>{
 }
 
 
-const NextDataSelect =(setStateData1,setStateData2, paging_limit) =>{
-  let query = ' ';
-  let params = [];
-  if(fetching_nextPage){
-      query = currentOffset == -1 ? "SELECT * from " + note_table + " ORDER BY id DESC LIMIT " + paging_limit  :
-              "SELECT * from " + note_table + " WHERE id < "+ currentOffset.toString() +" ORDER BY id DESC LIMIT " + paging_limit;
-
-      db.transaction(
-        (tx)=> {
-          tx.executeSql(query, params,(tx, results) =>{
-            if(results.rows._array.length > 0){
-              let evenArray = results.rows._array.filter((a,i)=>i%2===0);
-              let oddArray = results.rows._array.filter((a,i)=>i%2===1);
-              setStateData1(items=> [...items, ...oddArray]);
-              setStateData2(items=> [...items, ...evenArray]);
-
-              currentOffset = results.rows._array[results.rows._array.length-1].id;
-            }
-            fetching_nextPage = true;
-          }, function(tx,err) {
-            console.log(err.message);
-            return;
-          })
-        }
-      );
-    fetching_nextPage = false;
-  }
-}
-
 const UpdateTable =(change, id, table_id )=>{
 
   if(change != ' '){
@@ -462,95 +433,6 @@ const UpdateTable =(change, id, table_id )=>{
       }
     );
   }
-}
-
-const QueryChanges =(data)=>{
-  const { save, post } = data;
-  console.log('sadreax ' , save.isCheckList);
-  console.log('sadreax_post ' , post.isCheckList);
-  let addQuery = ' ';
-  addQuery = save.title != post.title ? addQuery + "title = '" + post.title +"', " : addQuery;
-  addQuery = save.note != post.note ? addQuery + "note = '" + post.note +"', " : addQuery;
-  addQuery = save.color != post.color ? addQuery + "color = '" + post.color +"', " : addQuery ;
-  addQuery = save.date != post.date ? addQuery + "date = '" + post.date +"', " : addQuery ;
-  addQuery = (save.isCheckList != post.isCheckList) ? addQuery + "isCheckList = " + (post.isCheckList ?  '1': '0') +", " : addQuery ;
-  addQuery = (save.isNote != post.isNote) ? addQuery + "isNote = " + (post.isNote ? "1" : "0") +", " : addQuery ;
-  
-  return addQuery == ' ' ? ' ' : addQuery.slice(0, -2);
-}
-
-
-const QueryChangesList =(data)=>{
-  const { save, post } = data;
-  let saveCheckList = save.checkList;
-  let postCheckList = post.checkList;
-  if(saveCheckList[0].id != null)
-    for(let i = 0; i < saveCheckList.length; i++){
-      if(postCheckList[i] == undefined){continue;}
-      let addQuery = ' ';
-      postCheckList[i].status = postCheckList[i].status ? 1 : 0; 
-      addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
-      addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
-     
-      if(addQuery != ' '){
-        let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + saveCheckList[i].id.toString();
-        console.log(query);
-        let params = [];
-        db.transaction(
-          (tx)=> {
-            tx.executeSql(query, params,(tx, results) =>{
-              
-              console.log("Success ");
-            }, function(tx,err) {
-              console.log(err.message);
-              return;
-            })
-          }
-        );
-      }
-
-    }
-
-  if(postCheckList.length > saveCheckList.length ){
-    
-    let i = saveCheckList[0].id == null ? 0 : saveCheckList.length;
-    for( ; i < postCheckList.length; i++){
-      let query = "INSERT INTO "+ note_check_tbl +" (id,parent_id, _text, status) VALUES (null,?,?,?)";
-      let params = [post.id, postCheckList[i]._text, postCheckList[i].status ? 1 : 0];
-
-      db.transaction(
-          (tx)=> {
-          tx.executeSql(query, params,(tx, results) =>{
-              console.log('Success CheckList!');
-          }, function(tx,err) {
-              console.log(err.message);
-              return;
-          })
-          }
-      )
-
-    }
-  }
-  if(postCheckList.length < saveCheckList.length ){
-    let i = postCheckList.length;
-    for( ; i < saveCheckList.length; i++){
-      let query = "DELETE FROM "+ note_check_tbl +" WHERE id = " + saveCheckList[i].id.toString();
-      let params = [];
-
-      db.transaction(
-          (tx)=> {
-          tx.executeSql(query, params,(tx, results) =>{
-              console.log('DELETE CheckList!');
-          }, function(tx,err) {
-              console.log(err.message);
-              return;
-          })
-          }
-      )
-
-    }
-  }
-
 }
 
 const FavoriteGet =(setData)=> {
@@ -627,15 +509,12 @@ export {
     SeeData,
     SelectCheckList,
     UpdateTable,
-    QueryChanges,
-    QueryChangesList,
     SetFirstNote,
     GetFirstNote,
     RemovePos,
     AddHistory,
     GetHistory,
     GetHistroyCapacity,
-    NextDataSelect,
     RemoveNote,
     FetchHistory,
     SnapShotListiner,

@@ -34,18 +34,20 @@ const RemoveNote =(id)=>{
     remove_note(id);
 }
 
-const LoadNextNotes =(setStateData1,setStateData2, paging_limit)=>{
+const LoadNextNotes =(setStateData1,setStateData2, paging_limit, _1_data, _2_data)=>{
     let query = ' ';
-    let params = [];
+    let params = []; 
     if(fetching_nextPage){
         query = currentOffset == -1 ? "SELECT * from " + note_table + " ORDER BY id DESC LIMIT " + paging_limit  :
                 "SELECT * from " + note_table + " WHERE id < "+ currentOffset.toString() +" ORDER BY id DESC LIMIT " + paging_limit;
   
         transaction(query,params, 
-            (results)=>{
+            (results)=>{ 
                 if(results.rows._array.length > 0){
                     let evenArray = results.rows._array.filter((a,i)=>i%2===0);
                     let oddArray = results.rows._array.filter((a,i)=>i%2===1);
+                    _1_data.value = true;
+                    _2_data.value = true;
                     setStateData1(items=> [...items, ...oddArray]);
                     setStateData2(items=> [...items, ...evenArray]);
     
@@ -103,10 +105,9 @@ const NoteChecklistUpdate =(data)=>{
         postCheckList[i].status = postCheckList[i].status ? 1 : 0; 
         addQuery = (saveCheckList[i]._text != postCheckList[i]._text )? addQuery + "_text = '" + postCheckList[i]._text +"', " : addQuery;
         addQuery = (saveCheckList[i].status != postCheckList[i].status) ? addQuery + "status = " + postCheckList[i].status.toString() +", " : addQuery;
-       
+        postCheckList[i].id = saveCheckList[i].id;
         if(addQuery != ' '){
           let query = "UPDATE "+ note_check_tbl +" SET" + addQuery.slice(0,-2) + " WHERE id = " + saveCheckList[i].id.toString();
-          console.log(query);
           let params = [];
           transaction(query,params);
         }
@@ -267,6 +268,8 @@ function transaction(query, params, func){
 }
 // VARAIBLES *// **************************
 let fetching_nextPage = true;
+let currentOffset = -1;
+
 
 export {
     RemoveAllNotes,

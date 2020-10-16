@@ -3,7 +3,16 @@ import { View, List,Text, Card, Circle, Pic } from '../components';
 import { ScrollView } from 'react-native-gesture-handler';
 import { theme, tabs } from '../constants';
 import { CheckBox } from 'react-native-elements';
-import {DropTable,SeeData, UpdateTable, QueryChanges, QueryChangesList, SelectCheckList, RemovePos } from '../database/database';
+
+import { SetRowNoteStatus, SetFirstNote, GetFirstNote } from '../database/async_storage';
+import { PanResponder, Animated, Dimensions } from 'react-native';
+import {
+    DropTable,
+    SeeData, 
+    UpdateTable, 
+    SelectCheckList, 
+    RemovePos 
+} from '../database/database';
 import { 
     AddNote, 
     LoadNextNotes, 
@@ -14,11 +23,9 @@ import {
     RemoveNote,
     NoteChangesQuery,
 } from '../database/ingridients';
-import { SetRowNoteStatus, SetFirstNote, GetFirstNote } from '../database/async_storage';
-import { PanResponder, Animated, Dimensions } from 'react-native';
 
-let _1_data = true;
-let _2_data = true;
+let _1_data = {value: true};
+let _2_data = {value: true};
 let _1_latest_offset_data = 0;
 let _2_latest_offset_data = 0;
 let id_latest = {value : 1};
@@ -229,27 +236,26 @@ function Ingridients({navigation, route}){
     },[navigation]);
 
     useEffect(()=> {
-        if(stateData1.length != 0 && _1_data){
-            
-            for(let i = _1_latest_offset_data; i < stateData1.length; i++){
+        if(stateData1.length != 0 && _1_data.value){
+            for(let i = 0; i < stateData1.length; i++){
                 GetNoteCheckList(stateData1[i],stateData1,setStateData1, i);
             }
-            _1_latest_offset_data = stateData1.length;
+            //_1_latest_offset_data = stateData1.length;
             //_1_id_latest_data = stateData1[0].id+1;
-            _1_data = false;
+            _1_data.value = false;
         }
     },[stateData1]);
     
     useEffect(()=> {
-        if(stateData2.length != 0 && _2_data){
-            
-            for(let i = _2_latest_offset_data; i < stateData2.length; i++){
+        if(stateData2.length != 0 && _2_data.value){
+            for(let i = 0; i < stateData2.length; i++){
                 GetNoteCheckList(stateData2[i],stateData2,setStateData2, i);
             }
             
-            _2_latest_offset_data = stateData2.length;
+            //_2_latest_offset_data = i;
+            console.log(stateData2[_2_latest_offset_data-1]);
             //_2_id_latest_data = stateData2[0].id+1;
-            _2_data = false;
+            _2_data.value = false;
         }
     },[stateData2]);
 
@@ -334,7 +340,7 @@ function Ingridients({navigation, route}){
                 {item._text == '' ? null : <CheckBox checked={checked} size={20} checkedColor='white' uncheckedColor='white'  containerStyle={{width: 30,height: 20, marginLeft: -10}} 
                     onPress={()=> { setChecked(checked ? false : true); changeChecked(index); }}
                     />}
-                {item._text == '' ? null : <Text size={12} white family='bold' top={5} left={-3}>
+                {item._text == '' ? null : <Text size={12} white family='bold' top={5} left={-3} numberOfLines={3}>
                              {item._text}</Text>}
                 
                 {isTutorial && index == 0 && type == 1 && mainIndex == 0 && tutorialLevel == 1 ? <TutorialFinger style={{zIndex: 1, left: width * -0.04, top: height * 0.04}} tap/>: null}
@@ -404,7 +410,8 @@ function Ingridients({navigation, route}){
                         setData(data1_modi);
                         setData2(data2_modi);
                     }
-                    LoadNextNotes(setStateData1,setStateData2,"1");
+                    
+                    LoadNextNotes(setStateData1,setStateData2,"1",_1_data,_2_data);
                     if(isTutorial && tutorialLevel == 2){
                         ProceedTutorial(navigation);
                     }
@@ -435,7 +442,7 @@ function Ingridients({navigation, route}){
                          return;
                         navigation.navigate('NoteEditor',{currentNote: item, index, type})
                     } }>
-                {item.title == ''? null :<Text size={18} white family='bold' bottom={theme.sizes.padding/2}>{item.title}</Text>}
+                {item.title == ''? null :<Text size={18} white family='bold' bottom={theme.sizes.padding/2} numberOfLines={maxNoteLineLength}>{item.title}</Text>}
                 {(item.isNote)? item.note == '' ? null : <Text size={11} white family='semi-bold' bottom={10} numberOfLines={maxNoteLineLength} ellipsizeMode='tail'>{item.note}</Text> : null }
                 {item.isCheckList ? <CheckList item={item}  mainIndex={index} stateData={{data,setData}} type={type} /> : null}
                     <Text size={12} white end top={20}>{item.date}</Text>
@@ -486,9 +493,7 @@ function Ingridients({navigation, route}){
                   onScroll={({nativeEvent}) => {
                     
                     if (isCloseToBottom(nativeEvent)) {
-                        _1_data = true;
-                        _2_data = true;
-                        LoadNextNotes(setStateData1,setStateData2,"6");
+                        LoadNextNotes(setStateData1,setStateData2,"6", _1_data, _2_data);
                    }
 
                    if(isTutorial && tutorialLevel == 0 && swipeTut){
