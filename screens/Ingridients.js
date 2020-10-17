@@ -34,6 +34,7 @@ let isTutorial = false, swipeTut = true;
 let tutorialLevel = -1, TutDelayTime = 1000, tutStart = false;
 const TUTORIAL = 0;
 const {width, height} = Dimensions.get('window');
+
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
     const swipe_animated = useRef(new Animated.Value(0)).current;
@@ -132,7 +133,6 @@ function TutorialFinger(props){
     )
 }
 
-        
 const ProceedTutorial =(navigation)=>{
     navigation.navigate('InfoModal',{info: 
         {
@@ -148,6 +148,7 @@ const ProceedTutorial =(navigation)=>{
         exit: false,
         });
 }
+
 function Ingridients({navigation, route}){
 
     const [stateData1, setStateData1] = useState([]);
@@ -196,8 +197,7 @@ function Ingridients({navigation, route}){
                 if(tutorialLevel == -1 && !tutStart){
                     ProceedTutorial(navigation);
                     tutStart = true;
-                }else{
-                    
+                }else{         
                     tutorialLevel++;
                 }
                 swipeTut = true;
@@ -205,7 +205,15 @@ function Ingridients({navigation, route}){
         }
         route.params.modal = undefined;
     }
-    
+
+    if(isTutorial && tutorialLevel == 6){
+        isTutorial = false;
+        tutorialLevel = -1;
+        tutorialInfo = false;
+        tabs.tutorial.current = 'History';
+        tabs.tutorial.history = true;
+    }
+
     if(isTutorial && tutorialLevel == 4 ){
         ProceedTutorial(navigation);
     }
@@ -440,7 +448,13 @@ function Ingridients({navigation, route}){
                     inPress={()=>{
                         if(isTutorial && tutorialLevel != 5)
                          return;
-                        navigation.navigate('NoteEditor',{currentNote: item, index, type})
+                        navigation.navigate('NoteEditor',
+                        {
+                            currentNote: item, 
+                            index, 
+                            type, 
+                            noteTutorial: isTutorial
+                        });
                     } }>
                 {item.title == ''? null :<Text size={18} white family='bold' bottom={theme.sizes.padding/2} numberOfLines={maxNoteLineLength}>{item.title}</Text>}
                 {(item.isNote)? item.note == '' ? null : <Text size={11} white family='semi-bold' bottom={10} numberOfLines={maxNoteLineLength} ellipsizeMode='tail'>{item.note}</Text> : null }
@@ -449,7 +463,7 @@ function Ingridients({navigation, route}){
                     
                 </Card>
                 {isTutorial && index == 0 && type == 1 && tutorialLevel == 2 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} swipe/>: null}
-                {isTutorial && index == 1 && type == 1 && tutorialLevel == 5 ? <TutorialFinger style={{zIndex: 1,left:0, top : height * 0.15}} tap/>: null}
+                {isTutorial && index == 2 && type == 2 && tutorialLevel == 5 ? <TutorialFinger style={{zIndex: 1,left:40, top : height * 0.10}} tap/>: null}
             </View>
         )
     }
@@ -486,6 +500,9 @@ function Ingridients({navigation, route}){
 
     return(
         <View white>
+            
+        {tabs.tutorial.current == 'Favorite' && !isTutorial ? <TutorialFinger style={{left: width * 0.50,zIndex: 1,bottom: 0, transform:[{rotate: '180deg'}]}} tap/> : null}
+        {tabs.tutorial.current == 'History' && !isTutorial ? <TutorialFinger style={{left: width * 0.75,zIndex: 1,bottom: 0, transform:[{rotate: '180deg'}]}} tap/> : null}
             <View paddingTop={30} row>
                 
                 <ScrollView
@@ -590,8 +607,8 @@ function Ingridients({navigation, route}){
                         navigation.navigate(
                             'NoteEditor',
                             {currentNote: {id: id_latest.value,title: '', note: '', date ,isNote: true,isCheckList: false , color: theme.colors.semi_accent, checkList: [{_text:'', status: false}]},
-                             index: -1,
-
+                             index: -1, 
+                             noteTutorial: isTutorial,
                             });
                     }}
                 >
