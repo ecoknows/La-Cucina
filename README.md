@@ -12,7 +12,7 @@ Oh btw this repository name, Chevy is my girlfriend name, I can't think of a nam
 - Favorite where the user can save all his favorite ingridients
 
 ### App Preview
-
+<img src="git_image/cuisine_ui.png" width="1500px" height="250px">
 
 ### Colaborating to this repository
 if you want to clone or help me with this project, please contact me [here](https://www.facebook.com/ecovillaraza3/) so that we can actually talk about things
