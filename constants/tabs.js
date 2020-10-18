@@ -169,11 +169,11 @@ const favorites = {
 }
 
 const tutorial = {
-    current: "Favorite", //todo:  null
-    curr_num : 2,
-    favorite: true,
+    current: "Cuisine", //todo:  null
+    curr_num : 0,
+    favorite: false,
     history: false,
-    ingridients: true,
+    ingridients: false,
 }
 
 const variables = {

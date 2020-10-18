@@ -7,6 +7,14 @@ import { Easing, set } from 'react-native-reanimated';
 import {SnapShotListiner} from '../database/database'
 import { UpdateHistory, GetHistory, GetCapacityHistory, DeleteHistory } from '../database/history';
 import moment from "moment";
+import { 
+    ProceedTutorial, 
+    StartTutorial, 
+    TutorialFinger, 
+    tutorial_info,
+    TUTORIAL,
+    tutorial
+} from '../constants/tutorial';
 
 const DONE = 0;
 const START = 1;
@@ -44,7 +52,6 @@ let latest_check_ingridients;
 
 const SAVE = 1;
 const BACK = 2;
-const TUTORIAL = 10;
 
 let open_nutrition;
 
@@ -53,6 +60,7 @@ let tutorialLevel = -1,TutDelayTime = 1000, timeoutTutorial = true;
 
 const {height, width} = Dimensions.get('window');
 
+/*
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
     const swipe_animated = useRef(new Animated.Value(0)).current;
@@ -148,24 +156,7 @@ function TutorialFinger(props){
             />
         </View>
     )
-}
-
-        
-const ProceedTutorial =(navigation)=>{
-    navigation.navigate('InfoModal',{info: 
-        {
-        text: theme.tutorial_info.cuisine_selected[tutorialLevel+1],
-        }, 
-        button: [
-            {
-                title: 'Ok',
-                navigate: 'CuisineSelected',
-                purpose: TUTORIAL
-            },
-            ],  
-        exit: false,
-        });
-}
+}*/
 
 
 function SheetText(props){
@@ -225,7 +216,7 @@ function SheetText(props){
     
     if(isDirection && oneTimeOnly){
         if(isTutorial && tutorialLevel == 7){
-            ProceedTutorial(navigation);
+            ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
         }else{
             navigation.navigate('InfoModal',{info: {text: 'Make sure your ingredients \n are ready ^_^'},
             button:[ {title: 'ok'}]
@@ -242,7 +233,7 @@ function SheetText(props){
             current_step.value++;
             
         if(isTutorial && (tutorialLevel == 8 || tutorialLevel ==9))
-            ProceedTutorial(navigation);
+        ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
     }
 
 
@@ -267,7 +258,7 @@ function SheetText(props){
                 _ingredients_changer.array = _ingredients_changer.array.filter(value => !test.includes(value));
             }
             if(isTutorial && tutorialLevel == 6){
-                ProceedTutorial(navigation);
+                ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
             }
         }
         
@@ -410,7 +401,7 @@ function SheetText(props){
                 press={()=>{
                     setDirection(false);
                     if(isTutorial && tutorialLevel == 10){
-                        ProceedTutorial(navigation);
+                        ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                     }
                 }}
                 size={19} 
@@ -479,7 +470,7 @@ function PeopleView(props){
             <TouchableOpacity onPress={()=>{
                     setCapacity(capacity+1);
                     if(isTutorial && tutorialLevel == 0){
-                        ProceedTutorial(navigation);
+                        ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                     }
             }}>
                 <Pic 
@@ -502,7 +493,7 @@ function PeopleView(props){
             <TouchableOpacity onPress={()=>{
                     setCapacity(capacity-1);
                     if(isTutorial && tutorialLevel == 1){
-                        ProceedTutorial(navigation);
+                        ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                     }
             }}>
                 <Pic 
@@ -595,22 +586,6 @@ function CuisineSelected({navigation, route}){
         DeleteHistory(histor_id.value,setReset,reset);
     }
     
-    const StartTutorial =()=>{
-        navigation.navigate('InfoModal',{info: 
-            {
-            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
-            }, 
-            button: [
-                {
-                    title: 'Ok',
-                    navigate: 'CuisineSelected',
-                    purpose: TUTORIAL
-                },
-                ],  
-            exit: true,
-            });
-    }
-    
     const panResponderTwo = useRef( PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
@@ -629,7 +604,7 @@ function CuisineSelected({navigation, route}){
           if(sheet_latestoffset < -100){
             pan.y.setValue(-100);
             if(isTutorial && tutorialLevel == 2){
-                ProceedTutorial(navigation);
+                ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                 CloseSheet();
             }
           }
@@ -666,7 +641,7 @@ function CuisineSelected({navigation, route}){
                 OpenNutrition(true);
                 
                 if(isTutorial && tutorialLevel == 3){
-                    ProceedTutorial(navigation);
+                    ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                     OpenNutrition(false);
                 }
             }else{
@@ -711,7 +686,7 @@ function CuisineSelected({navigation, route}){
         if(isTutorial && tutorialLevel == 4 && timeoutTutorial){
             timeoutTutorial = false;
             setTimeout(()=>{
-                ProceedTutorial(navigation);
+                ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                 OpenNutrition(false);
             },TutDelayTime);
         }
@@ -787,8 +762,8 @@ function CuisineSelected({navigation, route}){
                         isTutorial = false;
                         tutorialLevel = -1;
                         tutorialInfo = false;
-                        tabs.tutorial.current = 'Ingridients';
-                        tabs.tutorial.ingridients = true;
+                        tutorial.current = 'Ingridients';
+                        tutorial.ingridients = true;
                     }
                     break;
                 
@@ -801,8 +776,8 @@ function CuisineSelected({navigation, route}){
                         isTutorial = false;
                         tutorialLevel = -1;
                         tutorialInfo = false;
-                        tabs.tutorial.current = 'Ingridients';
-                        tabs.tutorial.ingridients = true;
+                        tutorial.current = 'Ingridients';
+                        tutorial.ingridients = true;
                     }
                     break;
             }
@@ -813,16 +788,19 @@ function CuisineSelected({navigation, route}){
     useEffect(()=>{
         if(isTutorial){
             if(tutorialLevel == -1)
-                StartTutorial();
+            StartTutorial(
+                navigation, 
+                'CuisineSelected',  
+                'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+            );
         }
     },[]);
-    console.log(route.params.modal, ' ds');
     
     if(route.params?.modal != undefined){
         switch(route.params.modal){
             case TUTORIAL: 
                 if(tutorialLevel == -1 && !tutStart){
-                    ProceedTutorial(navigation);
+                    ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                     tutStart = true;
                 }else{
                     tutorialLevel++;
@@ -925,7 +903,7 @@ function CuisineSelected({navigation, route}){
                     <View touchable activeOpacity={1} press={()=> {
                         navigation.navigate('ImageModal',{image});
                         if(isTutorial && tutorialLevel == 5){
-                            ProceedTutorial(navigation);
+                            ProceedTutorial(navigation, 'CuisineSelected', tutorial_info.cuisine_selected[tutorialLevel + 1]);
                         }
 
                         }} cente >

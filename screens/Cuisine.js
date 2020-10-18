@@ -3,12 +3,18 @@ import { View, Text, List, Card, Pic, Shadow, Circle, Heart, Loading } from '../
 import { StyleSheet, Animated, Dimensions, PanResponder  } from 'react-native';
 import { theme, tabs, mocks } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
 import { SnapShotListiner } from '../database/database';
 import { FavoriteDataUpdate, GetAllFavorite } from '../database/favorite';
-
 import { duration } from 'moment';
 import { Easing, event, set } from 'react-native-reanimated';
+import { 
+    ProceedTutorial, 
+    StartTutorial, 
+    TutorialFinger, 
+    tutorial_info,
+    TUTORIAL,
+    tutorial
+} from '../constants/tutorial';
 
 const { height, width} = Dimensions.get('window');
 let swipeTO = null;
@@ -16,102 +22,11 @@ let timeOut = null;
 let isSwipe = false;
 let currentMiddle = 0;
 
-
 const causineTabs  = tabs.cuisine.uppedTabs; // upper tabs 
 
-let isTutorial = false;
+let isTutorial = true;
 let tutorialLevel = -1, swipeTut = true;
 let TutDelayTime = 1000, tutStart = false;
-
-const TUTORIAL = 0;
-function TutorialFinger(props){
-    const animated = useRef(new Animated.Value(1.1)).current;
-    const swipe_animated = useRef(new Animated.Value(0)).current;
-    let circle_trans = null;
-    const { swipe, tap } = props;
-    let picstyle = null;
-    if(tap){
-        picstyle = {transform: [{scale: animated}]};
-        const animatedStart =()=> {
-            Animated.loop(
-                Animated.sequence([
-                    Animated.timing(animated,{
-                        toValue: 1,
-                        duration: 1000,
-                    }),
-                    Animated.timing(animated,{
-                        toValue: 1.1,
-                        duration: 1000,
-                    })
-                ])
-            ).start();
-        }
-        animatedStart();
-    }
-    if(swipe){
-
-        picstyle = {transform: [{ translateX: swipe_animated},{scale: animated}]};
-        circle_trans = {transform: [{translateX: swipe_animated}]}
-        const animatedStart =()=> {
-            Animated.loop(
-                Animated.sequence([
-                    Animated.timing(animated,{
-                        toValue: 1,
-                        duration: 1000,
-                    }),
-                    Animated.timing(swipe_animated,{
-                        toValue: -100,
-                        duration: 3000,
-                    }),
-                    
-                    Animated.timing(animated,{
-                        toValue: 1.1,
-                        duration: 1000,
-                    }),
-                ])
-            ).start();
-        }
-        animatedStart();
-    }
-    return(
-        <View flex={false} absolute style={props.style}>
-            { tap || swipe? <Circle size={40}
-             absolute animated style={[circle_trans,{
-                
-                top: -10,
-                left: 5,
-                opacity: animated.interpolate({
-                    inputRange: [1,1.1],
-                    outputRange: [0.1,0],
-                    extrapolate: 'clamp'
-                })
-            }]}/>:null}
-            <Pic
-            animated
-            style={picstyle}
-            src={require('../assets/icons/tutorial_finger.png')}
-            size={[70,70]}
-            />
-        </View>
-    )
-}
-
-const ProceedTutorial =(navigation)=>{
-    navigation.navigate('InfoModal',{info: 
-        {
-        text: theme.tutorial_info.cuisine[tutorialLevel+1]
-        }, 
-        button: [
-            {
-                title: 'Ok',
-                navigate: 'Cuisine',
-                purpose: TUTORIAL,
-            },
-            ],  
-        exit: false,
-    });
-}
-
 
 function Middle (props){ 
     const { item, index, navigation, middleListRef, mocks_tab, mainRefresh, setMainRefresh} = props;
@@ -192,7 +107,7 @@ function Middle (props){
                     press={()=>{
                         if(isTutorial && tutorialLevel == 6){
                             setTimeout(()=>{
-                                ProceedTutorial(navigation);
+                                ProceedTutorial(navigation, 'Cuisine', tutorial_info.cuisine[tutorialLevel+1]);
                             }, TutDelayTime/2);
                         }
                         if(currentMiddle == index)
@@ -253,7 +168,7 @@ function Middle (props){
                 <Circle center touchable middle color={cColor} size={50}
                     press={()=>{
                         if(isTutorial && tutorialLevel == 7){
-                            ProceedTutorial(navigation);
+                            ProceedTutorial(navigation, 'Cuisine', tutorial_info.cuisine[tutorialLevel+1]);
                         }
                         if(!recipe.favorite){
                             FavoriteDataUpdate({
@@ -305,7 +220,7 @@ function Left (props){
                         onPress={()=> {
                             setIsActive(tab.name);
                             if(isTutorial && tutorialLevel == 2 && tab.name != active ){
-                                ProceedTutorial(navigation);
+                                ProceedTutorial(navigation, 'Cuisine', tutorial_info.cuisine[tutorialLevel+1]);
                             }
                         }}
                         style={{flexDirection: 'column-reverse'}}>
@@ -335,7 +250,7 @@ function Top(props){
         if(isTutorial && tutorialLevel == 1 && swipeTut){
             swipeTut = false;
             setTimeout(() => {
-                ProceedTutorial(navigation);
+                ProceedTutorial(navigation, 'Cuisine', tutorial_info.cuisine[tutorialLevel+1]);
                 listRef.current.scrollToIndex({index:0 , animated: true });
             }, 2000);
         }
@@ -405,7 +320,7 @@ function Bottom(props){
                  press={()=> {
                      setIsActive(item.name)
                      if(isTutorial && tutorialLevel == 4){
-                        ProceedTutorial(navigation);
+                        ProceedTutorial(navigation, 'Cuisine', tutorial_info.cuisine[tutorialLevel+1]);
                      }
                     }}
                     >
@@ -431,7 +346,7 @@ function Bottom(props){
                 if(isTutorial && tutorialLevel == 3 && swipeTut ){
                     swipeTut = false;
                     setTimeout(()=>{
-                        ProceedTutorial(navigation);
+                        ProceedTutorial(navigation, 'Cuisine',tutorial_info.cuisine[tutorialLevel+1]);
                     }, TutDelayTime);
                 }
             } : null
@@ -442,7 +357,6 @@ function Bottom(props){
 
 
 }
-
 
 function Cuisine({navigation, route}){
     const listRef = useRef();
@@ -477,7 +391,11 @@ function Cuisine({navigation, route}){
     useEffect(()=>{
         GetAllFavorite(setRefresh, refresh);
         if(tutorialLevel == -1 && isTutorial)
-            StartTutorial();
+            StartTutorial(
+                navigation, 
+                'Cuisine',  
+                'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+            );
     },[]);
 
     const leftOpacity = midScrollX.interpolate({
@@ -511,7 +429,7 @@ function Cuisine({navigation, route}){
         switch(route.params.modal){
             case TUTORIAL: 
                 if(tutorialLevel == -1 && !tutStart){
-                    ProceedTutorial(navigation);
+                    ProceedTutorial(navigation, 'Cuisine', tutorial_info.cuisine[tutorialLevel+1]);
                     tutStart = true;
                 }else{
                     tutorialLevel++;
@@ -521,29 +439,12 @@ function Cuisine({navigation, route}){
         }
         route.params.modal = undefined;
     }
-
-
-    const StartTutorial =()=>{
-        navigation.navigate('InfoModal',{info: 
-            {
-            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
-            }, 
-            button: [
-                {
-                    title: 'Ok',
-                    navigate: 'Cuisine',
-                    purpose: TUTORIAL,
-                },
-                ],  
-            exit: true,
-            });
-    }
     
     return(
         <View animated white style={styles.container}>
-        {tabs.tutorial.current == 'Ingridients' && !isTutorial ? <TutorialFinger style={{left: width * 0.25,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
-        {tabs.tutorial.current == 'Favorite' && !isTutorial ? <TutorialFinger style={{left: width * 0.50,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
-        {tabs.tutorial.current == 'History' && !isTutorial ? <TutorialFinger style={{left: width * 0.75,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
+        {tutorial.current == 'Ingridients' && !isTutorial ? <TutorialFinger style={{left: width * 0.25,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
+        {tutorial.current == 'Favorite' && !isTutorial ? <TutorialFinger style={{left: width * 0.50,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
+        {tutorial.current == 'History' && !isTutorial ? <TutorialFinger style={{left: width * 0.75,zIndex: 1,bottom: height * 0.02, transform:[{rotate: '180deg'}]}} tap/> : null}
             <View flex={0.6} zIndex={1}>
                 { (tutorialLevel == 0 || tutorialLevel == 1) && isTutorial ? <TutorialFinger style={{alignSelf: 'center', top: 30, zIndex: 1, right: 0}} swipe={tutorialLevel == 0} tap={tutorialLevel == 1}/> : null}
                 <List
@@ -595,7 +496,7 @@ function Cuisine({navigation, route}){
                                         swipeTut = false;
                                         setTimeout(() => {
                                             listRef.current.scrollToIndex({index:0 , animated: true });
-                                            ProceedTutorial(navigation);
+                                            ProceedTutorial(navigation, 'Cuisine', tutorial_info.cuisine[tutorialLevel+1]);
                                         }, 1000);
                                     }
                                 }
@@ -643,7 +544,7 @@ function Cuisine({navigation, route}){
                                         if(isTutorial && tutorialLevel == 5 && swipeTut){
                                             swipeTut = false;
                                             setTimeout(() => {
-                                                ProceedTutorial(navigation);
+                                                ProceedTutorial(navigation, 'Cuisine',tutorial_info.cuisine[tutorialLevel+1]);
                                                 middleListRef.current.scrollToIndex({index : 0, animated: true });    
                                             }, TutDelayTime);
                                         }
