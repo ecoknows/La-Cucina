@@ -7,6 +7,13 @@ import { CheckBox } from 'react-native-elements';
 import { SetRowNoteStatus, SetFirstNote, GetFirstNote } from '../database/async_storage';
 import { PanResponder, Animated, Dimensions } from 'react-native';
 import {
+    ProceedTutorial,
+    StartTutorial,
+    TutorialModal,
+    tutorial_info,,
+    TutorialFinger
+} from '../constants/tutorial';
+import {
     DropTable,
     SeeData, 
     UpdateTable, 
@@ -34,7 +41,7 @@ let isTutorial = false, swipeTut = true;
 let tutorialLevel = -1, TutDelayTime = 1000, tutStart = false;
 const TUTORIAL = 0;
 const {width, height} = Dimensions.get('window');
-
+/*
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
     const swipe_animated = useRef(new Animated.Value(0)).current;
@@ -131,23 +138,7 @@ function TutorialFinger(props){
             />
         </View>
     )
-}
-
-const ProceedTutorial =(navigation)=>{
-    navigation.navigate('InfoModal',{info: 
-        {
-        text: 'Test',
-        }, 
-        button: [
-            {
-                title: 'Ok',
-                navigate: 'Ingridients',
-                purpose: TUTORIAL,
-            },
-            ],  
-        exit: false,
-        });
-}
+}*/
 
 function Ingridients({navigation, route}){
 
@@ -161,41 +152,12 @@ function Ingridients({navigation, route}){
     const [refresh, setRefresh] = useState(false);
     const scrollRef = useRef();
     
-    const TutorialModal =()=>{
-        navigation.navigate('InfoModal',{info: 
-            {
-            text:'You have current tutorial at ' + tabs.tutorial.current + '\ntab I will navigate you back'
-            }, 
-            button: [
-                {
-                    title: 'Ok',
-                    navigate: tabs.tutorial.current
-                },
-                ],  
-            exit: false,
-            });
-    }
     
-    const StartTutorial =()=>{
-        navigation.navigate('InfoModal',{info: 
-            {
-            text: 'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
-            }, 
-            button: [
-                {
-                    title: 'Ok',
-                    navigate: 'Ingridients',
-                    purpose: TUTORIAL,
-                },
-                ],  
-            exit: true,
-            });
-    }
     if(route.params?.modal != undefined){
         switch(route.params.modal){
             case TUTORIAL: 
                 if(tutorialLevel == -1 && !tutStart){
-                    ProceedTutorial(navigation);
+                    ProceedTutorial(navigation, 'Ingridients',tutorial_info.ingridients[tutorialLevel+1]);
                     tutStart = true;
                 }else{         
                     tutorialLevel++;
@@ -215,7 +177,7 @@ function Ingridients({navigation, route}){
     }
 
     if(isTutorial && tutorialLevel == 4 ){
-        ProceedTutorial(navigation);
+        ProceedTutorial(navigation, 'Ingridients',tutorial_info.ingridients[tutorialLevel+1]);
     }
 
     useEffect(()=>{
@@ -235,7 +197,11 @@ function Ingridients({navigation, route}){
                     isTutorial = true;
                     tabs.variables.active = 1;
                     tabs.variables.tutorial_proceed = true;
-                    StartTutorial();
+                    StartTutorial(
+                        navigation, 
+                        'Cuisine',  
+                        'Hello! there ^.^ \nbefore you start using the app\nyou will have a short tutorial.'
+                    );
                 }
             });
 
@@ -324,7 +290,7 @@ function Ingridients({navigation, route}){
 
         const changeChecked =(index)=>{
             if(isTutorial && tutorialLevel == 1){
-                ProceedTutorial(navigation);
+                 ProceedTutorial(navigation, 'Ingridients',tutorial_info.ingridients[tutorialLevel+1]);
             }
             if(isFirst){
                 item.checkList[index].status = item.checkList[index].status ? 0 : 1;
@@ -421,7 +387,7 @@ function Ingridients({navigation, route}){
                     
                     LoadNextNotes(setStateData1,setStateData2,"1",_1_data,_2_data);
                     if(isTutorial && tutorialLevel == 2){
-                        ProceedTutorial(navigation);
+                         ProceedTutorial(navigation, 'Ingridients',tutorial_info.ingridients[tutorialLevel+1]);
                     }
                 }
             }
@@ -516,7 +482,7 @@ function Ingridients({navigation, route}){
                    if(isTutorial && tutorialLevel == 0 && swipeTut){
                     swipeTut = false;
                     setTimeout(()=>{
-                        ProceedTutorial(navigation);
+                         ProceedTutorial(navigation, 'Ingridients',tutorial_info.ingridients[tutorialLevel+1]);
                         scrollRef.current.scrollTo({y:0,animated : true});
                     },TutDelayTime)
                    }

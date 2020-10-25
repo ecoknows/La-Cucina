@@ -38,83 +38,11 @@ const StartTutorial =(navigation,navigate,text)=>{
         exit: true,
         });
 }
-/*
 function TutorialFinger(props){
     const animated = useRef(new Animated.Value(1.1)).current;
     const swipe_animated = useRef(new Animated.Value(0)).current;
     let circle_trans = null;
-    const { swipe, tap } = props;
-    let picstyle = null;
-    if(tap){
-        picstyle = {transform: [{scale: animated}]};
-        const animatedStart =()=> {
-            Animated.loop(
-                Animated.sequence([
-                    Animated.timing(animated,{
-                        toValue: 1,
-                        duration: 1000,
-                    }),
-                    Animated.timing(animated,{
-                        toValue: 1.1,
-                        duration: 1000,
-                    })
-                ])
-            ).start();
-        }
-        animatedStart();
-    }
-    if(swipe){
-        picstyle = {transform: [{ translateX: swipe_animated},{scale: animated}]};
-        circle_trans = {transform: [{translateX: swipe_animated}]}
-        const animatedStart =()=> {
-            Animated.loop(
-                Animated.sequence([
-                    Animated.timing(animated,{
-                        toValue: 1,
-                        duration: 1000,
-                    }),
-                    Animated.timing(swipe_animated,{
-                        toValue: -100,
-                        duration: 3000,
-                    }),
-                    
-                    Animated.timing(animated,{
-                        toValue: 1.1,
-                        duration: 1000,
-                    }),
-                ])
-            ).start();
-        }
-        animatedStart();
-    }
-    return(
-        <View flex={false} absolute style={props.style}>
-            { tap || swipe? <Circle size={40}
-             absolute animated style={[circle_trans,{
-                
-                top: -10,
-                left: 5,
-                opacity: animated.interpolate({
-                    inputRange: [1,1.1],
-                    outputRange: [0.1,0],
-                    extrapolate: 'clamp'
-                })
-            }]}/>:null}
-            <Pic
-            animated
-            style={picstyle}
-            src={require('../assets/icons/tutorial_finger.png')}
-            size={[70,70]}
-            />
-        </View>
-    )
-}*/
-
-function TutorialFinger(props){
-    const animated = useRef(new Animated.Value(1.1)).current;
-    const swipe_animated = useRef(new Animated.Value(0)).current;
-    let circle_trans = null;
-    const { swipe, tap, vertical,alternate } = props;
+    const { swipe, tap, vertical,alternate, upward  } = props;
     let picstyle = null;
     if(tap){
         picstyle = {transform: [{scale: animated}]};
@@ -209,6 +137,58 @@ function TutorialFinger(props){
         animatedStart();
     }
 
+    if(swipe && !upward){
+
+        picstyle = {transform: [{ translateX: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateX: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: 100,
+                        duration: 3000,
+                    }),
+                    
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    }),
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+    
+    if(swipe && upward){
+
+        picstyle = {transform: [{ translateY: swipe_animated},{scale: animated}]};
+        circle_trans = {transform: [{translateY: swipe_animated}]}
+        const animatedStart =()=> {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(animated,{
+                        toValue: 1,
+                        duration: 1000,
+                    }),
+                    Animated.timing(swipe_animated,{
+                        toValue: -100,
+                        duration: 3000,
+                    }),
+                    
+                    Animated.timing(animated,{
+                        toValue: 1.1,
+                        duration: 1000,
+                    }),
+                ])
+            ).start();
+        }
+        animatedStart();
+    }
+
     return(
         <View flex={false} absolute style={props.style}>
             { tap || swipe? <Circle size={40}
@@ -231,7 +211,20 @@ function TutorialFinger(props){
         </View>
     )
 }
-
+const TutorialModal =()=>{
+    navigation.navigate('InfoModal',{info: 
+        {
+        text:'You have current tutorial at ' + tutorial.current + '\ntab I will navigate you back'
+        }, 
+        button: [
+            {
+                title: 'Ok',
+                navigate: tutorial.current
+            },
+            ],  
+        exit: false,
+        });
+}
 
 const tutorial_info = {
     cuisine: [
@@ -265,11 +258,11 @@ const tutorial_info = {
 const TUTORIAL = 122019;
 
 const tutorial = {
-    current: "Cuisine", //todo:  null
-    curr_num : 0,
+    current: "Ingridients", //todo:  null
+    curr_num : 1,
     favorite: false,
     history: false,
-    ingridients: false,
+    ingridients: true,
 }
 
 const variables = {
@@ -284,5 +277,6 @@ export{
     TUTORIAL,
     ProceedTutorial,
     StartTutorial,
-    TutorialFinger
+    TutorialFinger,
+    TutorialModal,
 }
