@@ -119,7 +119,7 @@ function BottomNavigation({navigation}){
                 }}
             
             />
-            <Tab.Screen name="History" component={History} 
+            <Tab.Screen name="History" component={<History/>} 
             listeners={{
                 tabPress: e => {
                     stack_active = stack_active.filter(item=> item != tabs.variables.active);
