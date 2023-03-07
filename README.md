@@ -1,7 +1,7 @@
-# Chevy
+# La Cucina
 > Your personal cooking buddy!
 
-Oh btw this isn't the real name of this mobile app, Chevy is my girlfriend name, I can't think of a name for this mobile app yet, but for sure in the future I know, I will. So basically this mobile app is for someone that are inlove with cooking foods, this mobile app is a recipe app, but for now it's limited to the foods in my country, Philippiines. This mobile application is not the usual mobile recipe app that you can only see texts, this app is much more interactive and user friendly. If you want to  know more about this app the actual footage of this app is below and the features of it. 
+So basically this mobile app is for someone that are inlove with cooking foods, this mobile app is a recipe app, but for now it's limited to the foods in my country, Philippiines. This mobile application is not the usual mobile recipe app that you can only see texts, this app is much more interactive and user friendly. If you want to  know more about this app the actual footage of this app is below and the features of it. 
 
 ## Key Features
 - Filipino Cuisine 
